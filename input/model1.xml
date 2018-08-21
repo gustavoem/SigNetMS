@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_1" name="Model 1: One branch">
+    <listOfCompartments>
+      <compartment id="cell" name="cell" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="EGF" name="EGF" compartment="cell" initialAmount="1000"/>
+      <species id="boundEGFR" name="boundEGFR" compartment="cell" initialAmount="0"/>
+      <species id="unboundEGFR" name="unboundEGFR" compartment="cell" initialAmount="500"/>
+      <species id="activeSos" name="activeSos" compartment="cell" initialAmount="0"/>
+      <species id="inactiveSos" name="inactiveSos" compartment="cell" initialAmount="1200"/>
+      <species id="activeRas" name="activeRas" compartment="cell" initialAmount="0"/>
+      <species id="inactiveRas" name="inactiveRas" compartment="cell" initialAmount="1200"/>
+      <species id="cRaf" name="cRaf" compartment="cell" initialAmount="1500"/>
+      <species id="cRafPP" name="cRafPP" compartment="cell" initialAmount="0"/>
+      <species id="MEK" name="MEK" compartment="cell" initialAmount="3000"/>
+      <species id="MEKPP" name="MEKPP" compartment="cell" initialAmount="0"/>
+      <species id="ERK" name="ERK" compartment="cell" initialAmount="10000"/>
+      <species id="ERKPP" name="ERKPP" compartment="cell" initialAmount="0"/>
+      <species id="removedSos" name="removedSos" compartment="cell" initialAmount="0"/>
+      <species id="PKA" name="PKA" compartment="cell" initialAmount="0"/>
+      <species id="removedcRaf" name="removedcRaf" compartment="cell" initialAmount="0"/>
+      <species id="inactivePKA" name="inactivePKA" compartment="cell" initialAmount="1000"/>
+      <species id="EPAC" name="EPAC" compartment="cell" initialAmount="0"/>
+      <species id="inactiveEPAC" name="inactiveEPAC" compartment="cell" initialAmount="1000"/>
+      <species id="activeRap1" name="activeRap1" compartment="cell" initialAmount="0"/>
+      <species id="inactiveRap1" name="inactiveRap1" compartment="cell" initialAmount="1200"/>
+      <species id="BRaf" name="BRaf" compartment="cell" initialAmount="1500"/>
+      <species id="BRafPP" name="BRafPP" compartment="cell" initialAmount="0"/>
+      <species id="Gap" name="Gap" compartment="cell" initialAmount="2400"/>
+      <species id="EPACA" name="EPACA" compartment="cell" initialAmount="0"/>
+      <species id="Cilostamide" name="Cilostamide" compartment="cell" initialAmount="0"/>
+      <species id="PKAA" name="PKAA" compartment="cell" initialAmount="0"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="SosKcat" name="SosKcat" value="0.0010572843"/>
+      <parameter id="SosKm" name="SosKm" value="18279.761"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="reaction_0" name="SosActivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveSos"/>
+          <speciesReference species="boundEGFR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="activeSos"/>
+          <speciesReference species="boundEGFR"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> boundEGFR </ci>
+                <ci> inactiveSos </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactiveSos </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.73061493"/>
+            <parameter id="Km" name="Km" value="738.12761"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="EGFBingingToTheReceptor (forward)" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="EGF"/>
+          <speciesReference species="unboundEGFR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="boundEGFR"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> EGF </ci>
+              <ci> unboundEGFR </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1.6665105"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_2" name="EGFBingingToTheReceptor (backward)" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="boundEGFR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EGF"/>
+          <speciesReference species="unboundEGFR"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> boundEGFR </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="687.15641"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_3" name="SosDeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="activeSos"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="inactiveSos"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> activeSos </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> activeSos </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="168.87001"/>
+            <parameter id="V" name="V" value="259.0733"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_4" name="RasActivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveRas"/>
+          <speciesReference species="activeSos"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="activeRas"/>
+          <speciesReference species="activeSos"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> activeSos </ci>
+                <ci> inactiveRas </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactiveRas </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.0504318"/>
+            <parameter id="Km" name="Km" value="4711.3334"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_5" name="RasDeactivation1" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="activeRas"/>
+          <speciesReference species="Gap"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="inactiveRas"/>
+          <speciesReference species="Gap"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> Gap </ci>
+                <ci> activeRas </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> activeRas </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="17.312119"/>
+            <parameter id="Km" name="Km" value="7248.9633"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_6" name="cRafActivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="cRaf"/>
+          <speciesReference species="activeRas"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cRafPP"/>
+          <speciesReference species="activeRas"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> cRaf </ci>
+                <ci> activeRas </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> cRaf </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="6.3224454"/>
+            <parameter id="Km" name="Km" value="4666.8334"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_7" name="cRafDeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="cRafPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cRaf"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> cRafPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> cRafPP </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="8103.3883"/>
+            <parameter id="V" name="V" value="4100.5039"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_8" name="MEKactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="MEK"/>
+          <speciesReference species="cRafPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MEKPP"/>
+          <speciesReference species="cRafPP"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> cRafPP </ci>
+                <ci> MEK </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> MEK </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="7.7221471"/>
+            <parameter id="Km" name="Km" value="9817.135"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_9" name="MEKdeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="MEKPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MEK"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> MEKPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> MEKPP </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="9470.8799"/>
+            <parameter id="V" name="V" value="613.43383"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_10" name="ERKactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="ERK"/>
+          <speciesReference species="MEKPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ERKPP"/>
+          <speciesReference species="MEKPP"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> ERK </ci>
+                <ci> MEKPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> ERK </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.81973062"/>
+            <parameter id="Km" name="Km" value="602.79637"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_11" name="SosInhibition" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveSos"/>
+          <speciesReference species="ERKPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="removedSos"/>
+          <speciesReference species="ERKPP"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> SosKcat </ci>
+                <ci> ERKPP </ci>
+                <ci> inactiveSos </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> SosKm </ci>
+                <ci> inactiveSos </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_12" name="activeSosInhibition" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="activeSos"/>
+          <speciesReference species="ERKPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="removedSos"/>
+          <speciesReference species="ERKPP"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> SosKcat </ci>
+                <ci> activeSos </ci>
+                <ci> ERKPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> SosKm </ci>
+                <ci> activeSos </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_13" name="cRafInhibition" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="cRaf"/>
+          <speciesReference species="PKA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="removedcRaf"/>
+          <speciesReference species="PKA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> cRaf </ci>
+                <ci> PKA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> cRaf </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="10.240582"/>
+            <parameter id="Km" name="Km" value="9559.3224"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_14" name="PKAActivation1" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactivePKA"/>
+          <speciesReference species="PKAA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PKA"/>
+          <speciesReference species="PKAA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> inactivePKA </ci>
+                <ci> PKAA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactivePKA </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="6.4116281"/>
+            <parameter id="Km" name="Km" value="2818.0672"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_15" name="PKAactivation2" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactivePKA"/>
+          <speciesReference species="Cilostamide"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PKA"/>
+          <speciesReference species="Cilostamide"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> inactivePKA </ci>
+                <ci> Cilostamide </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactivePKA </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="13.361394"/>
+            <parameter id="Km" name="Km" value="6087.5111"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_16" name="PKADeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="PKA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="inactivePKA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> PKA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> PKA </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="5165.9729"/>
+            <parameter id="V" name="V" value="28608.154"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_17" name="EPACActivation1" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveEPAC"/>
+          <speciesReference species="EPACA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EPAC"/>
+          <speciesReference species="EPACA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> inactiveEPAC </ci>
+                <ci> EPACA </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactiveEPAC </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.06774163"/>
+            <parameter id="Km" name="Km" value="10088.056"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_18" name="EPACActivation2" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveEPAC"/>
+          <speciesReference species="Cilostamide"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EPAC"/>
+          <speciesReference species="Cilostamide"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> inactiveEPAC </ci>
+                <ci> Cilostamide </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactiveEPAC </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.036278847"/>
+            <parameter id="Km" name="Km" value="2626.6583"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_19" name="EPACDeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="EPAC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="inactiveEPAC"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> EPAC </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> EPAC </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="12426.919"/>
+            <parameter id="V" name="V" value="20.571563"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_20" name="Rap1ActivationByEPAC" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="inactiveRap1"/>
+          <speciesReference species="EPAC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="activeRap1"/>
+          <speciesReference species="EPAC"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> inactiveRap1 </ci>
+                <ci> EPAC </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> inactiveRap1 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.0025122156"/>
+            <parameter id="Km" name="Km" value="4403.7089"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_21" name="Rap1Deactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="activeRap1"/>
+          <speciesReference species="Gap"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="inactiveRap1"/>
+          <speciesReference species="Gap"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> activeRap1 </ci>
+                <ci> Gap </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> activeRap1 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="16.594473"/>
+            <parameter id="Km" name="Km" value="2929.1431"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_22" name="BRafActivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="BRaf"/>
+          <speciesReference species="activeRap1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BRafPP"/>
+          <speciesReference species="activeRap1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> BRaf </ci>
+                <ci> activeRap1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> BRaf </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="13.275618"/>
+            <parameter id="Km" name="Km" value="1356.9518"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_23" name="BRafDeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="BRafPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BRaf"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> BRafPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> BRafPP </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" name="Km" value="867.64411"/>
+            <parameter id="V" name="V" value="7.2599818"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_24" name="MEKactivation2" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="MEK"/>
+          <speciesReference species="BRafPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="MEKPP"/>
+          <speciesReference species="BRafPP"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> MEK </ci>
+                <ci> BRafPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> MEK </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="0.31665621"/>
+            <parameter id="Km" name="Km" value="366.30473"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_25" name="BRafActivationByRas" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="BRaf"/>
+          <speciesReference species="activeRas"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BRafPP"/>
+          <speciesReference species="activeRas"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kcat </ci>
+                <ci> BRaf </ci>
+                <ci> activeRas </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> BRaf </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kcat" name="Kcat" value="8.2056076"/>
+            <parameter id="Km" name="Km" value="2999.4779"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_26" name="ERKdeactivation" reversible="false"  >
+        <listOfReactants>
+          <speciesReference species="ERKPP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ERK"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> ERKPP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> ERKPP </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" name="V" value="466.82131"/>
+            <parameter id="Km" name="Km" value="73.773914"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

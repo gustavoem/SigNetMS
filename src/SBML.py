@@ -28,11 +28,32 @@ class SBML:
             species.append (model.getSpecies (i).getName ())
 
         return species
+        return True
+
+
+    def get_kinetic_laws_list (self):
+        """ Returns a list with strings of mathematical equations of
+            the kinetic laws described on the sbml model."""
+        return []
+
+
+    def get_species_kinetic_law (self, species_name):
+        """ Returns the kinetic laws of a species. """
+        return []
+
+    
+    def get_initial_concentration (self, species_name):
+        """ Returns the initial concentrations of each chemical species """
+        return .0
 
 
     def get_name (self):
         """ Returns model name. """
         return self.sbml_obj.model.getName ()
+    
+
+    def kinetic_eq (self):
+        return self.sbml_obj.getListOfRules ()
 
 
     @staticmethod

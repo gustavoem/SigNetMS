@@ -27,7 +27,7 @@ class TestSBMLMethods (unittest.TestCase):
         """ Tests if SBML can return the kinetic law of a species. """
         law = self.model.get_species_kinetic_law ("unboundEGFR")
         eq = '- 1.6665105 * EGF * unboundEGFR + 687.15641 * boundEGFR'
-        self.assertEqual (law, eq)
+        self.assertEqual (law.replace (" ", ""), eq.replace (" ", ""))
 
 
     def test_species_initial_concentration (self):

@@ -19,7 +19,7 @@ class TestSBMLMethods (unittest.TestCase):
         odes.define_initial_value ("x1", 100.0)
         odes.define_initial_value ("x2", 250.5)
         y = odes.evaluate_on ([0])
-        self.assertEqual (y, [100, 250.5])
+        self.assertListEqual (list (y[0]), [100, 250.5])
 
 
     def test_integration (self):
@@ -28,11 +28,11 @@ class TestSBMLMethods (unittest.TestCase):
         # dx1 (t)/dt = x1 (t)
         odes.add_equation ("x1", "x1")
         odes.define_initial_value ("x1", 1.0)
-        # Solution is x1 (t) = exp {t^2 / 2}
+        # Solution is x1 (t) = exp {t}
         t = np.linspace (0, 2, 11)
         y = odes.evaluate_on (t)
         for i in range (len (t)):
-            analytic = math.exp (t[i] ** 2 / 2)
+            analytic = math.exp (t[i])
             assert (abs (y[i] - analytic) < 1e-2)
 
 

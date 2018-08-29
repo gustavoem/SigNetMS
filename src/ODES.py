@@ -11,6 +11,10 @@ class ODES:
         self.index_map = {}
         self.rate_eq = []
         self.initial_state = []
+        self.param_table = {}
+
+
+    # def __create_var (self):
 
     
     def add_equation (self, var, formula):
@@ -28,8 +32,16 @@ class ODES:
 
     def define_initial_value (self, var, value):
         """ Defines the initial value of a variable. """
+        # if var not in self.inex_map:
+            # idx = len ()
+
         idx = self.index_map[var]
         self.initial_state[idx] = value
+
+
+    def define_parameter (self, param, value):
+        """ Defines the value of some parameter """
+        pass
 
 
     def evaluate_on (self, time_points):

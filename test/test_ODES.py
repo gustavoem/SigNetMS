@@ -7,7 +7,7 @@ import numpy as np
 from ODES import ODES
 
 
-class TestSBMLMethods (unittest.TestCase):
+class TestODESMethods (unittest.TestCase):
     
     def test_initial_status (self):
         """ Tests if the system starts at the initial state. """
@@ -49,6 +49,20 @@ class TestSBMLMethods (unittest.TestCase):
             assert (abs (y[i][0] - analytic) < 1)
             assert (abs (y[i][1] - analytic) < 1)
 
+
+    def test_equation_parameters (self):
+        """ Tests if the system can store equation parameters correctly.
+        """
+        odes = ODES ()
+        odes.add_equation ("x1", "k * x1")
+        odes.define_initial_value ("x1", 1.0)
+        odes.define_parameter ("k", 2)
+        # Solution is x1 (t) = exp (2t)
+        t = np.linspace (0, 2, 11)
+        y = odes.evaluate_on (t)
+        for i in range (len (t)):
+            analytic = math.exp (t[i])
+            assert (abs (y[i] - analytic) < 1e-2)
 
 
 if __name__ == '__main__':

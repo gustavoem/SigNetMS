@@ -64,7 +64,11 @@ class ODES:
             time points. """
         sys_function = self.__create_system_function ()
         y = odeint (sys_function, self.initial_state, time_points)
-        return y
+        values_map = {}
+        for var in self.index_map:
+            idx = self.index_map[var]
+            values_map[var] = list (y[:,idx])
+        return values_map
 
 
     # possible speedup: call this function only when it's necessary

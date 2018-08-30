@@ -34,7 +34,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (t[i])
-            assert (abs (y[i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) < 1e-2)
 
         odes = ODES ()
         # dx1 (t)/dt = x1 (t)/2 + x2(t)/2

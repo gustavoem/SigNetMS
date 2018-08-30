@@ -50,8 +50,13 @@ class ODES:
 
 
     def define_parameter (self, param, value):
-        """ Defines the value of some parameter """
+        """ Defines the value of some parameter. """
         self.param_table[param] = value
+
+
+    def get_all_parameters (self):
+        """ Returns all parameters of the system. """
+        return self.param_table
 
 
     def evaluate_on (self, time_points):
@@ -61,7 +66,7 @@ class ODES:
         y = odeint (sys_function, self.initial_state, time_points)
         return y
 
-    
+
     # possible speedup: call this function only when it's necessary
     # to redefine the system
     def __create_system_function (self):

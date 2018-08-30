@@ -62,7 +62,8 @@ class TestSBMLMethods (unittest.TestCase):
         p2_str = m1.group (1)
 
         self.assertEqual (p1_str, p2_str)
-        self.assertEqual (self.model.get_param_value (p1_str), self.model.get_param_value (p2_str))
+        self.assertEqual (self.model.get_param_value (p1_str), 
+                self.model.get_param_value (p2_str))
 
 
 if __name__ == '__main__':

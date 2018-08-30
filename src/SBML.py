@@ -26,7 +26,6 @@ class SBML:
 
         # Stores the number of parameters
         self.num_params = 0
-        
                 
     
     def load_file (self, file_name):
@@ -80,6 +79,11 @@ class SBML:
     def get_param_value (self, param):
         """ Returns the value of a parameter. """
         return self.__parameter_values[param]
+
+
+    def get_all_param (self):
+        """ Return a hash with all (internal) parameters and values. """
+        return self.__parameter_values
 
 
     def get_name (self):
@@ -149,7 +153,6 @@ class SBML:
                 local_params[reac_name].append (new_param_name)
                 self.__parameter_values[new_param_name] = param.getValue ()
         return local_params
-
 
 
     @staticmethod

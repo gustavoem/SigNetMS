@@ -19,7 +19,8 @@ class TestODESMethods (unittest.TestCase):
         odes.define_initial_value ("x1", 100.0)
         odes.define_initial_value ("x2", 250.5)
         y = odes.evaluate_on ([0])
-        self.assertListEqual (list (y[0]), [100, 250.5])
+        self.assertListEqual (y["x1"], [100])
+        self.assertListEqual (y["x2"], [250.5])
 
 
     def test_integration (self):
@@ -46,8 +47,8 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (t[i])
-            assert (abs (y[i][0] - analytic) < 1)
-            assert (abs (y[i][1] - analytic) < 1)
+            assert (abs (y["x1"][i] - analytic) < 1)
+            assert (abs (y["x2"][i] - analytic) < 1)
 
 
     def test_equation_parameters (self):
@@ -62,7 +63,19 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (2 * t[i])
-            assert (abs (y[i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) < 1e-2)
+
+
+    def test_get_parameters (self):
+        """ Tests if the system can return all parameters. """
+        odes = ODES ()
+        odes.add_equation ("x1", "k * x1")
+        odes.define_parameter ("k", 2)
+        odes.add_equation ("x2", "k2 * x2")
+        odes.define_parameter ("k2", 4)
+        params = odes.get_all_parameters ()
+        self.assertEqual (params["k"], 2)
+        self.assertEqual (params["k2"], 4)
 
 
 if __name__ == '__main__':

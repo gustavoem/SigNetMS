@@ -61,7 +61,7 @@ class TestODESMethods (unittest.TestCase):
         t = np.linspace (0, 2, 11)
         y = odes.evaluate_on (t)
         for i in range (len (t)):
-            analytic = math.exp (t[i])
+            analytic = math.exp (2 * t[i])
             assert (abs (y[i] - analytic) < 1e-2)
 
 

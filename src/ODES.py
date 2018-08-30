@@ -8,13 +8,23 @@ class ODES:
 
     def __init__ (self):
         """ Default constructor. """
+        # A map var -> var index
         self.index_map = {}
+        
+        # The rate equation of a var
         self.rate_eq = []
+        
+        # The initial state of a var
         self.initial_state = []
+    
+        # A hash table with values of parameters
         self.param_table = {}
 
 
-    # def __create_var (self):
+    def __create_var (self, var):
+        """ Creates a new variable and adds it to the system. """
+        idx = len (self.index_map)
+        self.index_map[var] = idx
 
     
     def add_equation (self, var, formula):
@@ -24,24 +34,24 @@ class ODES:
             self.rate_eq[index_map[var]] = formula
             return
         
-        idx = len (self.index_map)
-        self.index_map[var] = idx
+        idx = self.__create_var (var)
         self.rate_eq.append (formula)
         self.initial_state.append (None)
 
 
     def define_initial_value (self, var, value):
         """ Defines the initial value of a variable. """
-        # if var not in self.inex_map:
-            # idx = len ()
-
-        idx = self.index_map[var]
+        idx = None
+        if var not in self.index_map:
+            idx = __create_var (var)
+        else:
+            idx = self.index_map[var]
         self.initial_state[idx] = value
 
 
     def define_parameter (self, param, value):
         """ Defines the value of some parameter """
-        pass
+        self.param_table[param] = value
 
 
     def evaluate_on (self, time_points):
@@ -59,13 +69,14 @@ class ODES:
             system. """
 
         evaluable_formulas = []
-        i = 0
         for formula in self.rate_eq:
             formula = re.sub (r'(([A-z]|_)\w*)', 
-                    lambda m: "current_state['" + m.group (0) + "']", 
+                    lambda m: "symbol_table['" + m.group (0) + "']", 
                     formula)
             evaluable_formulas.append (formula)
-            i += 1
+
+        # Param state is constant over time
+        symbol_table = dict (self.param_table)
 
 
         def system_function (state, t):
@@ -74,7 +85,7 @@ class ODES:
 
             for var in self.index_map:
                 idx = self.index_map[var]
-                current_state[var] = state[idx]
+                symbol_table[var] = state[idx]
 
             for i in range (len (state)):
                 x = 0
@@ -82,8 +93,8 @@ class ODES:
                     x = eval (evaluable_formulas[i])
                 except:
                     print ("Couldn't evaluate system rate formula. " +
-                           "Did you define system variables " + 
-                           "correctly?")
+                           "Did you define system variables and " +
+                           "parameters correctly?")
                 dstatedt.append (x)
             return dstatedt
 

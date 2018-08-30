@@ -6,7 +6,28 @@ class SBML:
     def __init__ (self):
         """ Default constructor. """
         self.sbml_obj = None
+        
+        # Stores the values of internal parameters. 
+        # This is set when calling __get_global_params and 
+        # __get_local_params ()
+        self.__parameter_values = {}
 
+        # Stores internal name of global parameters.
+        # The internal name of the i-th global parameter is the i-th 
+        # element of this list
+        self.__global_param = []
+
+        # Stores the internal name of local parameters. 
+        # __local_param is a hash of lists. The key of the hash is 
+        # the name of a reaction. The internal name of the i-th local 
+        # parameter of the kinetic law of this reaction is the i-th 
+        # element of __local_param[reaction].
+        self.__local_param = {}
+
+        # Stores the number of parameters
+        self.num_params = 0
+        
+                
     
     def load_file (self, file_name):
         """ Given an xml file construct an sbml object. """
@@ -15,6 +36,8 @@ class SBML:
         if SBML.__check_sbml_parsing_err (sbmldoc):
             return False
         self.sbml_obj = sbmldoc
+        self.__global_param = self.__get_global_params ()
+        self.__local_param = self.__get_local_params ()
         return True
         
             
@@ -28,7 +51,6 @@ class SBML:
             species.append (model.getSpecies (i).getName ())
 
         return species
-        return True
 
 
     def get_species_kinetic_law (self, species_name):
@@ -41,7 +63,7 @@ class SBML:
                 formula += "+ "
             else:
                 formula += "- "
-            formula += SBML.__reaction_rate_formula (reac)
+            formula += self.__reaction_rate_formula (reac)
             formula += " "
         return formula
             
@@ -53,6 +75,11 @@ class SBML:
         species = model.getSpecies (species_name)
         initial_concentration = species.getInitialAmount ()
         return initial_concentration
+
+
+    def get_param_value (self, param):
+        """ Returns the value of a parameter. """
+        return self.__parameter_values[param]
 
 
     def get_name (self):
@@ -75,20 +102,54 @@ class SBML:
                     participating_reactions.append (reac)
         return participating_reactions
 
+    
+    def __new_parameter (self):
+        self.num_params += 1
+        return "p" + str (self.num_params)
 
-    @staticmethod
-    def __reaction_rate_formula (reaction):
+
+    def __reaction_rate_formula (self, reaction):
         """ Given a reaction, returns the string with the formula of its 
         reaction rate. """
         kinetic = reaction.getKineticLaw ()
         formula = kinetic.getFormula ()
         params = kinetic.getListOfParameters ()
-        for param in params:
-            param_name = param.getName ()
-            param_value = str (param.getValue ())
-            formula = formula.replace (param_name, param_value)
-
+        internal_params = self.__local_param[reaction.getName ()]
+        
+        for i in range (len (params)):
+            param_name = params[i].getName ()
+            internal_param_name = internal_params[i]
+            formula = formula.replace (param_name, internal_param_name)
         return formula
+
+
+    def __get_global_params (self):
+        model = self.sbml_obj.model
+        params = model.getListOfParameters ()
+        global_params = []
+        for param in params:
+            new_param_name = self.__new_parameter ()
+            param_value = str (param.getValue ())
+            global_params.append (new_param_name)
+            self.__parameter_values[new_param_name] = param.getValue ()
+        return global_params
+
+
+    def __get_local_params (self):
+        model = self.sbml_obj.model
+        all_reactions = model.getListOfReactions ()
+        local_params = {}
+        for reac in all_reactions:
+            reac_name = reac.getName ()
+            local_params[reac_name] = []
+            kinetic = reac.getKineticLaw ()
+            params = kinetic.getListOfParameters ()
+            for param in params:
+                new_param_name = self.__new_parameter ()
+                local_params[reac_name].append (new_param_name)
+                self.__parameter_values[new_param_name] = param.getValue ()
+        return local_params
+
 
 
     @staticmethod

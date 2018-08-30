@@ -33,9 +33,9 @@ class TestSBMLMethods (unittest.TestCase):
         self.assertGreater (len (m1.groups ()), 0)
         self.assertGreater (len (m2.groups ()), 0)
         p1_str = m1.group (1)
-        p2_str = m1.group (1)
-        p1 = self.model.getParamValue (p1_str)
-        p2 = self.model.getParamValue (p2_str)
+        p2_str = m2.group (1)
+        p1 = self.model.get_param_value (p1_str)
+        p2 = self.model.get_param_value (p2_str)
         #eq = '- 1.6665105 * EGF * unboundEGFR + 687.15641 * boundEGFR'
         self.assertEqual (p1, 1.6665105)
         self.assertEqual (p2, 687.15641)
@@ -62,8 +62,7 @@ class TestSBMLMethods (unittest.TestCase):
         p2_str = m1.group (1)
 
         self.assertEqual (p1_str, p2_str)
-        self.assertEqual (self.model.get_param_value (p1_str), 
-                self.model.get_param_value (p2_str))
+        self.assertEqual (self.model.get_param_value (p1_str), self.model.get_param_value (p2_str))
 
 
 if __name__ == '__main__':

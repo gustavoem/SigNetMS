@@ -36,7 +36,7 @@ class TestLikelihoodFunction (unittest.TestCase):
 
         likelihood_f = LikelihoodFunction (self.odes, 1.0)
         t = [0]
-        l = likelihood_f.get_likelihood (1.0, "x1", t, self.theta)
+        l = likelihood_f.get_likelihood ([1.0], "x1", t, self.theta)
         assert (abs (f_D - l) < 1e-8)
 
 

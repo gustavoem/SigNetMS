@@ -34,9 +34,10 @@ class TestLikelihoodFunction (unittest.TestCase):
         # f_D (1) = e ^ -{[(0) ^ 2] / [2 * 1]} * {1 * sqrt (2pi)} ^ -1
         f_D = self.__gaussian (1, 1, 1)
 
-        likelihood_f = LikelihoodFunction (self.odes, 1.0)
         t = [0]
-        l = likelihood_f.get_likelihood ([1.0], "x1", t, self.theta)
+        likelihood_f = LikelihoodFunction (self.odes, t, 1.0)
+        l = likelihood_f.get_experiment_likelihood ([1.0], "x1", \
+                self.theta)
         assert (abs (f_D - l) < 1e-8)
 
 
@@ -49,8 +50,8 @@ class TestLikelihoodFunction (unittest.TestCase):
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
         
-        likelihood_f = LikelihoodFunction (self.odes, 1.0) 
-        l = likelihood_f.get_likelihood (D, "x1", t, self.theta)
+        likelihood_f = LikelihoodFunction (self.odes, t, 1.0) 
+        l = likelihood_f.get_experiment_likelihood (D, "x1", self.theta)
         assert (abs (f_D - l) < 1e-8)
 
 

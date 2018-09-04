@@ -23,7 +23,7 @@ class LikelihoodFunction:
         return exp * (1 / (self.__sigma * np.sqrt (2 * np.pi)))
 
     
-    def get_likelihood (self, X, var, t, theta):
+    def get_experiment_likelihood (self, X, var, t, theta):
         """ Given the observed X of values of variable var on time t, 
             what is the probability that X was observed given that the 
             system parameters are theta. Initial variable values are

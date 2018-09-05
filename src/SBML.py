@@ -64,6 +64,7 @@ class SBML:
                 formula += "- "
             formula += self.__reaction_rate_formula (reac)
             formula += " "
+        formula = self.__translate_global_params (formula)
         return formula
             
     
@@ -89,6 +90,18 @@ class SBML:
     def get_name (self):
         """ Returns model name. """
         return self.sbml_obj.model.getName ()
+
+
+    def __translate_global_params (self, formula):
+        """ Given a formula, searches and replaces global sbml 
+            parameters by the internal parameter name. """
+        model = self.sbml_obj.model
+        params = model.getListOfParameters ()
+        for i in range (len (params)):
+            param_name = params[i].getName ()
+            internal_name = self.__global_param[i]
+            formula = formula.replace (param_name, internal_name)
+        return formula
     
 
     def __get_reactions_involving (self, species_name):
@@ -133,7 +146,6 @@ class SBML:
         global_params = []
         for param in params:
             new_param_name = self.__new_parameter ()
-            print ("Renaming parameter " + param.getName () + " as " + new_param_name)
             param_value = str (param.getValue ())
             global_params.append (new_param_name)
             self.__parameter_values[new_param_name] = param.getValue ()

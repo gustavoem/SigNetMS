@@ -100,10 +100,15 @@ class ODES:
                 x = 0
                 try:
                     x = eval (evaluable_formulas[i])
-                except:
+                except Exception as e:
                     print ("Couldn't evaluate system rate formula. " +
                            "Did you define system variables and " +
                            "parameters correctly?")
+                    print (e)
+                    print ("tabela:")
+                    print (self.param_table)
+                    print ("\n")
+
                 dstatedt.append (x)
             return dstatedt
 

@@ -14,7 +14,11 @@ class TestSBMLtoODES (unittest.TestCase):
         model = SBML ()
         model.load_file ("input/model1.xml")
         odes = sbml_to_odes (model)
+        t = [0, .1, .2]
         y = odes.evaluate_on ([0])
         self.assertListEqual (y["EGF"], [1000])
         self.assertListEqual (y["ERK"], [10000])
+
+        t = [0, .1, .2]
+        y = odes.evaluate_on (t)
 

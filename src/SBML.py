@@ -133,6 +133,7 @@ class SBML:
         global_params = []
         for param in params:
             new_param_name = self.__new_parameter ()
+            print ("Renaming parameter " + param.getName () + " as " + new_param_name)
             param_value = str (param.getValue ())
             global_params.append (new_param_name)
             self.__parameter_values[new_param_name] = param.getValue ()

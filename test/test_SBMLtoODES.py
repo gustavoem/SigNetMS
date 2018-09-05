@@ -17,6 +17,4 @@ class TestSBMLtoODES (unittest.TestCase):
         y = odes.evaluate_on ([0])
         self.assertListEqual (y["EGF"], [1000])
         self.assertListEqual (y["ERK"], [10000])
-        
 
-        

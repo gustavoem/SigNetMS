@@ -21,7 +21,6 @@ def estimate_marginal_likelihood (experiments, model):
     """
     M_n = 20
     betas = sample_betas (M_n)
-    print (betas)
     thetas = get_theta_chains (model, betas)
     iterate_thetas (model, thetas, betas, experiments)
 
@@ -65,11 +64,12 @@ def iterate_thetas (model, thetas, betas, experiments):
         new_l = set_of_experiments_likelihood (experiments, new_theta, \
                 model)
         r = (new_l / old_l) ** betas[j]
+        print ("Local move prob" + str (r))
         if (np.random.uniform () <= r):
             thetas[j] = new_theta
 
         # Global move
-        j = random.choice (range (len (theta) - 1))
+        j = random.choice (range (len (thetas) - 1))
         theta1 = thetas[j]
         theta2 = thetas[j + 1]
         theta1_l = set_of_experiments_likelihood (experiments, theta1, \
@@ -79,7 +79,8 @@ def iterate_thetas (model, thetas, betas, experiments):
         t1ot2 = theta1_l / theta2_l
         t2ot1 = theta2_l / theta1_l
         r = (t2ot1) ** betas[j] * (t1ot2) ** betas[j + 1]
-        if (np.random.unform () <= r):
+        print ("Global move prob" + str (r))
+        if (np.random.uniform () <= r):
             aux = thetas[j]
             thetas[j] = thetas[j + 1]
             thetas[j + 1] = aux

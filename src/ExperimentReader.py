@@ -18,7 +18,7 @@ def read_experiment_file (file_name, var):
                 exp = Experiment (times, exp_val, var)
                 experiments.append (exp)
                 experiment_values = []
-                times = []
+            times = []
             continue
         
         times.append (l[0])
@@ -26,13 +26,12 @@ def read_experiment_file (file_name, var):
             nof_exp_per_line = len (l) - 1
             experiment_values = [[] for i in range (len (l) - 1)]
         for i in range (1, len (l)):
-            experiment_values[i - 1].append (l[i])
+            experiment_values[i - 1].append (float (l[i]))
 
     for exp_val in experiment_values:
         exp = Experiment (times, exp_val, var)
         experiments.append (exp)
         experiment_values = []
-        times = []
 
     f.close ()
     return experiments

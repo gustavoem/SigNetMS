@@ -146,7 +146,7 @@ class SBML:
         global_params = []
         for param in params:
             new_param_name = self.__new_parameter ()
-            param_value = str (param.getValue ())
+            param_value = param.getValue ()
             global_params.append (new_param_name)
             self.__parameter_values[new_param_name] = param.getValue ()
         return global_params
@@ -164,7 +164,8 @@ class SBML:
             for param in params:
                 new_param_name = self.__new_parameter ()
                 local_params[reac_name].append (new_param_name)
-                self.__parameter_values[new_param_name] = param.getValue ()
+                self.__parameter_values[new_param_name] = \
+                        param.getValue ()
         return local_params
 
 

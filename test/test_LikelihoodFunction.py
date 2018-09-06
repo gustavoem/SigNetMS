@@ -6,6 +6,7 @@ import math
 import numpy as np
 from ODES import ODES
 from LikelihoodFunction import LikelihoodFunction
+from Experiment import Experiment
 
 class TestLikelihoodFunction (unittest.TestCase):
     
@@ -33,10 +34,13 @@ class TestLikelihoodFunction (unittest.TestCase):
         # D ~ Gaussian (x1(0), 1) ~ Gaussian (1, 1)
         # f_D (1) = e ^ -{[(0) ^ 2] / [2 * 1]} * {1 * sqrt (2pi)} ^ -1
         f_D = self.__gaussian (1, 1, 1)
+        t = [0]
+        values = [1.0]
+        var = "x1"
+        experiment = Experiment (t, values, var)
 
         likelihood_f = LikelihoodFunction (self.odes, 1.0)
-        t = [0]
-        l = likelihood_f.get_experiment_likelihood ([1.0], "x1", t,\
+        l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
         assert (abs (f_D - l) < 1e-8)
 
@@ -46,12 +50,13 @@ class TestLikelihoodFunction (unittest.TestCase):
             the observation occurs in multiple time points. """
         t = [0, .25, .5, .75, 1]
         D = [np.exp (x) for x in t]
+        experiment = Experiment (t, D, "x1")
         f_D = 1
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
         
         likelihood_f = LikelihoodFunction (self.odes, 1.0) 
-        l = likelihood_f.get_experiment_likelihood (D, "x1", t, \
+        l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
         assert (abs (f_D - l) < 1e-8)
 

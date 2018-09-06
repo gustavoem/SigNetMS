@@ -104,11 +104,6 @@ class ODES:
                     print ("Couldn't evaluate system rate formula. " +
                            "Did you define system variables and " +
                            "parameters correctly?")
-                    print (e)
-                    print ("tabela:")
-                    print (self.param_table)
-                    print ("\n")
-
                 dstatedt.append (x)
             return dstatedt
 

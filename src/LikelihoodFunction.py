@@ -22,24 +22,52 @@ class LikelihoodFunction:
         exp = np.exp (-0.5 * ((x - mu) / self.__sigma) ** 2)
         return exp * (1 / (self.__sigma * np.sqrt (2 * np.pi)))
 
+
+    def __calculate_likelihood (self, X_sys, X_obs):
+        """ Calculates the likelihood of X_obs given that the real 
+            solution i s X_sys. """
+        likeli = 1
+        for i in range (len (X_obs)):
+            observed_x = X_obs[i]
+            system_x = X_sys[i]
+            likeli *= self.__point_likelihood (system_x, observed_x)
+        return likeli
+
+
+    def __get_system_state (self, var, t, theta):
+        """ Calculates the state of the variable var on times t and with 
+            theta parameters. """
+        if (theta is not None):
+            for param in theta:
+                self.__ode.define_parameter (param, theta[param])
+
+        system_states = self.__ode.evaluate_on (t)
+        X_sys = system_states[var]
+        return X_sys
     
+
     def get_experiment_likelihood (self, experiment, theta):
         """ Given the observed X of values of variable var on time t, 
             what is the probability that X was observed given that the 
             system parameters are theta. Initial variable values are
             stored in the ode object. """
-        if (theta is not None):
-            for param in theta:
-                self.__ode.define_parameter (param, theta[param])
-
         t = experiment.times
         var = experiment.var
-        X = experiment.values
-        system_states = self.__ode.evaluate_on (t)
-        noiseless_X = system_states[var]
-        likeli = 1
-        for i in range (len (X)):
-            observed_x = X[i]
-            system_x = noiseless_X[i]
-            likeli *= self.__point_likelihood (system_x, observed_x)
-        return likeli
+        X_sys = self.__get_system_state (var, t, theta)
+        var = experiment.var
+        X_obs = experiment.values
+        return self.__calculate_likelihood (X_sys, X_obs)
+        
+
+    def get_experiments_likelihood (self, experiments, theta):
+        """ Given a list of experiments that happens all with the same
+            time intervals and with respect to the same variable, 
+            calculates the likelihood of all expeirments. """
+        t = experiments[0].times
+        var = experiments[0].var
+        X_sys = self.__get_system_state (var, t, theta)
+        l = 1
+        for exp in experiments:
+            X_obs = exp.values
+            l *= self.__calculate_likelihood (X_sys, X_obs)
+        return l

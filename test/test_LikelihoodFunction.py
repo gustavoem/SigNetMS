@@ -60,5 +60,24 @@ class TestLikelihoodFunction (unittest.TestCase):
                 self.theta)
         assert (abs (f_D - l) < 1e-8)
 
+    
+    def test_get_likelihood_experiment_set (self):
+        """ Tests if can return the likelihood of data in respect to
+            multiple experimnets. """
+        t = [0, .25, .5, .75, 1]
+        D = [np.exp (x) for x in t]
+        experiment = Experiment (t, D, "x1")
+        experiments = [experiment, experiment]
+        f_D = 1
+        for y in D:
+            f_D *= self.__gaussian (y, 1, y)
+        f_D **= 2
+        
+        likelihood_f = LikelihoodFunction (self.odes, 1.0)
+        l = likelihood_f.get_experiments_likelihood (experiments, \
+                self.theta)
+        assert (abs (f_D - l) < 1e-8)
+
+
 
 

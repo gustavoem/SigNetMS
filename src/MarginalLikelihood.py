@@ -44,12 +44,14 @@ def get_theta_chains (model, betas):
     theta = []
     params = model.get_all_parameters ()
     for param in params:
-        rand_param = RandomParameter (param, 2, 3333.0)
+        rand_param = RandomParameter (param, 1.1, 9.0)
         theta.append (rand_param)
     
     thetas = []
     for b in betas:
         thetas.append (theta.copy ())
+        # TODO: should we start all of them equal, or sample one initial
+        # value for each parameter?
     return thetas
 
 
@@ -63,6 +65,8 @@ def iterate_thetas (model, thetas, betas, experiments):
                 model)
         new_l = set_of_experiments_likelihood (experiments, new_theta, \
                 model)
+        print ("Old theta likelihood " + str (old_l))
+        print ("New theta likelihood " + str (new_l))
         r = (new_l / old_l) ** betas[j]
         print ("Local move prob" + str (r))
         if (np.random.uniform () <= r):
@@ -87,30 +91,16 @@ def iterate_thetas (model, thetas, betas, experiments):
 
 
 def set_of_experiments_likelihood (experiments, theta, model):
-    likelihood_f = LikelihoodFunction (model, 0.3)
-    params_hash = random_params_to_hash (theta)
-    l = 1
-    for experiment in experiments:
-        X = experiment.values
-        var = experiment.var
-        t = experiment.times
-        l *= likelihood_f.get_experiment_likelihood (X, var, t, \
-                params_hash)
+    likelihood_f = LikelihoodFunction (model, np.random.gamma (2.0, 3333.0))
+    l = likelihood_f.get_experiments_likelihood (experiments, theta)
     return l
 
 
 def propose_theta_jump (theta):
     for i in range (len (theta)):
         rand_param = theta[i]
-        move = np.random.normal (0, PROPOSAL_DISTR_STD)
+        move = np.random.normal (0, np.random.gamma (2.0, 11.0))
         if rand_param.value + move > 0:
             rand_param.value += move
         theta[i] = rand_param
     return theta
-
-
-def random_params_to_hash (rand_params):
-    param_hash = {}
-    for param in rand_params:
-        param_hash[param.name] = param.value
-    return param_hash

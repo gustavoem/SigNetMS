@@ -5,6 +5,9 @@
 #Biochemical Species
 
 import numpy as np
+import RandomParameter
+
+# TODO: theta should be RandomParameter
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data
@@ -36,20 +39,26 @@ class LikelihoodFunction:
 
     def __get_system_state (self, var, t, theta):
         """ Calculates the state of the variable var on times t and with 
-            theta parameters. """
+            theta parameters. theta should be a RandomParameter object. """
         if (theta is not None):
             for param in theta:
-                self.__ode.define_parameter (param, theta[param])
+                self.__ode.define_parameter (param.name, param.value)
 
+        # TODO: the likelihood should be on a measurement of the system
+        # and not directly on the state.
         system_states = self.__ode.evaluate_on (t)
-        X_sys = system_states[var]
-        return X_sys
+        # X_sys = []
+        # for i in range (len (system_states["ERK"])):
+            # ratio = system_states["ERKPP"][i] / (system_states["ERK"][i] + system_states["ERKPP"][i])
+            # X_sys.append (ratio)
+        # return X_sys
+        return system_states[var]
     
 
     def get_experiment_likelihood (self, experiment, theta):
-        """ Given the observed X of values of variable var on time t, 
-            what is the probability that X was observed given that the 
-            system parameters are theta. Initial variable values are
+        """ Given an experiment, what is the probability that the values
+            of this experiment were observed given that the system 
+            random parameters are theta. Initial variable values are
             stored in the ode object. """
         t = experiment.times
         var = experiment.var
@@ -60,14 +69,17 @@ class LikelihoodFunction:
         
 
     def get_experiments_likelihood (self, experiments, theta):
-        """ Given a list of experiments that happens all with the same
-            time intervals and with respect to the same variable, 
-            calculates the likelihood of all expeirments. """
+        """ Given a list of independent experiments that happens all 
+            with the same time intervals and with respect to the same 
+            variable, calculates the likelihood of all expeirments. """
         t = experiments[0].times
         var = experiments[0].var
         X_sys = self.__get_system_state (var, t, theta)
+        # print ("X_sys: " + str (X_sys))
         l = 1
         for exp in experiments:
             X_obs = exp.values
+            # print ("\tX_obs: " + str (X_obs))
             l *= self.__calculate_likelihood (X_sys, X_obs)
+            # print ("\tpartial likelihood: " + str (l))
         return l

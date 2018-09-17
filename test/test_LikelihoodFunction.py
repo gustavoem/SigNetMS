@@ -14,7 +14,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         self.odes = ODES ()
         self.odes.add_equation ("x1", "x1")
         self.odes.define_initial_value ("x1", 1.0)
-        self.theta = None
+        self.theta = []
         # dx1 (t)/dt = x1 (t), x1 (0) = 1
         # x1 (t) = e ^ t
 
@@ -74,8 +74,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         f_D **= 2
         
         likelihood_f = LikelihoodFunction (self.odes, 1.0)
-        l = likelihood_f.get_experiments_likelihood (experiments, \
-                self.theta)
+        l = likelihood_f.get_experiments_likelihood (experiments, self.theta)
         assert (abs (f_D - l) < 1e-8)
 
 

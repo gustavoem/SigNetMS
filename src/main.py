@@ -9,5 +9,4 @@ sbml = SBML ()
 sbml.load_file ('../input/model1.xml')
 odes = sbml_to_odes (sbml)
 experiments = read_experiment_file ('../input/ERK_small.txt', 'ERK')
-
 ml.estimate_marginal_likelihood (experiments, odes)

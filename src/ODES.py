@@ -63,7 +63,9 @@ class ODES:
         """ Returns the state of the systems variables at the specified
             time points. """
         sys_function = self.__create_system_function ()
-        y = odeint (sys_function, self.initial_state, time_points)
+        y, infodict = odeint (sys_function, self.initial_state, time_points, mxstep=50,full_output=True)
+        # print ()
+        # print (infodict)
         values_map = {}
         for var in self.index_map:
             idx = self.index_map[var]
@@ -87,7 +89,6 @@ class ODES:
         # Param state is constant over time
         symbol_table = dict (self.param_table)
 
-
         def system_function (state, t):
             dstatedt = []
             current_state = {}
@@ -108,3 +109,15 @@ class ODES:
             return dstatedt
 
         return system_function
+
+
+    def get_system_jacobian (self):
+        """ Creates the jacobian of the function that describes the 
+            dynamics of the system. """
+
+        def jacob_func (s, t):
+            return None
+
+        return jacob_func
+
+

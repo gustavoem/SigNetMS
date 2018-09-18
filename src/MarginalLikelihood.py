@@ -8,6 +8,7 @@ from LikelihoodFunction import LikelihoodFunction
 from ODES import ODES
 import numpy as np
 import random
+import re
 
 # NUMBER_OF_STRATA = 100
 NUMBER_OF_STRATA = 5
@@ -15,6 +16,7 @@ SCHEDULE_POWER = 5
 # POPULATION_ITERATIONS = 100000
 POPULATION_ITERATIONS = 1000
 PROPOSAL_DISTR_STD = 0.3
+
 
 def estimate_marginal_likelihood (experiments, model):
     """ This function estimates the marginal likelihood of a  model """
@@ -43,7 +45,10 @@ def get_theta_chains (model, betas):
     theta = []
     params = model.get_all_parameters ()
     for param in params:
-        rand_param = RandomParameter (param, 1.1, 9.0)
+        if re.search ("Km", param):
+            rand_param = RandomParameter (param, 2.0, 3333.0)
+        else:
+            rand_param = RandomParameter (param, 1.1, 9.0)
         theta.append (rand_param)
     
     thetas = []
@@ -82,7 +87,7 @@ def iterate_thetas (model, thetas, betas, experiments):
         t1ot2 = theta1_l / theta2_l
         t2ot1 = theta2_l / theta1_l
         r = (t2ot1) ** betas[j] * (t1ot2) ** betas[j + 1]
-        print ("Global move prob" + str (r))
+        print ("Global move prob " + str (r))
         if (np.random.uniform () <= r):
             aux = thetas[j]
             thetas[j] = thetas[j + 1]
@@ -98,7 +103,8 @@ def set_of_experiments_likelihood (experiments, theta, model):
 def propose_theta_jump (theta):
     for i in range (len (theta)):
         rand_param = theta[i]
-        move = np.random.normal (0, np.random.gamma (2.0, 11.0))
+        std = rand_param.value
+        move = np.random.normal (0, std)
         if rand_param.value + move > 0:
             rand_param.value += move
         theta[i] = rand_param

@@ -46,13 +46,20 @@ class LikelihoodFunction:
 
         # TODO: the likelihood should be on a measurement of the system
         # and not directly on the state.
+        # We could create this measure as a variable on the sbml model!
+        # That would make the result of this function just the value of
+        # this variable
         system_states = self.__ode.evaluate_on (t)
+
+        # returns the state of a variable
+        return system_states[var]
+
+        # This is temporary.
         # X_sys = []
         # for i in range (len (system_states["ERK"])):
             # ratio = system_states["ERKPP"][i] / (system_states["ERK"][i] + system_states["ERKPP"][i])
             # X_sys.append (ratio)
         # return X_sys
-        return system_states[var]
     
 
     def get_experiment_likelihood (self, experiment, theta):

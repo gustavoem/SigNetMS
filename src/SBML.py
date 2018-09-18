@@ -92,6 +92,11 @@ class SBML:
         return self.sbml_obj.model.getName ()
 
 
+    def get_original_param_name (self, param):
+        """ Given a parameter name (from the inside scope), returns the
+            original name of this parameter inside the SBML file. """
+        return ""
+
     def __translate_global_params (self, formula):
         """ Given a formula, searches and replaces global sbml 
             parameters by the internal parameter name. """

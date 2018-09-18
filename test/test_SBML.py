@@ -66,5 +66,21 @@ class TestSBMLMethods (unittest.TestCase):
                 self.model.get_param_value (p2_str))
 
 
+    def test_get_original_parameter_name (self):
+        """ Given a parameter of the our sbml model, we should be able
+            to know its original name on the sbml file. """
+        law = self.model.get_species_kinetic_law ("EGF")
+        m = re.search (r'\- (([A-z]|_)\w*) \* EGF \* unboundEGFR', law)
+        p_str = m.group (1)
+        original_name = self.model.get_original_param_name (p_str)
+        self.assertEqual (original_name, "k1")
+
+        law = self.model.get_species_kinetic_law ("inactiveSos")
+        m = re.search (r'\- (([A-z]|_)\w*) \* ERKPP \* inactiveSos', law)
+        p_str = m.group (1)
+        original_name = self.model.get_original_param_name (p_str)
+        self.assertEqual (original_name, "SosKcat")
+
+
 if __name__ == '__main__':
     unittest.main ()

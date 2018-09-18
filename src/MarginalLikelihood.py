@@ -17,8 +17,7 @@ POPULATION_ITERATIONS = 1000
 PROPOSAL_DISTR_STD = 0.3
 
 def estimate_marginal_likelihood (experiments, model):
-    """ This function estimates the marginal likelihood of an ODE model,
-    """
+    """ This function estimates the marginal likelihood of a  model """
     M_n = 20
     betas = sample_betas (M_n)
     thetas = get_theta_chains (model, betas)

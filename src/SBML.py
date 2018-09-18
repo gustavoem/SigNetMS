@@ -12,9 +12,8 @@ class SBML:
         # __get_local_params ()
         self.__parameter_values = {}
 
-        # Stores internal name of global parameters.
-        # The internal name of the i-th global parameter is the i-th 
-        # element of this list
+        # Stores names of global parameters. The names of internal 
+        # global parameters match the SBML name.
         self.__global_param = []
 
         # Stores the internal name of local parameters. 
@@ -64,7 +63,6 @@ class SBML:
                 formula += "- "
             formula += self.__reaction_rate_formula (reac)
             formula += " "
-        formula = self.__translate_global_params (formula)
         return formula
             
     
@@ -95,19 +93,21 @@ class SBML:
     def get_original_param_name (self, param):
         """ Given a parameter name (from the inside scope), returns the
             original name of this parameter inside the SBML file. """
+        if param in self.__global_param:
+            return param
+
+        model_reactions = self.sbml_obj.model.getListOfReactions ()
+        for reac in model_reactions:
+            reac_name = reac.getName ()
+            reac_internal_params = self.__local_param[reac_name]
+            for i in range (len (reac_internal_params)):
+                if reac_internal_params[i] == param:
+                    kin_law = reac.getKineticLaw ()
+                    reac_params = kin_law.getListOfParameters ()
+                    return reac_params[i].getName ()
+
         return ""
 
-    def __translate_global_params (self, formula):
-        """ Given a formula, searches and replaces global sbml 
-            parameters by the internal parameter name. """
-        model = self.sbml_obj.model
-        params = model.getListOfParameters ()
-        for i in range (len (params)):
-            param_name = params[i].getName ()
-            internal_name = self.__global_param[i]
-            formula = formula.replace (param_name, internal_name)
-        return formula
-    
 
     def __get_reactions_involving (self, species_name):
         """ Returns a list with all the reactions that contains a 
@@ -150,10 +150,10 @@ class SBML:
         params = model.getListOfParameters ()
         global_params = []
         for param in params:
-            new_param_name = self.__new_parameter ()
             param_value = param.getValue ()
-            global_params.append (new_param_name)
-            self.__parameter_values[new_param_name] = param.getValue ()
+            param_name = param.getName ()
+            global_params.append (param_name)
+            self.__parameter_values[param_name] = param_value
         return global_params
 
 

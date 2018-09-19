@@ -109,15 +109,3 @@ class ODES:
             return dstatedt
 
         return system_function
-
-
-    def get_system_jacobian (self):
-        """ Creates the jacobian of the function that describes the 
-            dynamics of the system. """
-
-        def jacob_func (s, t):
-            return None
-
-        return jacob_func
-
-

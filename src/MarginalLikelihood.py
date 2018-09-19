@@ -54,8 +54,6 @@ def get_theta_chains (model, betas):
     thetas = []
     for b in betas:
         thetas.append (theta.copy ())
-        # TODO: should we start all of them equal, or sample one initial
-        # value for each parameter?
     return thetas
 
 

@@ -111,10 +111,40 @@ class ODES:
         return system_function
 
 
+    # def __derivate (f, x):
+        # """ Returns the derivative of f in respect to x. This function
+            # only works for f that depends only linearly on x. """
+        # parts = f.split ()
+        # if x not in parts:
+            # return "0"
+        
+        # derivative = "1"
+        # idx = parts.index (x)
+        # l = idx - 1
+        # r = idx + 1
+        # while l >= 0 and parts[l] == "*"
+        
+
+
     def get_system_jacobian (self):
         """ Creates the jacobian of the function that describes the 
             dynamics of the system. """
 
+        # system_function = f (state) = (f_1 (state), ..., f_n (state))
+        # J = []
+        
+        # For each component of f
+        # for i in range (len (self.rate_eq)):
+            # J.append ([])
+            # f_i = rate_eq[i]
+
+            # For each var we calculate  df_i/dx_j
+            # for var in self.index_map:
+                # j = self.index_mapp[var]
+                # dfdvar = self.__derivate (f_i, var)
+
+            
+        
         def jacob_func (s, t):
             return None
 

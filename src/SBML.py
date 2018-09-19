@@ -57,12 +57,19 @@ class SBML:
         reactions = self.__get_reactions_involving (species_name)
         for reac in reactions:
             products = [x.species for x in reac.getListOfProducts ()]
+            reactants = [x.species for x in reac.getListOfReactants ()]
+            
+            if species_name in products and species_name in reactants:
+                continue
+
             if species_name in products:
                 formula += "+ "
             else:
                 formula += "- "
             formula += self.__reaction_rate_formula (reac)
             formula += " "
+        if formula == "":
+            formula = "0"
         return formula
             
     

@@ -149,5 +149,3 @@ class ODES:
             return None
 
         return jacob_func
-
-

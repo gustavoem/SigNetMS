@@ -1,6 +1,7 @@
 import re
 
 from scipy.integrate import odeint
+from sympy import diff
 
 class ODES:
     """ This class contains a representation for systems of ordinary
@@ -81,71 +82,110 @@ class ODES:
 
         evaluable_formulas = []
         for formula in self.rate_eq:
-            formula = re.sub (r'(([A-z]|_)\w*)', 
-                    lambda m: "symbol_table['" + m.group (0) + "']", 
-                    formula)
+            formula = ODES.__make_evaluable (formula)
             evaluable_formulas.append (formula)
 
-        # Param state is constant over time
+        # Parameters are constant over time
         symbol_table = dict (self.param_table)
 
         def system_function (state, t):
             dstatedt = []
             current_state = {}
 
-            for var in self.index_map:
-                idx = self.index_map[var]
+            for var, idx in self.index_map.items ():
                 symbol_table[var] = state[idx]
 
             for i in range (len (state)):
-                x = 0
-                try:
-                    x = eval (evaluable_formulas[i])
-                except Exception as e:
-                    print ("Couldn't evaluate system rate formula. " +
-                           "Did you define system variables and " +
-                           "parameters correctly?")
+                x = ODES.__calc_evaluable_func (evaluable_formulas[i], 
+                        symbol_table)
                 dstatedt.append (x)
             return dstatedt
 
         return system_function
 
 
-    # def __derivate (f, x):
-        # """ Returns the derivative of f in respect to x. This function
-            # only works for f that depends only linearly on x. """
-        # parts = f.split ()
-        # if x not in parts:
-            # return "0"
-        
-        # derivative = "1"
-        # idx = parts.index (x)
-        # l = idx - 1
-        # r = idx + 1
-        # while l >= 0 and parts[l] == "*"
-        
-
-
     def get_system_jacobian (self):
         """ Creates the jacobian of the function that describes the 
             dynamics of the system. """
 
-        # system_function = f (state) = (f_1 (state), ..., f_n (state))
-        # J = []
+        #system_function = f (state) = (f_1 (state), ..., f_n (state))
+        J_functions = []
         
         # For each component of f
-        # for i in range (len (self.rate_eq)):
-            # J.append ([])
-            # f_i = rate_eq[i]
+        for i in range (len (self.rate_eq)):
+            J_functions.append ([])
+            f_i = self.rate_eq[i]
 
             # For each var we calculate  df_i/dx_j
-            # for var in self.index_map:
-                # j = self.index_mapp[var]
-                # dfdvar = self.__derivate (f_i, var)
-
-            
+            for var in self.index_map:
+                j = self.index_map[var]
+                dfdvar = ODES.__derivate (f_i, var)
+                J_ij = ODES.__formula_to_lambda (dfdvar)
+                J_functions[i].append (J_ij)
         
-        def jacob_func (s, t):
-            return None
+        # J is a matrix of lambdas
+        # define a function here that returns the J matrix evaluated
+        symbol_table = dict (self.param_table)
+        def jacobian_function (state, t):
+            for var, idx in self.index_map.items ():
+                symbol_table[var] = state[idx]
 
-        return jacob_func
+            J_values = []
+            for i in range (len (state)):
+                J_values.append ([])
+                for j in range (len (state)):
+                    J_values[i].append (J_functions[i][j] (symbol_table))
+            return J_values
+
+        return jacobian_function
+
+
+    @staticmethod 
+    def __derivate (f, x):
+        """ Returns the derivative of f in respect to x. This function
+            only works for f that depends only linearly (or inverse 
+            linearly) on x. """
+        # print ("Differentiating: " + f + " in respect to " + x)
+        var_pattern = r'(^|\s|\+|-|\*|\/)(' + x + ')($|\s|\+|-|\*|\/)'
+        var = x
+        fX = re.sub (var_pattern, lambda m: m.group (1) + ' X ' + \
+                m.group (3), f)
+        # print ("Differentiated: " + str (diff (fX, 'X')), end='\n\n')
+        dfX = str (diff (fX, 'X'))
+        df = re.sub (var_pattern, lambda m: m.group (1) + ' ' + var + \
+                m.group (2) + ' ', dfX)
+        return df
+
+
+    @staticmethod
+    def __formula_to_lambda (formula):
+        """ Given a string formula, transform it on a lambda function. 
+        """
+        evaluable_formula = ODES.__make_evaluable (formula)
+        print ("evaluable: " + evaluable_formula)
+        def func (symbol_table):
+            return ODES.__calc_evaluable_func (evaluable_formula, 
+                    symbol_table)
+        return func
+
+
+    @staticmethod
+    def __make_evaluable (formula):
+        """ Transforms a formula in an evaluable formula. We do that by
+            replacing a variable var by symbol_table[var] in the 
+            formula. """
+        return re.sub (r'(([A-z]|_)\w*)', lambda m: "symbol_table['" + \
+                m.group (0) + "']", formula)
+
+
+    @staticmethod
+    def __calc_evaluable_func (func, symbol_table):
+        """ Evaluate func in the scope of symbol table. """
+        x = 0
+        try:
+            x = eval (func)
+        except Exception as e:
+            print ("Couldn't evaluate formula. " +
+                    "Did you define system variables and " +
+                    "parameters correctly?")
+        return x

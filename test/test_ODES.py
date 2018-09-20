@@ -77,6 +77,23 @@ class TestODESMethods (unittest.TestCase):
         self.assertEqual (params["k"], 2)
         self.assertEqual (params["k2"], 4)
 
-   
+    
+    def test_get_system_jacobian (self):
+        """ Tests if we can produce the jacobian of the system. """
+        odes = ODES ()
+        # dx1 (t)/dt = x1 (t)/2 + x2(t)/2
+        # dx2 (t)/dt = x1 (t)/2 + x2(t)/2
+        # Solution is x1 (t) = exp (t), x2 (t) = exp (t)
+        odes.add_equation ("x1", "x1/2 + x2/2")
+        odes.add_equation ("x2", "x1/2 + x2/2")
+        jac_f = odes.get_system_jacobian ()
+        jac = jac_f ([0, 0], [0])
+        self.assertEqual (jac[0][0], .5)
+        self.assertEqual (jac[0][1], .5)
+        self.assertEqual (jac[1][0], .5)
+        self.assertEqual (jac[1][1], .5)
+
+
+
 if __name__ == '__main__':
     unittest.main ()

@@ -93,6 +93,16 @@ class TestODESMethods (unittest.TestCase):
         self.assertEqual (jac[1][0], .5)
         self.assertEqual (jac[1][1], .5)
 
+        odes = ODES ()
+        odes.add_equation ("x", "x/y")
+        odes.add_equation ("y", "1")
+        jac_f = odes.get_system_jacobian ()
+        jac = jac_f ([1, 1], [0])
+        self.assertEqual (jac[0][0], 1)
+        assert (abs (jac[0][1] + 1) < 1e-8)
+        self.assertEqual (jac[1][0], 0)
+        self.assertEqual (jac[1][1], 0)
+
 
 
 if __name__ == '__main__':

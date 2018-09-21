@@ -145,15 +145,14 @@ class ODES:
         """ Returns the derivative of f in respect to x. This function
             only works for f that depends only linearly (or inverse 
             linearly) on x. """
-        # print ("Differentiating: " + f + " in respect to " + x)
         var_pattern = r'(^|\s|\+|-|\*|\/)(' + x + ')($|\s|\+|-|\*|\/)'
         var = x
         fX = re.sub (var_pattern, lambda m: m.group (1) + ' X ' + \
                 m.group (3), f)
-        # print ("Differentiated: " + str (diff (fX, 'X')), end='\n\n')
         dfX = str (diff (fX, 'X'))
-        df = re.sub (var_pattern, lambda m: m.group (1) + ' ' + var + \
-                m.group (2) + ' ', dfX)
+        var_pattern = r'(^|\s|\+|-|\*|\/)(X)($|\s|\+|-|\*|\/)'
+        df = re.sub (var_pattern, lambda m: m.group (1) + var + \
+                m.group (3), dfX)
         return df
 
 
@@ -162,7 +161,6 @@ class ODES:
         """ Given a string formula, transform it on a lambda function. 
         """
         evaluable_formula = ODES.__make_evaluable (formula)
-        print ("evaluable: " + evaluable_formula)
         def func (symbol_table):
             return ODES.__calc_evaluable_func (evaluable_formula, 
                     symbol_table)

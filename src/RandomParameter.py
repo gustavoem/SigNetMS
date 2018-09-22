@@ -18,3 +18,15 @@ class RandomParameter:
             Gamma (a, b)."""
         self.value = np.random.gamma(self.__a, 1.0 / self.__b)
         return self.value
+
+
+    def get_a (self):
+        """ Returns the shape of the gamma distribution of this random
+            parameter. """
+        return self.__a
+    
+    
+    def get_b (self):
+        """ Returns the scale of the gamma distribution of this random
+            parameter. """
+        return self.__b

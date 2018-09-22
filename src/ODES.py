@@ -64,7 +64,8 @@ class ODES:
         """ Returns the state of the systems variables at the specified
             time points. """
         sys_function = self.__create_system_function ()
-        y, infodict = odeint (sys_function, self.initial_state, time_points, mxstep=50,full_output=True)
+        y, infodict = odeint (sys_function, self.initial_state, 
+                time_points, mxstep=1000,full_output=True)
         # print ()
         # print (infodict)
         values_map = {}

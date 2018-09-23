@@ -18,11 +18,11 @@ POPULATION_ITERATIONS = 1000
 PROPOSAL_DISTR_STD = 0.3
 
 
-def estimate_marginal_likelihood (experiments, model):
+def estimate_marginal_likelihood (experiments, sbml, model):
     """ This function estimates the marginal likelihood of a  model """
     M_n = 20
     betas = sample_betas (M_n)
-    thetas = get_theta_chains (model, betas)
+    thetas = get_theta_chains (sbml, model, betas)
     iterate_thetas (model, thetas, betas, experiments)
 
 
@@ -39,13 +39,14 @@ def sample_betas (M_n):
     return betas
 
 
-def get_theta_chains (model, betas):
+def get_theta_chains (sbml, model, betas):
     """ Given a model, construct a list containing all parameters of 
         the model as random variables. """
     theta = []
     params = model.get_all_parameters ()
     for param in params:
-        if re.search ("Km", param):
+        param_original_name = sbml.get_original_param_name (param)
+        if re.search ("Km", param_original_name):
             rand_param = RandomParameter (param, 2.0, 3333.0)
         else:
             rand_param = RandomParameter (param, 1.1, 9.0)
@@ -64,8 +65,10 @@ def iterate_thetas (model, thetas, betas, experiments):
         # Local move
         j = random.choice (range (len (thetas)))
         new_theta = propose_theta_jump (thetas[j])
+        print ("Calculating likelihood with old theta.")
         old_l = set_of_experiments_likelihood (experiments, thetas[j], \
                 model, sigma)
+        print ("Calculating likelihood with new theta.")
         new_l = set_of_experiments_likelihood (experiments, new_theta, \
                 model, sigma)
         print ("old theta: ")
@@ -74,10 +77,10 @@ def iterate_thetas (model, thetas, betas, experiments):
         print ("\nnew theta: ")
         for r in new_theta:
             print (r.value, end=' ')
-        print ("Old theta likelihood " + str (old_l))
-        print ("New theta likelihood " + str (new_l))
+        print ("\nOld theta likelihood " + str (old_l))
+        print ("New theta likelihood " + str (new_l), end='\n\n')
         r = (new_l / old_l) ** betas[j]
-        print ("Local move prob" + str (r) + "\n\n")
+        # print ("Local move prob" + str (r) + "\n\n")
         if (np.random.uniform () <= r):
             thetas[j] = new_theta
 
@@ -92,7 +95,7 @@ def iterate_thetas (model, thetas, betas, experiments):
         t1ot2 = theta1_l / theta2_l
         t2ot1 = theta2_l / theta1_l
         r = (t2ot1) ** betas[j] * (t1ot2) ** betas[j + 1]
-        print ("Global move prob " + str (r))
+        # print ("Global move prob " + str (r))
         if (np.random.uniform () <= r):
             aux = thetas[j]
             thetas[j] = thetas[j + 1]

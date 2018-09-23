@@ -16,7 +16,7 @@ class RandomParameter:
     def set_rand_value (self):
         """ Sets the parameter a random value distributed as a 
             Gamma (a, b)."""
-        self.value = np.random.gamma(self.__a, 1.0 / self.__b)
+        self.value = np.random.gamma(self.__a, self.__b)
         return self.value
 
 

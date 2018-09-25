@@ -52,14 +52,14 @@ class LikelihoodFunction:
         system_states = self.__ode.evaluate_on (t)
 
         # returns the state of a variable
-        # return system_states[var]
+        return system_states[var]
 
         # This is temporary.
-        X_sys = []
-        for i in range (len (system_states["ERK"])):
-            ratio = system_states["ERKPP"][i] / (system_states["ERK"][i] + system_states["ERKPP"][i])
-            X_sys.append (ratio * 100)
-        return X_sys
+        # X_sys = []
+        # for i in range (len (system_states["ERK"])):
+            # ratio = system_states["ERKPP"][i] / (system_states["ERK"][i] + system_states["ERKPP"][i])
+            # X_sys.append (ratio * 100)
+        # return X_sys
     
 
     def get_experiment_likelihood (self, experiment, theta):
@@ -82,11 +82,11 @@ class LikelihoodFunction:
         t = experiments[0].times
         var = experiments[0].var
         X_sys = self.__get_system_state (var, t, theta)
-        print ("X_sys: " + str (X_sys))
+        # print ("X_sys: " + str (X_sys))
         l = 1
         for exp in experiments:
             X_obs = exp.values
-            print ("\tX_obs: " + str (X_obs))
+            # print ("\tX_obs: " + str (X_obs))
             l *= self.__calculate_likelihood (X_sys, X_obs)
-            print ("\tpartial likelihood: " + str (l))
+            # print ("\tpartial likelihood: " + str (l))
         return l

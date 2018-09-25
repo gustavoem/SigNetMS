@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model2" name="Case Study 1, Model 2 (Simplistic)">
+   <listOfCompartments>
+      <compartment id="compartment" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="x1" name="x1" compartment="compartment" initialConcentration="0"/>
+      <species id="x2" name="x2" compartment="compartment" initialConcentration="0"/>
+      <species id="x3" name="x3" compartment="compartment" initialConcentration="0"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="m" value="0.4"/>
+      <parameter id="k1" value="1.2"/>
+      <parameter id="k2" value="1"/>
+      <parameter id="k3" value="1"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="D1" name="D1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> m </ci>
+              <ci> x1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+       <reaction id="D2" name="D2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x2"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> m </ci>
+              <ci> x2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+       <reaction id="D3" name="D3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x3"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> m </ci>
+              <ci> x3 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+     <reaction id="P1" name="P1" reversible="false">
+        <listOfProducts>
+          <speciesReference species="x1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+	        <divide/>
+                <ci> k1 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+		    <power/>
+		    <ci> x3 </ci>
+		    <cn> 10 </cn>
+		  </apply>
+                </apply>
+	      </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="P2" name="P2" reversible="false">
+        <listOfProducts>
+          <speciesReference species="x2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k2 </ci>
+              <ci> x1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="P3" name="P3" reversible="false">
+        <listOfProducts>
+          <speciesReference species="x3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k3 </ci>
+              <ci> x2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+   </listOfReactions>
+  </model>
+</sbml>

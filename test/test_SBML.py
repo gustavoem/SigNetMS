@@ -90,6 +90,7 @@ class TestSBMLMethods (unittest.TestCase):
         law = self.model.get_species_kinetic_law ("ERKPP")
         self.assertFalse (re.search ("activeSos", law))
     
+
     def test_unnamed_parameters (self):
         """ If there's a parameter without a name, we should use its id
             as a name instead. """

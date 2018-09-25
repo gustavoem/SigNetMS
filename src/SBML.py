@@ -159,6 +159,8 @@ class SBML:
         for param in params:
             param_value = param.getValue ()
             param_name = param.getName ()
+            if (param_name is ''):
+                param_name = param.getId ()
             global_params.append (param_name)
             self.__parameter_values[param_name] = param_value
         return global_params

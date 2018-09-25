@@ -1,7 +1,10 @@
 import re
 
 from scipy.integrate import odeint
+from scipy.interpolate import spline
 from sympy import diff
+import matplotlib.pyplot as plt
+
 
 class ODES:
     """ This class contains a representation for systems of ordinary
@@ -73,6 +76,12 @@ class ODES:
             idx = self.index_map[var]
             values_map[var] = list (y[:,idx])
         return values_map
+
+
+    def overtime_plot (self, var, t):
+        """ Plots the values of a variable VAR over time t. """
+        values_map = self.evaluate_on (t)
+        ODES.__plot (values_map[var], t)
 
 
     # possible speedup: call this function only when it's necessary
@@ -184,7 +193,15 @@ class ODES:
         try:
             x = eval (func)
         except Exception as e:
-            print ("Couldn't evaluate formula. " +
+            print ("Couldn't evaluate formula: \n " +
+                    "\t" + func + "\n"
                     "Did you define system variables and " +
-                    "parameters correctly?")
+                    "parameters correctly?\n")
         return x
+
+
+    @staticmethod
+    def __plot (values, t):
+        """ Plots values that were observed on time t. """
+        plt.plot (t, values)
+        plt.show ()

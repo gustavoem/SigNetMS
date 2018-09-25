@@ -81,6 +81,7 @@ class TestSBMLMethods (unittest.TestCase):
         original_name = self.model.get_original_param_name (p_str)
         self.assertEqual (original_name, "SosKcat")
 
+
     def test_rate_when_reactant_and_product (self):
         """ If a chemical species is both reactant and product of a 
             non-reversible reaction, then the reaction shouldn't 
@@ -88,7 +89,14 @@ class TestSBMLMethods (unittest.TestCase):
             species. """
         law = self.model.get_species_kinetic_law ("ERKPP")
         self.assertFalse (re.search ("activeSos", law))
-            
+    
+    def test_unnamed_parameters (self):
+        """ If there's a parameter without a name, we should use its id
+            as a name instead. """
+        self.model = SBML ()
+        self.model.load_file ("input/goodwin3.xml")
+        params = self.model.get_all_param ()
+        self.assertEqual (len (params), 4)
 
 if __name__ == '__main__':
     unittest.main ()

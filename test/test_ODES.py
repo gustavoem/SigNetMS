@@ -104,6 +104,30 @@ class TestODESMethods (unittest.TestCase):
         self.assertEqual (jac[1][1], 0)
 
 
+    def test_formulas_with_powers (self):
+        """ Tests if the system can solve forula with powers of 
+            variables. """
+        odes = ODES ()
+        # dx (t)/dt = pow (x (t), 2)
+        # Solution is exp 1/ (1 - t)
+        odes.add_equation ("x", "pow (x, 2)")
+        odes.define_initial_value ("x", 1.0)
+        t = np.linspace (0, .9, 10)
+        y = odes.evaluate_on (t)
+        for i in range (len (t)):
+            analytic = 1 / (1 - t[i])
+            assert (abs (y["x"][i] - analytic) < 1e-2)
+        
+        odes = ODES ()
+        # dx (t)/dt = x (t) ** 2
+        odes.add_equation ("x", "x ** 2")
+        odes.define_initial_value ("x", 1.0)
+        t = np.linspace (0, .9, 10)
+        y = odes.evaluate_on (t)
+        for i in range (len (t)):
+            analytic = 1 / (1 - t[i])
+            assert (abs (y["x"][i] - analytic) < 1e-2)
+
 
 if __name__ == '__main__':
     unittest.main ()

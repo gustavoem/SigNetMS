@@ -1,4 +1,5 @@
 import libsbml
+import re
 
 class SBML:
     """ This class contains a representation for SBML objects. """
@@ -70,7 +71,7 @@ class SBML:
             formula += " "
         if formula == "":
             formula = "0"
-        return formula
+        return SBML.__remove_compartments (formula)
             
     
     def get_initial_concentration (self, species_name):
@@ -190,3 +191,11 @@ class SBML:
             sbmldoc.printErrors ()
             return True
         return False
+
+
+    @staticmethod
+    def __remove_compartments (formula):
+        """ See issue #6 on github. I'm not sure why some models use
+            comparments. """
+        new_formula = re.sub ("compartment \*", "", formula)
+        return new_formula

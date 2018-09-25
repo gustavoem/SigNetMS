@@ -3,12 +3,12 @@
   <model id="Model2" name="Case Study 1, Model 2 (Simplistic)">
    <listOfCompartments>
       <compartment id="compartment" name="compartment" size="1"/>
-   </listOfCompartments>
-   <listOfSpecies>
+    </listOfCompartments>
+    <listOfSpecies>
       <species id="x1" name="x1" compartment="compartment" initialConcentration="0"/>
       <species id="x2" name="x2" compartment="compartment" initialConcentration="0"/>
       <species id="x3" name="x3" compartment="compartment" initialConcentration="0"/>
-   </listOfSpecies>
+    </listOfSpecies>
     <listOfParameters>
       <parameter id="m" value="0.4"/>
       <parameter id="k1" value="1.2"/>
@@ -77,12 +77,12 @@
                   <plus/>
                   <cn> 1 </cn>
                   <apply>
-		            <power/>
-		              <ci> x3 </ci>
-		              <cn> 10 </cn>
-		          </apply>
+		    <power/>
+		    <ci> x3 </ci>
+		    <cn> 10 </cn>
+		  </apply>
                 </apply>
-	          </apply>
+	      </apply>
             </apply>
           </math>
         </kineticLaw>

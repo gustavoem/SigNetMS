@@ -78,10 +78,10 @@ class ODES:
         return values_map
 
 
-    def overtime_plot (self, var, t):
+    def overtime_plot (self, var_list, t):
         """ Plots the values of a variable VAR over time t. """
         values_map = self.evaluate_on (t)
-        ODES.__plot (values_map[var], t)
+        ODES.__plot (values_map, var_list, t)
 
 
     # possible speedup: call this function only when it's necessary
@@ -182,8 +182,11 @@ class ODES:
         """ Transforms a formula in an evaluable formula. We do that by
             replacing a variable var by symbol_table[var] in the 
             formula. """
-        return re.sub (r'(([A-z]|_)\w*)', lambda m: "symbol_table['" + \
-                m.group (0) + "']", formula)
+        new_formula = re.sub (r'(([A-z]|_)\w*)', 
+                lambda m: 
+                    m.group (0) if m.group (0) == "pow" 
+                    else "symbol_table['" + m.group (0) + "']", formula)
+        return new_formula
 
 
     @staticmethod
@@ -201,7 +204,13 @@ class ODES:
 
 
     @staticmethod
-    def __plot (values, t):
-        """ Plots values that were observed on time t. """
-        plt.plot (t, values)
+    def __plot (values_map, var_list, t):
+        """ Plots values of vars in var_list that were observed on time 
+            t. """
+        legend = []
+        for var in var_list:
+            legend.append (var)
+            values = values_map[var]
+            plt.plot (t, values)
+        plt.legend (legend)
         plt.show ()

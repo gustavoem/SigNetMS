@@ -173,8 +173,11 @@ class ODES:
         """ Transforms a formula in an evaluable formula. We do that by
             replacing a variable var by symbol_table[var] in the 
             formula. """
-        return re.sub (r'(([A-z]|_)\w*)', lambda m: "symbol_table['" + \
-                m.group (0) + "']", formula)
+        new_formula = re.sub (r'(([A-z]|_)\w*)', 
+                lambda m: 
+                    m.group (0) if m.group (0) == "pow" 
+                    else "symbol_table['" + m.group (0) + "']", formula)
+        return new_formula
 
 
     @staticmethod

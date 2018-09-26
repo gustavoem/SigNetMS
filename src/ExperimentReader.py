@@ -1,6 +1,6 @@
 from Experiment import Experiment
 
-def read_experiment_file (file_name, var):
+def read_txt_experiment_file (file_name, var):
     """ This function can read experiment files. The experiment data is 
         organized in a list of Experiment objects. """
     f = open (file_name)
@@ -35,3 +35,10 @@ def read_experiment_file (file_name, var):
 
     f.close ()
     return experiments
+
+
+def read_data_experiment_file (file_name, var):
+    """ This function can read data experiment files. The experiment 
+        data is organized in a list of Experiment objects. """
+    f = open (file_name)
+    return None 

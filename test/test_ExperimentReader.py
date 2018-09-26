@@ -23,6 +23,6 @@ class TestExperimentReader (unittest.TestCase):
         self.assertEqual (len (data), 1)
         exp0_data = data[0]
         self.assertEqual (len (exp0_data.times), 80)
-        self.asserEqual (exp0_data.var, "x1")
+        self.assertEqual (exp0_data.var, "x1")
         self.assertEqual (len (exp0_data.values), 80)
         

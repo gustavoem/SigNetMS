@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="SimpleEnzymatic" name="Simple enzymatic reaction">
+   <listOfCompartments>
+      <compartment id="compartment" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="E" name="E" compartment="compartment" initialConcentration="10"/>
+      <species id="S" name="S" compartment="compartment" initialConcentration="100"/>
+      <species id="ES" name="ES" compartment="compartment" initialConcentration="0"/>
+      <species id="P" name="P" compartment="compartment" initialConcentration="0"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k1" value="0.06"/>
+      <parameter id="d1" value="0.1"/>
+      <parameter id="kcat" value="0.2"/>
+    </listOfParameters>
+    <listOfReactions>
+        
+        <reaction id="R1" name="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="E"/>
+          <speciesReference species="S"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ES"/>
+        </listOfProducts>
+        <kineticLaw>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+          <times/>
+            <ci> k1 </ci>
+            <ci> E </ci>
+            <ci> S </ci>
+          </apply>
+          </math>
+        </kineticLaw>
+        </reaction>
+
+       <reaction id="R2" name="R2" reversible="false">
+       <listOfReactants>
+         <speciesReference species="ES"/>
+       </listOfReactants>
+       <listOfProducts>
+         <speciesReference species="E"/>
+         <speciesReference species="S"/>
+       </listOfProducts>
+       <kineticLaw>
+       <math xmlns="http://www.w3.org/1998/Math/MathML">
+         <apply>
+         <times/>
+           <ci> d1 </ci>
+           <ci> ES </ci>
+         </apply>
+       </math>
+       </kineticLaw>
+       </reaction>
+
+       <reaction id="R3" name="R3" reversible="false">
+       <listOfReactants>
+         <speciesReference species="ES"/>
+       </listOfReactants>
+       <listOfProducts>
+         <speciesReference species="E"/>
+         <speciesReference species="P"/>
+       </listOfProducts>
+       <kineticLaw>
+       <math xmlns="http://www.w3.org/1998/Math/MathML">
+         <apply>
+         <times/>
+           <ci> kcat </ci>
+           <ci> ES </ci>
+         </apply>
+       </math>
+       </kineticLaw>
+       </reaction>
+
+    </listOfReactions>
+  </model>
+</sbml>

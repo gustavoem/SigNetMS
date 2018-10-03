@@ -48,6 +48,17 @@ class TestSBMLMethods (unittest.TestCase):
         self.assertEqual (c, 1000)
         c = self.model.get_initial_concentration ("MEK")
         self.assertEqual (c, 3000)
+    
+
+    def test_species_initial_amount (self):
+        """ Tests if SBML can return the initial concentration of a 
+            species even whe it was defined as initial amount. """
+        self.model = SBML ()
+        self.model.load_file ("input/simple_enzymatic.xml")
+        c = self.model.get_initial_concentration ("E")
+        self.assertEqual (c, 10)
+        c = self.model.get_initial_concentration ("S")
+        self.assertEqual (c, 100)
 
 
     def test_parameter_consistency (self):

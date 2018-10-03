@@ -7,16 +7,23 @@ from ExperimentReader import read_data_experiment_file
 import MarginalLikelihood as ml
 import numpy as np
 
-goodwin_experiment = False
+which_experiment = 0
 
+if which_experiment == 0:
+    sbml = SBML ()
+    sbml.load_file ('../input/simple_enzymatic.xml')
+    odes = sbml_to_odes (sbml)
+    time = np.linspace (0, 20, 11)
+    odes.overtime_plot (["E", "S", "ES", "P"], time)
 
-if goodwin_experiment:
+elif which_experiment == 1:
     sbml = SBML ()
     sbml.load_file ('../input/goodwin3.xml')
     odes = sbml_to_odes (sbml)
     experiments = read_data_experiment_file ('../input/goodwin3.data', 
             'x1')
     ml.estimate_marginal_likelihood (experiments, sbml, odes)
+
 else:
     sbml = SBML ()
     sbml.load_file ('../input/model1.xml')

@@ -79,7 +79,11 @@ class SBML:
         """
         model = self.sbml_obj.model
         species = model.getSpecies (species_name)
-        initial_concentration = species.getInitialAmount ()
+        initial_concentration = 0.0
+        if species.isSetInitialConcentration ():
+            initial_concentration = species.getInitialConcentration ()
+        elif species.isSetInitialAmount ():
+            initial_concentration = species.getInitialAmount ()
         return initial_concentration
 
 

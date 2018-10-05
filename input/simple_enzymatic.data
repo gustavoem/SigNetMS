@@ -1,0 +1,814 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<dataset xmlns="http://bisb.gla.org/dataset" noise="normal" name="Automatic generated dataset.">
+  <data cols="2">
+    <row>
+      <element value="0.0" index="0"/>
+      <element value="9.96928544813" index="1"/>
+    </row>
+    <row>
+      <element value="1.0" index="0"/>
+      <element value="0.604207026049" index="1"/>
+    </row>
+    <row>
+      <element value="2.0" index="0"/>
+      <element value="0.420627987479" index="1"/>
+    </row>
+    <row>
+      <element value="3.0" index="0"/>
+      <element value="0.658425774597" index="1"/>
+    </row>
+    <row>
+      <element value="4.0" index="0"/>
+      <element value="0.831913006793" index="1"/>
+    </row>
+    <row>
+      <element value="5.0" index="0"/>
+      <element value="0.613387575083" index="1"/>
+    </row>
+    <row>
+      <element value="6.0" index="0"/>
+      <element value="0.478934393754" index="1"/>
+    </row>
+    <row>
+      <element value="7.0" index="0"/>
+      <element value="0.422339972261" index="1"/>
+    </row>
+    <row>
+      <element value="8.0" index="0"/>
+      <element value="0.566171347242" index="1"/>
+    </row>
+    <row>
+      <element value="9.0" index="0"/>
+      <element value="0.598994121796" index="1"/>
+    </row>
+    <row>
+      <element value="10.0" index="0"/>
+      <element value="0.650978037715" index="1"/>
+    </row>
+    <row>
+      <element value="11.0" index="0"/>
+      <element value="0.777301497747" index="1"/>
+    </row>
+    <row>
+      <element value="12.0" index="0"/>
+      <element value="0.760908917922" index="1"/>
+    </row>
+    <row>
+      <element value="13.0" index="0"/>
+      <element value="0.561779142543" index="1"/>
+    </row>
+    <row>
+      <element value="14.0" index="0"/>
+      <element value="0.615845288196" index="1"/>
+    </row>
+    <row>
+      <element value="15.0" index="0"/>
+      <element value="0.670894419173" index="1"/>
+    </row>
+    <row>
+      <element value="16.0" index="0"/>
+      <element value="0.69485899502" index="1"/>
+    </row>
+    <row>
+      <element value="17.0" index="0"/>
+      <element value="0.890110879883" index="1"/>
+    </row>
+    <row>
+      <element value="18.0" index="0"/>
+      <element value="0.700725659196" index="1"/>
+    </row>
+    <row>
+      <element value="19.0" index="0"/>
+      <element value="0.832073219269" index="1"/>
+    </row>
+    <row>
+      <element value="20.0" index="0"/>
+      <element value="0.991261240779" index="1"/>
+    </row>
+    <row>
+      <element value="21.0" index="0"/>
+      <element value="0.982172607385" index="1"/>
+    </row>
+    <row>
+      <element value="22.0" index="0"/>
+      <element value="0.740804072889" index="1"/>
+    </row>
+    <row>
+      <element value="23.0" index="0"/>
+      <element value="0.968521934719" index="1"/>
+    </row>
+    <row>
+      <element value="24.0" index="0"/>
+      <element value="0.995700203693" index="1"/>
+    </row>
+    <row>
+      <element value="25.0" index="0"/>
+      <element value="0.953677657432" index="1"/>
+    </row>
+    <row>
+      <element value="26.0" index="0"/>
+      <element value="0.937552508469" index="1"/>
+    </row>
+    <row>
+      <element value="27.0" index="0"/>
+      <element value="1.21008988842" index="1"/>
+    </row>
+    <row>
+      <element value="28.0" index="0"/>
+      <element value="0.965250061833" index="1"/>
+    </row>
+    <row>
+      <element value="29.0" index="0"/>
+      <element value="1.01859106301" index="1"/>
+    </row>
+    <row>
+      <element value="30.0" index="0"/>
+      <element value="1.28421952497" index="1"/>
+    </row>
+    <row>
+      <element value="31.0" index="0"/>
+      <element value="1.4473610422" index="1"/>
+    </row>
+    <row>
+      <element value="32.0" index="0"/>
+      <element value="1.35658539487" index="1"/>
+    </row>
+    <row>
+      <element value="33.0" index="0"/>
+      <element value="1.24961286396" index="1"/>
+    </row>
+    <row>
+      <element value="34.0" index="0"/>
+      <element value="1.39414681493" index="1"/>
+    </row>
+    <row>
+      <element value="35.0" index="0"/>
+      <element value="1.39684667004" index="1"/>
+    </row>
+    <row>
+      <element value="36.0" index="0"/>
+      <element value="1.49167130426" index="1"/>
+    </row>
+    <row>
+      <element value="37.0" index="0"/>
+      <element value="1.55844734949" index="1"/>
+    </row>
+    <row>
+      <element value="38.0" index="0"/>
+      <element value="1.78428937724" index="1"/>
+    </row>
+    <row>
+      <element value="39.0" index="0"/>
+      <element value="1.80600087245" index="1"/>
+    </row>
+    <row>
+      <element value="40.0" index="0"/>
+      <element value="2.00822587476" index="1"/>
+    </row>
+    <row>
+      <element value="41.0" index="0"/>
+      <element value="2.10445503731" index="1"/>
+    </row>
+    <row>
+      <element value="42.0" index="0"/>
+      <element value="2.05966641686" index="1"/>
+    </row>
+    <row>
+      <element value="43.0" index="0"/>
+      <element value="2.18418665367" index="1"/>
+    </row>
+    <row>
+      <element value="44.0" index="0"/>
+      <element value="2.47166553721" index="1"/>
+    </row>
+    <row>
+      <element value="45.0" index="0"/>
+      <element value="2.66662116349" index="1"/>
+    </row>
+    <row>
+      <element value="46.0" index="0"/>
+      <element value="2.67868427813" index="1"/>
+    </row>
+    <row>
+      <element value="47.0" index="0"/>
+      <element value="2.90618642539" index="1"/>
+    </row>
+    <row>
+      <element value="48.0" index="0"/>
+      <element value="3.23922169738" index="1"/>
+    </row>
+    <row>
+      <element value="49.0" index="0"/>
+      <element value="3.38183748985" index="1"/>
+    </row>
+    <row>
+      <element value="50.0" index="0"/>
+      <element value="3.46499866272" index="1"/>
+    </row>
+    <row>
+      <element value="51.0" index="0"/>
+      <element value="4.19784259622" index="1"/>
+    </row>
+    <row>
+      <element value="52.0" index="0"/>
+      <element value="4.22979655126" index="1"/>
+    </row>
+    <row>
+      <element value="53.0" index="0"/>
+      <element value="4.7872153817" index="1"/>
+    </row>
+    <row>
+      <element value="54.0" index="0"/>
+      <element value="5.00792827551" index="1"/>
+    </row>
+    <row>
+      <element value="55.0" index="0"/>
+      <element value="5.4258108144" index="1"/>
+    </row>
+    <row>
+      <element value="56.0" index="0"/>
+      <element value="5.72712210209" index="1"/>
+    </row>
+    <row>
+      <element value="57.0" index="0"/>
+      <element value="6.01048551476" index="1"/>
+    </row>
+    <row>
+      <element value="58.0" index="0"/>
+      <element value="6.41962840842" index="1"/>
+    </row>
+    <row>
+      <element value="59.0" index="0"/>
+      <element value="6.58255606147" index="1"/>
+    </row>
+    <row>
+      <element value="60.0" index="0"/>
+      <element value="6.91208481293" index="1"/>
+    </row>
+    <row>
+      <element value="61.0" index="0"/>
+      <element value="7.38473030874" index="1"/>
+    </row>
+    <row>
+      <element value="62.0" index="0"/>
+      <element value="7.61740603764" index="1"/>
+    </row>
+    <row>
+      <element value="63.0" index="0"/>
+      <element value="7.95622827682" index="1"/>
+    </row>
+    <row>
+      <element value="64.0" index="0"/>
+      <element value="8.08276199188" index="1"/>
+    </row>
+    <row>
+      <element value="65.0" index="0"/>
+      <element value="8.49091756885" index="1"/>
+    </row>
+    <row>
+      <element value="66.0" index="0"/>
+      <element value="8.62400890751" index="1"/>
+    </row>
+    <row>
+      <element value="67.0" index="0"/>
+      <element value="8.92467790577" index="1"/>
+    </row>
+    <row>
+      <element value="68.0" index="0"/>
+      <element value="8.97148651873" index="1"/>
+    </row>
+    <row>
+      <element value="69.0" index="0"/>
+      <element value="9.11850231142" index="1"/>
+    </row>
+    <row>
+      <element value="70.0" index="0"/>
+      <element value="9.33508948749" index="1"/>
+    </row>
+    <row>
+      <element value="71.0" index="0"/>
+      <element value="9.35104943711" index="1"/>
+    </row>
+    <row>
+      <element value="72.0" index="0"/>
+      <element value="9.35752054299" index="1"/>
+    </row>
+    <row>
+      <element value="73.0" index="0"/>
+      <element value="9.61489550825" index="1"/>
+    </row>
+    <row>
+      <element value="74.0" index="0"/>
+      <element value="9.6319416418" index="1"/>
+    </row>
+    <row>
+      <element value="75.0" index="0"/>
+      <element value="9.77409084571" index="1"/>
+    </row>
+    <row>
+      <element value="76.0" index="0"/>
+      <element value="9.84266991699" index="1"/>
+    </row>
+    <row>
+      <element value="77.0" index="0"/>
+      <element value="9.66957535599" index="1"/>
+    </row>
+    <row>
+      <element value="78.0" index="0"/>
+      <element value="9.6784015753" index="1"/>
+    </row>
+    <row>
+      <element value="79.0" index="0"/>
+      <element value="9.83590328274" index="1"/>
+    </row>
+    <row>
+      <element value="80.0" index="0"/>
+      <element value="9.77206301609" index="1"/>
+    </row>
+    <row>
+      <element value="81.0" index="0"/>
+      <element value="9.84186810028" index="1"/>
+    </row>
+    <row>
+      <element value="82.0" index="0"/>
+      <element value="9.96747180499" index="1"/>
+    </row>
+    <row>
+      <element value="83.0" index="0"/>
+      <element value="10.0472255075" index="1"/>
+    </row>
+    <row>
+      <element value="84.0" index="0"/>
+      <element value="9.95651265849" index="1"/>
+    </row>
+    <row>
+      <element value="85.0" index="0"/>
+      <element value="9.70467272891" index="1"/>
+    </row>
+    <row>
+      <element value="86.0" index="0"/>
+      <element value="9.89502115509" index="1"/>
+    </row>
+    <row>
+      <element value="87.0" index="0"/>
+      <element value="9.89655499469" index="1"/>
+    </row>
+    <row>
+      <element value="88.0" index="0"/>
+      <element value="9.90084357171" index="1"/>
+    </row>
+    <row>
+      <element value="89.0" index="0"/>
+      <element value="10.0269401295" index="1"/>
+    </row>
+    <row>
+      <element value="90.0" index="0"/>
+      <element value="10.0850374712" index="1"/>
+    </row>
+    <row>
+      <element value="91.0" index="0"/>
+      <element value="9.89187299684" index="1"/>
+    </row>
+    <row>
+      <element value="92.0" index="0"/>
+      <element value="9.97073539084" index="1"/>
+    </row>
+    <row>
+      <element value="93.0" index="0"/>
+      <element value="9.87608313996" index="1"/>
+    </row>
+    <row>
+      <element value="94.0" index="0"/>
+      <element value="9.90489862496" index="1"/>
+    </row>
+    <row>
+      <element value="95.0" index="0"/>
+      <element value="9.80427337316" index="1"/>
+    </row>
+    <row>
+      <element value="96.0" index="0"/>
+      <element value="9.93340142051" index="1"/>
+    </row>
+    <row>
+      <element value="97.0" index="0"/>
+      <element value="10.0106842805" index="1"/>
+    </row>
+    <row>
+      <element value="98.0" index="0"/>
+      <element value="10.0799759308" index="1"/>
+    </row>
+    <row>
+      <element value="99.0" index="0"/>
+      <element value="10.0561635892" index="1"/>
+    </row>
+    <row>
+      <element value="100.0" index="0"/>
+      <element value="10.0034945249" index="1"/>
+    </row>
+    <row>
+      <element value="101.0" index="0"/>
+      <element value="9.90424957157" index="1"/>
+    </row>
+    <row>
+      <element value="102.0" index="0"/>
+      <element value="9.99734299262" index="1"/>
+    </row>
+    <row>
+      <element value="103.0" index="0"/>
+      <element value="10.1186208389" index="1"/>
+    </row>
+    <row>
+      <element value="104.0" index="0"/>
+      <element value="9.7797373094" index="1"/>
+    </row>
+    <row>
+      <element value="105.0" index="0"/>
+      <element value="10.0900980365" index="1"/>
+    </row>
+    <row>
+      <element value="106.0" index="0"/>
+      <element value="9.8641814121" index="1"/>
+    </row>
+    <row>
+      <element value="107.0" index="0"/>
+      <element value="9.8660303177" index="1"/>
+    </row>
+    <row>
+      <element value="108.0" index="0"/>
+      <element value="9.95198558592" index="1"/>
+    </row>
+    <row>
+      <element value="109.0" index="0"/>
+      <element value="9.78707570235" index="1"/>
+    </row>
+    <row>
+      <element value="110.0" index="0"/>
+      <element value="10.2121698746" index="1"/>
+    </row>
+    <row>
+      <element value="111.0" index="0"/>
+      <element value="9.94108064385" index="1"/>
+    </row>
+    <row>
+      <element value="112.0" index="0"/>
+      <element value="10.0746303353" index="1"/>
+    </row>
+    <row>
+      <element value="113.0" index="0"/>
+      <element value="9.85712715391" index="1"/>
+    </row>
+    <row>
+      <element value="114.0" index="0"/>
+      <element value="10.0820874461" index="1"/>
+    </row>
+    <row>
+      <element value="115.0" index="0"/>
+      <element value="9.87706767577" index="1"/>
+    </row>
+    <row>
+      <element value="116.0" index="0"/>
+      <element value="10.0425029105" index="1"/>
+    </row>
+    <row>
+      <element value="117.0" index="0"/>
+      <element value="10.0044743198" index="1"/>
+    </row>
+    <row>
+      <element value="118.0" index="0"/>
+      <element value="10.027716469" index="1"/>
+    </row>
+    <row>
+      <element value="119.0" index="0"/>
+      <element value="10.1757384851" index="1"/>
+    </row>
+    <row>
+      <element value="120.0" index="0"/>
+      <element value="9.94096146761" index="1"/>
+    </row>
+    <row>
+      <element value="121.0" index="0"/>
+      <element value="9.97298081984" index="1"/>
+    </row>
+    <row>
+      <element value="122.0" index="0"/>
+      <element value="10.0380632547" index="1"/>
+    </row>
+    <row>
+      <element value="123.0" index="0"/>
+      <element value="10.0630529284" index="1"/>
+    </row>
+    <row>
+      <element value="124.0" index="0"/>
+      <element value="10.0310389533" index="1"/>
+    </row>
+    <row>
+      <element value="125.0" index="0"/>
+      <element value="9.90196077186" index="1"/>
+    </row>
+    <row>
+      <element value="126.0" index="0"/>
+      <element value="10.066326402" index="1"/>
+    </row>
+    <row>
+      <element value="127.0" index="0"/>
+      <element value="9.87626624599" index="1"/>
+    </row>
+    <row>
+      <element value="128.0" index="0"/>
+      <element value="10.0779528229" index="1"/>
+    </row>
+    <row>
+      <element value="129.0" index="0"/>
+      <element value="10.1588539913" index="1"/>
+    </row>
+    <row>
+      <element value="130.0" index="0"/>
+      <element value="10.060810989" index="1"/>
+    </row>
+    <row>
+      <element value="131.0" index="0"/>
+      <element value="10.1062546351" index="1"/>
+    </row>
+    <row>
+      <element value="132.0" index="0"/>
+      <element value="9.90923367859" index="1"/>
+    </row>
+    <row>
+      <element value="133.0" index="0"/>
+      <element value="10.0919605958" index="1"/>
+    </row>
+    <row>
+      <element value="134.0" index="0"/>
+      <element value="10.0181852588" index="1"/>
+    </row>
+    <row>
+      <element value="135.0" index="0"/>
+      <element value="10.0279624772" index="1"/>
+    </row>
+    <row>
+      <element value="136.0" index="0"/>
+      <element value="10.0679572613" index="1"/>
+    </row>
+    <row>
+      <element value="137.0" index="0"/>
+      <element value="10.1693118562" index="1"/>
+    </row>
+    <row>
+      <element value="138.0" index="0"/>
+      <element value="9.9754285461" index="1"/>
+    </row>
+    <row>
+      <element value="139.0" index="0"/>
+      <element value="9.94838283981" index="1"/>
+    </row>
+    <row>
+      <element value="140.0" index="0"/>
+      <element value="10.0103395883" index="1"/>
+    </row>
+    <row>
+      <element value="141.0" index="0"/>
+      <element value="9.95841841029" index="1"/>
+    </row>
+    <row>
+      <element value="142.0" index="0"/>
+      <element value="10.0151179016" index="1"/>
+    </row>
+    <row>
+      <element value="143.0" index="0"/>
+      <element value="10.0524889319" index="1"/>
+    </row>
+    <row>
+      <element value="144.0" index="0"/>
+      <element value="10.0912823629" index="1"/>
+    </row>
+    <row>
+      <element value="145.0" index="0"/>
+      <element value="9.9729370613" index="1"/>
+    </row>
+    <row>
+      <element value="146.0" index="0"/>
+      <element value="10.0556573735" index="1"/>
+    </row>
+    <row>
+      <element value="147.0" index="0"/>
+      <element value="10.1319236985" index="1"/>
+    </row>
+    <row>
+      <element value="148.0" index="0"/>
+      <element value="10.0399841778" index="1"/>
+    </row>
+    <row>
+      <element value="149.0" index="0"/>
+      <element value="10.2052999835" index="1"/>
+    </row>
+    <row>
+      <element value="150.0" index="0"/>
+      <element value="9.97150445407" index="1"/>
+    </row>
+    <row>
+      <element value="151.0" index="0"/>
+      <element value="9.94757329624" index="1"/>
+    </row>
+    <row>
+      <element value="152.0" index="0"/>
+      <element value="9.92819896514" index="1"/>
+    </row>
+    <row>
+      <element value="153.0" index="0"/>
+      <element value="10.0925030044" index="1"/>
+    </row>
+    <row>
+      <element value="154.0" index="0"/>
+      <element value="10.0341519609" index="1"/>
+    </row>
+    <row>
+      <element value="155.0" index="0"/>
+      <element value="9.92883556043" index="1"/>
+    </row>
+    <row>
+      <element value="156.0" index="0"/>
+      <element value="9.98127627012" index="1"/>
+    </row>
+    <row>
+      <element value="157.0" index="0"/>
+      <element value="10.0006853538" index="1"/>
+    </row>
+    <row>
+      <element value="158.0" index="0"/>
+      <element value="9.91171594579" index="1"/>
+    </row>
+    <row>
+      <element value="159.0" index="0"/>
+      <element value="10.1277055765" index="1"/>
+    </row>
+    <row>
+      <element value="160.0" index="0"/>
+      <element value="9.79373619952" index="1"/>
+    </row>
+    <row>
+      <element value="161.0" index="0"/>
+      <element value="10.2151640468" index="1"/>
+    </row>
+    <row>
+      <element value="162.0" index="0"/>
+      <element value="9.84927739363" index="1"/>
+    </row>
+    <row>
+      <element value="163.0" index="0"/>
+      <element value="9.97118474224" index="1"/>
+    </row>
+    <row>
+      <element value="164.0" index="0"/>
+      <element value="10.0623106262" index="1"/>
+    </row>
+    <row>
+      <element value="165.0" index="0"/>
+      <element value="10.0001069345" index="1"/>
+    </row>
+    <row>
+      <element value="166.0" index="0"/>
+      <element value="10.0031465837" index="1"/>
+    </row>
+    <row>
+      <element value="167.0" index="0"/>
+      <element value="9.98602904086" index="1"/>
+    </row>
+    <row>
+      <element value="168.0" index="0"/>
+      <element value="10.0954165615" index="1"/>
+    </row>
+    <row>
+      <element value="169.0" index="0"/>
+      <element value="9.92061207135" index="1"/>
+    </row>
+    <row>
+      <element value="170.0" index="0"/>
+      <element value="9.97928004319" index="1"/>
+    </row>
+    <row>
+      <element value="171.0" index="0"/>
+      <element value="10.0699896484" index="1"/>
+    </row>
+    <row>
+      <element value="172.0" index="0"/>
+      <element value="9.80685386542" index="1"/>
+    </row>
+    <row>
+      <element value="173.0" index="0"/>
+      <element value="9.94630758959" index="1"/>
+    </row>
+    <row>
+      <element value="174.0" index="0"/>
+      <element value="10.1905756874" index="1"/>
+    </row>
+    <row>
+      <element value="175.0" index="0"/>
+      <element value="9.93507928992" index="1"/>
+    </row>
+    <row>
+      <element value="176.0" index="0"/>
+      <element value="9.95023294541" index="1"/>
+    </row>
+    <row>
+      <element value="177.0" index="0"/>
+      <element value="10.1382488249" index="1"/>
+    </row>
+    <row>
+      <element value="178.0" index="0"/>
+      <element value="9.99546583452" index="1"/>
+    </row>
+    <row>
+      <element value="179.0" index="0"/>
+      <element value="9.94893608888" index="1"/>
+    </row>
+    <row>
+      <element value="180.0" index="0"/>
+      <element value="10.2005822345" index="1"/>
+    </row>
+    <row>
+      <element value="181.0" index="0"/>
+      <element value="10.0474054968" index="1"/>
+    </row>
+    <row>
+      <element value="182.0" index="0"/>
+      <element value="9.99632596293" index="1"/>
+    </row>
+    <row>
+      <element value="183.0" index="0"/>
+      <element value="9.91503912027" index="1"/>
+    </row>
+    <row>
+      <element value="184.0" index="0"/>
+      <element value="10.1349884854" index="1"/>
+    </row>
+    <row>
+      <element value="185.0" index="0"/>
+      <element value="9.88690797525" index="1"/>
+    </row>
+    <row>
+      <element value="186.0" index="0"/>
+      <element value="9.87639529563" index="1"/>
+    </row>
+    <row>
+      <element value="187.0" index="0"/>
+      <element value="9.95462887979" index="1"/>
+    </row>
+    <row>
+      <element value="188.0" index="0"/>
+      <element value="9.92453969121" index="1"/>
+    </row>
+    <row>
+      <element value="189.0" index="0"/>
+      <element value="10.0079814274" index="1"/>
+    </row>
+    <row>
+      <element value="190.0" index="0"/>
+      <element value="9.977934473" index="1"/>
+    </row>
+    <row>
+      <element value="191.0" index="0"/>
+      <element value="9.86588185995" index="1"/>
+    </row>
+    <row>
+      <element value="192.0" index="0"/>
+      <element value="9.92477316005" index="1"/>
+    </row>
+    <row>
+      <element value="193.0" index="0"/>
+      <element value="10.0059957837" index="1"/>
+    </row>
+    <row>
+      <element value="194.0" index="0"/>
+      <element value="10.083616461" index="1"/>
+    </row>
+    <row>
+      <element value="195.0" index="0"/>
+      <element value="10.0401049223" index="1"/>
+    </row>
+    <row>
+      <element value="196.0" index="0"/>
+      <element value="9.99829694909" index="1"/>
+    </row>
+    <row>
+      <element value="197.0" index="0"/>
+      <element value="10.1153971478" index="1"/>
+    </row>
+    <row>
+      <element value="198.0" index="0"/>
+      <element value="10.0656747199" index="1"/>
+    </row>
+    <row>
+      <element value="199.0" index="0"/>
+      <element value="10.0050830343" index="1"/>
+    </row>
+    <row>
+      <element value="200.0" index="0"/>
+      <element value="10.1441282193" index="1"/>
+    </row>
+  </data>
+  <condition/>
+  <interpreation>
+    <time col="0"/>
+    <readout expression="x1" col="1"/>
+  </interpreation>
+</dataset>

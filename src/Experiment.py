@@ -33,7 +33,7 @@ class Experiment:
             element1.set ("index", "1")
         
         condition = etree.SubElement (root, "condition")
-        interpretation = etree.SubElement (root, "interpreation")
+        interpretation = etree.SubElement (root, "interpretation")
         time_interp = etree.SubElement (interpretation, "time")
         time_interp.set ("col", "0")
         var_interp = etree.SubElement (interpretation, "readout")

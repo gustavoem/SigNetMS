@@ -5,6 +5,7 @@
 
 from RandomParameter import RandomParameter
 from LikelihoodFunction import LikelihoodFunction
+from AdaptiveMCMC import AdaptiveMCMC
 from ODES import ODES
 import numpy as np
 import random
@@ -23,7 +24,9 @@ def estimate_marginal_likelihood (experiments, sbml, model):
     M_n = 20
     betas = sample_betas (M_n)
     thetas = get_theta_chains (sbml, model, betas)
-    iterate_thetas (model, thetas, betas, experiments)
+    amcmc = AdaptiveMCMC (thetas[0], model, experiments)
+    amcmc.get_sample (betas)
+    # iterate_thetas (model, thetas, betas, experiments)
 
 
 def sample_betas (M_n):
@@ -50,6 +53,12 @@ def get_theta_chains (sbml, model, betas):
             rand_param = RandomParameter (param, 2.0, 3333.0)
         else:
             rand_param = RandomParameter (param, 1.1, 9.0)
+
+        if param_original_name == "k1":
+            rand_param = RandomParameter (param, 2.0, 0.01)
+        if param_original_name == "d1" or param_original_name == "kcat":
+            rand_param = RandomParameter (param, 2.0, 0.1)
+
         theta.append (rand_param)
     
     thetas = []

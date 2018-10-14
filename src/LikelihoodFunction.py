@@ -5,9 +5,8 @@
 #Biochemical Species
 
 import numpy as np
+from scipy.stats import lognorm
 import RandomParameter
-
-# TODO: theta should be RandomParameter
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data

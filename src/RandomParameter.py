@@ -13,6 +13,13 @@ class RandomParameter:
         self.set_rand_value ()
 
 
+    def copy (self):
+        """ Returns a copy of the self. """
+        new_p = RandomParameter (self.name, self.__a, self.__b)
+        new_p.value = self.value
+        return new_p
+
+
     def set_rand_value (self):
         """ Sets the parameter a random value distributed as a 
             Gamma (a, b)."""

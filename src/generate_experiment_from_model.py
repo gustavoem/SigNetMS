@@ -15,8 +15,15 @@ def add_noise (values):
 sbml = SBML ()
 sbml.load_file ('../input/simple_enzymatic.xml')
 odes = sbml_to_odes (sbml)
-time = np.linspace (0, 200, 201)
+time = np.linspace (0, 100, 6)
 values = odes.evaluate_on (time)
-add_noise (values["E"])
-experiment = Experiment (time, values["E"], "E")
-experiment.save_to_file ('../input/simple_enzymatic.data')
+
+for i in range (4):
+    noised_values = {}
+    for x in values:
+        noised_values[x] = list (values[x])
+
+    add_noise (noised_values["E"])
+    experiment = Experiment (time, noised_values["E"], "E")
+    experiment.save_to_file ('../input/simple_enzymatic_' + str (i) + 
+            '.data')

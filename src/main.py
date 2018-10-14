@@ -13,8 +13,11 @@ if which_experiment == 0:
     sbml = SBML ()
     sbml.load_file ('../input/simple_enzymatic.xml')
     odes = sbml_to_odes (sbml)
-    time = np.linspace (0, 500, 100)
-    odes.overtime_plot (["E", "S", "ES", "P"], time)
+    # time = np.linspace (0, 500, 100)
+    # odes.overtime_plot (["E", "S", "ES", "P"], time)
+    experiments = read_data_experiment_file ('../input/' \
+            'simple_enzymatic.data', 'E')
+    ml.estimate_marginal_likelihood (experiments, sbml, odes)
 
 elif which_experiment == 1:
     sbml = SBML ()

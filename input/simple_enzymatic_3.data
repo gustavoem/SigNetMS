@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<dataset xmlns="http://bisb.gla.org/dataset" noise="normal" name="Automatic generated dataset.">
+  <data cols="2">
+    <row>
+      <element value="0.0" index="0"/>
+      <element value="9.97056673897" index="1"/>
+    </row>
+    <row>
+      <element value="20.0" index="0"/>
+      <element value="0.934647053724" index="1"/>
+    </row>
+    <row>
+      <element value="40.0" index="0"/>
+      <element value="1.77697757351" index="1"/>
+    </row>
+    <row>
+      <element value="60.0" index="0"/>
+      <element value="7.1193963505" index="1"/>
+    </row>
+    <row>
+      <element value="80.0" index="0"/>
+      <element value="9.83109602063" index="1"/>
+    </row>
+    <row>
+      <element value="100.0" index="0"/>
+      <element value="9.86892289624" index="1"/>
+    </row>
+  </data>
+  <condition/>
+  <interpretation>
+    <time col="0"/>
+    <readout expression="E" col="1"/>
+  </interpretation>
+</dataset>

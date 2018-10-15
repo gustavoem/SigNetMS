@@ -1,5 +1,6 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
+from CovarianceMatrix import calc_covariance
 
 class AdaptiveMCMC:
     """ This class receives a current sample from a target distribution
@@ -15,12 +16,18 @@ class AdaptiveMCMC:
     def __init__ (self, model, experiments, start_sample):
         self.__model = model
         self.__experiments = experiments
-        self.__sampled_params = []
-        self.__covar_matrix = []
+        self.__sampled_params = start_sample
+        self.__covar_matrix = self.__estimate_cov_matrix ()
+        print (self.__covar_matrix)
     
     
-
-        
-
-
-
+    def __estimate_cov_matrix (self):
+        """ Given the current sample, estimates the covariance matrix
+            of the model variables. """
+        sample_values = []
+        for theta in self.__sampled_params:
+            theta_values = []
+            for p in theta:
+                theta_values.append (p.value)
+            sample_values.append (theta_values)
+        return calc_covariance (sample_values)

@@ -18,9 +18,8 @@ class AdaptiveMCMC:
         self.__experiments = experiments
         self.__sampled_params = start_sample
         self.__covar_matrix = self.__estimate_cov_matrix ()
-        print (self.__covar_matrix)
     
-    
+
     def __estimate_cov_matrix (self):
         """ Given the current sample, estimates the covariance matrix
             of the model variables. """
@@ -31,3 +30,17 @@ class AdaptiveMCMC:
                 theta_values.append (p.value)
             sample_values.append (theta_values)
         return calc_covariance (sample_values)
+
+    
+    def __adapting_proposal (self, N1):
+        """ Performs the adaptive phase of the algorithm. """
+           
+
+
+    def get_sample (self, N1, N2):
+        """ Returns a sample of theta. The sampling occurs in two 
+            phases. The first is an adaptive MCMC, which has N1 
+            iterations. The second, with a fixed proposal distribution 
+            generated on the first phase, is a simple MCMC with N2 
+            iterations. """
+        self.__adapting_proposal (N1)

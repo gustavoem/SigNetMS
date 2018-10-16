@@ -8,6 +8,11 @@ class RandomParameterList:
         self.__param_list = []
 
 
+    def __getitem__ (self, key):
+        """ Defines indexed access. """
+        return self.__param_list[key]
+    
+
     def __iter__ (self):
         """ Iterator start. """
         self.__current = 0

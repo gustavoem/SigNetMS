@@ -48,7 +48,7 @@ class MCMCInitialization:
             param_mean += p.value
         param_mean /= params.get_size ()
         sigma = np.random.gamma (2.0, param_mean)
-        return sigma
+        return sigma / 2
 
 
     def __update_sigma (self, sigma, iterations, accepted_jumps):

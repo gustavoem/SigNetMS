@@ -31,13 +31,24 @@ class AdaptiveMCMC:
         return calc_covariance (sample_values)
 
 
-    def __propose_jump (current_t):
+    def __propose_jump (self, current_t):
         """ Proposes a jump on current_t. This jump is log multivariate
             normal with covariance matrix self.__covar_matrix. """
         n = current_t.get_size ()
         mean = np.zeros (n)
         cov = self.__covar_matrix
         jump = np.random.multivariate_normal (mean, cov)
+
+        new_t = current_t.get_copy ()
+        for i in range (len (jump)):
+            # To make a normal random variable lognormal you should
+            # exponentiate it
+            ith_jump = np.exp (jump[i]) - 1
+            # ith_jump = jump[i]
+            print ("\njump: " + str (ith_jump), end="")
+            if new_t[i].value + ith_jump > 0:
+                new_t[i].value += ith_jump
+        return new_t
 
     
     def __adapting_phase (self, N1):
@@ -54,22 +65,22 @@ class AdaptiveMCMC:
             print ("\nCurrent theta: ", end='')
             for r in current_t:
                 print (r.value, end=' ')
-            print ("\nNew theta:     ", end='')
             new_t = self.__propose_jump (current_t)
+            print ("\nNew theta:     ", end='')
             for r in new_t:
                 print (r.value, end=' ')
+            print ("")
             
             new_l = likeli_f.get_experiments_likelihood (experiments, 
                     new_t)
-            print ("Current likelihood: " + str (old_l))
+            print ("Current likelihood: " + str (current_l))
             print ("New likelihood: " + str (new_l), end='\n\n\n')
 
             if new_l > 0:
-                r = new_l / old_l
+                r = new_l / current_l
                 if np.random.uniform () <= r:
-                    accepted_jumps += 1
                     current_t = new_t
-                    old_l = new_l
+                    current_l = new_l
                     self.__sampled_params.append (current_t)
                     self.__covar_matrix = self.__estimate_cov_matrix ()
 
@@ -84,4 +95,4 @@ class AdaptiveMCMC:
             iterations. The second, with a fixed proposal distribution 
             generated on the first phase, is a simple MCMC with N2 
             iterations. """
-        self.__adapting_proposal (N1)
+        self.__adapting_phase (N1)

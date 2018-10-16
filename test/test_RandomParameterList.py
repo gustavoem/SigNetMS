@@ -44,3 +44,18 @@ class TestRandomParameterList (unittest.TestCase):
         theta.append (p2)
         for p in theta:
             assert (p.name == "p1" or p.name == "p2")
+
+
+    def test_get_values (self):
+        """ Tests if we can get only the values of the parameters. """
+        p1 = RandomParameter ('p1', 2, 2)
+        p2 = RandomParameter ('p2', 3, 2)
+        p1.value = 1
+        p2.value = 2
+        theta = RandomParameterList ()
+        theta.append (p1)
+        theta.append (p2)
+        values = theta.get_values ()
+        self.assertEqual (values[0], 1)
+        self.assertEqual (values[1], 2)
+

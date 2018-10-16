@@ -27,17 +27,15 @@ class MCMCInitialization:
             param.set_rand_value ()
 
 
-    def __propose_idependent_t (self, current_t, sigma):
+    def __propose_independent_t (self, current_t, sigma):
         """ Given theta, propose a new theta, jumping each parameter
             indepenntly accorind to a lognormal distribution with
             mean zero and sqrt (variance) = sigma. """
-        new_t = []
-        for p in current_t:
-            new_p = p.copy ()
+        new_t = current_t.get_copy ()
+        for p in new_t:
             pjump = np.random.lognormal (0, sigma) - 1
-            if new_p.value + pjump >= 0:
-                new_p.value = pjump + new_p.value
-            new_t.append (new_p)
+            if p.value + pjump >= 0:
+                p.value += pjump
         return new_t
 
 
@@ -48,7 +46,7 @@ class MCMCInitialization:
         param_mean = 0.0
         for p in params:
             param_mean += p.value
-        param_mean /= len (params)
+        param_mean /= params.get_size ()
         sigma = np.random.gamma (2.0, param_mean)
         return sigma
 
@@ -80,16 +78,15 @@ class MCMCInitialization:
             for r in current_t:
                 print (r.value, end=' ')
             print ("\nNew theta:     ", end='')
-            new_t = self.__propose_idependent_t (current_t, jump_sigma)
+            new_t = self.__propose_independent_t (current_t, jump_sigma)
             for r in new_t:
                 print (r.value, end=' ')
             
             new_l = likeli_f.get_experiments_likelihood (experiments, 
                     new_t)
-
             print ("\nCurrent sigma: " + str (jump_sigma))
             print ("Current likelihood: " + str (old_l))
-            # print ("New likelihood: " + str (new_l), end='\n\n\n')
+            print ("New likelihood: " + str (new_l), end='\n\n\n')
 
             if new_l > 0:
                 r = new_l / old_l
@@ -111,10 +108,7 @@ class MCMCInitialization:
         self.__sample_theta (N)
         sample = []
         for t in self.__sampled_params:
-            t_cpy = []
-            for p in t:
-                p_cpy = p.copy ()
-                t_cpy.append (p_cpy)
+            t_cpy = t.get_copy ()
             sample.append (t_cpy)
         return sample
 

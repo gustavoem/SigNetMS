@@ -4,6 +4,7 @@
 # Biochemical Species", Tian-Rui Xu, et. al.
 
 from RandomParameter import RandomParameter
+from RandomParameterList import RandomParameterList
 from LikelihoodFunction import LikelihoodFunction
 from MCMCInitialization import MCMCInitialization
 from AdaptiveMCMC import AdaptiveMCMC
@@ -24,7 +25,7 @@ def estimate_marginal_likelihood (experiments, sbml, model):
     M_n = 20
     theta = get_theta (sbml, model)
     mcmc_init = MCMCInitialization (theta, model, experiments)
-    start_sample = mcmc_init.get_sample (20)
+    start_sample = mcmc_init.get_sample (1000)
     print (start_sample)
     amcmc = AdaptiveMCMC (model, experiments, start_sample)
 
@@ -32,7 +33,7 @@ def estimate_marginal_likelihood (experiments, sbml, model):
 def get_theta (sbml, model):
     """ Given a model, construct a list containing all parameters of 
         the model as random variables. """
-    theta = []
+    theta = RandomParameterList ()
     params = model.get_all_parameters ()
     for param in params:
         param_original_name = sbml.get_original_param_name (param)

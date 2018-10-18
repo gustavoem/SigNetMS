@@ -13,11 +13,17 @@ class AdaptiveMCMC:
         fixed proposal distribution, as recommended on "Bayesian Data
         Analysis", Gelman. """
 
+    
     def __init__ (self, model, experiments, start_sample):
         self.__model = model
         self.__experiments = experiments
         self.__sampled_params = start_sample
         self.__covar_matrix = self.__estimate_cov_matrix ()
+
+        self.__NUMBER_OF_STRATA = 5
+        self.__SCHEDULE_POWER = 5
+
+        self.__sampled_params = start_sample[len (start_sample) // 2:]
         print (self.__covar_matrix)
     
 
@@ -44,8 +50,6 @@ class AdaptiveMCMC:
             # To make a normal random variable lognormal you should
             # exponentiate it
             ith_jump = np.exp (jump[i]) - 1
-            # ith_jump = jump[i]
-            print ("\njump: " + str (ith_jump), end="")
             if new_t[i].value + ith_jump > 0:
                 new_t[i].value += ith_jump
         return new_t
@@ -84,9 +88,91 @@ class AdaptiveMCMC:
                     self.__sampled_params.append (current_t)
                     self.__covar_matrix = self.__estimate_cov_matrix ()
 
+
+    def __sample_betas (self, M_n):
+        """ Samples M_n beta from each of the NUMBER_OF_STRATA strata."""
+        betas = []
+        nof_strata = self.__NUMBER_OF_STRATA
+        sched_power = self.__SCHEDULE_POWER
+        
+        for i in range (nof_strata):
+            strata_start = (i /  nof_strata) ** sched_power
+            strata_end = ((i + 1) / nof_strata) ** sched_power
+            for j in range (M_n):
+                x = np.random.uniform (strata_start, strata_end)
+                betas.append (x)
+            betas.sort ()
+        return betas
+
+
+    def __init_population (self, betas):
+        """ Sample from the identified posterior. """
+        n = self.__sampled_params[-1].get_size ()
+        theta_mean = self.__sampled_params[-1].get_copy ()
+        for p in theta_mean:
+            p.value = 0
+        for t in self.__sampled_params:
+            for i in range (t.get_size ()):
+                theta_mean[i].value += t[i].value
+        for p in theta_mean:
+            p.value /= len (self.__sampled_params)
+        
+        theta_pop = []
+        for b in betas:
+            theta = self.__propose_jump (theta_mean)
+            theta_pop.append (theta)
+        return theta_pop
+
+
     
     def __fixed_phase (self, N2):
         """ Performs the fixed phase of the algorithm. """
+        experiments = self.__experiments
+        betas = self.__sample_betas (20)
+        theta_chains = self.__init_population (betas)
+        likeli_f = LikelihoodFunction (self.__model, .5)
+        
+        for i in range (N2):
+            # Local move
+            j = np.random.choice (range (len (theta_chains)))
+            new_t = self.__propose_jump (theta_chains[j])
+            old_l = likeli_f.get_experiments_likelihood (experiments, 
+                    theta_chains[j])
+            new_l = likeli_f.get_experiments_likelihood (experiments, 
+                    new_t)
+            
+            print ("\nCurrent theta: ", end='')
+            for r in theta_chains[j]:
+                print (r.value, end=' ')
+            print ("\nNew theta:     ", end='')
+            for r in new_t:
+                print (r.value, end=' ')
+            print ("")
+
+            print ("Current likelihood: " + str (old_l))
+            print ("New likelihood: " + str (new_l), end='\n\n\n')
+
+            r = (new_l / old_l) ** betas[j]
+            if (np.random.uniform () <= r):
+                theta_chains[j] = new_t
+
+            
+            # Global move
+            j = np.random.choice (range (len (theta_chains) - 1))
+            theta1 = theta_chains[j]
+            theta2 = theta_chains[j + 1]
+            theta1_l = likeli_f.get_experiments_likelihood (experiments, 
+                    theta1)
+            theta2_l = likeli_f.get_experiments_likelihood (experiments, 
+                    theta2)
+            t1ot2 = theta1_l / theta2_l
+            t2ot1 = theta2_l / theta1_l
+            r = (t2ot1) ** betas[j] * (t1ot2) ** betas[j + 1]
+            if (np.random.uniform () <= r):
+                aux = theta_chains[j]
+                theta_chains[j] = theta_chains[j + 1]
+                theta_chains[j + 1] = aux
+        return (theta_chains, betas)
 
 
     def get_sample (self, N1, N2):
@@ -95,4 +181,7 @@ class AdaptiveMCMC:
             iterations. The second, with a fixed proposal distribution 
             generated on the first phase, is a simple MCMC with N2 
             iterations. """
+        print ("ADAPTING PHASE")
         self.__adapting_phase (N1)
+        print ("FIXED PHASE")
+        self.__fixed_phase (N2)

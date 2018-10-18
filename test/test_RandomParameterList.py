@@ -72,3 +72,19 @@ class TestRandomParameterList (unittest.TestCase):
         self.assertEqual (theta[0].name, 'p1')
         self.assertEqual (theta[1].name, 'p2')
         
+    def test_get_experimental_error (self):
+        """ Tests if we can have an experimental error on the list of
+            random parameters. """
+        p1 = RandomParameter ('p1', 2, 2)
+        p2 = RandomParameter ('p2', 3, 2)
+        p1.value = 1
+        p2.value = 2
+        sigma = RandomParameter ('sigma', 2, .1)
+        sigma.value = 123
+
+        theta = RandomParameterList ()
+        theta.append (p1)
+        theta.set_experimental_error_parameter (sigma)
+        theta.append (p2)
+        
+        self.assertEqual (theta.get_experimental_error ().value, 123)

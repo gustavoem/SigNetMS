@@ -87,4 +87,4 @@ class TestRandomParameterList (unittest.TestCase):
         theta.set_experimental_error_parameter (sigma)
         theta.append (p2)
         
-        self.assertEqual (theta.get_experimental_error ().value, 123)
+        self.assertEqual (theta.get_experimental_error (), 123)

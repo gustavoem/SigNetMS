@@ -6,6 +6,7 @@ class RandomParameterList:
     def __init__ (self):
         """ Default constructor. """
         self.__param_list = []
+        self.__experimental_error = None
 
 
     def __getitem__ (self, key):
@@ -38,13 +39,25 @@ class RandomParameterList:
         return copy
 
 
+    def set_experimental_error_parameter (self, p):
+        """ Sets the random parameter that represents the experimental
+            error. """
+        self.__param_list.append (p)
+        self.__experimental_error = p
+    
+
     def append (self, c):
         """ Adds a parameter to the end of the list. """
+        if self.__experimental_error == None:
+            insert_index = len (self.__param_list)
+        else:
+            insert_index = -1
+
         if type (c) == list:
             for p in c:
-                self.__param_list.append (p)
+                self.__param_list.insert (insert_index, p)
         else:
-            self.__param_list.append (c)
+            self.__param_list.insert (insert_index, c)
 
 
     def get_values (self):
@@ -53,6 +66,11 @@ class RandomParameterList:
         for p in self.__param_list:
             values.append (p.value)
         return values
+
+
+    def get_experimental_error (self):
+        """ Returns the experimental error value. """
+        return self.__experimental_error.value
 
 
     def get_size (self):

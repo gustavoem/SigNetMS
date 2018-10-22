@@ -84,11 +84,11 @@ class LikelihoodFunction:
         var = experiments[0].var
         X_sys = self.__get_system_state (var, t, theta)
         sigma = theta.get_experimental_error ()
-        print ("X_sys: " + str (X_sys))
+        # print ("X_sys: " + str (X_sys))
         l = 1
         for exp in experiments:
             X_obs = exp.values
-            print ("\tX_obs: " + str (X_obs))
+            # print ("\tX_obs: " + str (X_obs))
             l *= self.__calculate_likelihood (X_sys, X_obs, sigma)
-            print ("\tpartial likelihood: " + str (l))
+            # print ("\tpartial likelihood: " + str (l))
         return l

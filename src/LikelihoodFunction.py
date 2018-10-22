@@ -14,25 +14,26 @@ class LikelihoodFunction:
         of ODEs. """ 
 
         
-    def __init__ (self, ode, sigma):
+    def __init__ (self, ode):
         """ Default constructor. ode is the system that rules the 
             observed system. """
         self.__ode = ode
-        self.__sigma = sigma
         
-    def __point_likelihood (self, mu, x):
-        exp = np.exp (-0.5 * ((x - mu) / self.__sigma) ** 2)
-        return exp * (1 / (self.__sigma * np.sqrt (2 * np.pi)))
+    def __point_likelihood (self, mu, x, sigma):
+        exp = np.exp (-0.5 * ((x - mu) / sigma) ** 2)
+        return exp * (1 / (sigma * np.sqrt (2 * np.pi)))
 
 
-    def __calculate_likelihood (self, X_sys, X_obs):
+    def __calculate_likelihood (self, X_sys, X_obs, sigma):
         """ Calculates the likelihood of X_obs given that the real 
             solution i s X_sys. """
         likeli = 1
         for i in range (len (X_obs)):
             observed_x = X_obs[i]
             system_x = X_sys[i]
-            likeli *= self.__point_likelihood (system_x, observed_x)
+            likeli *= self.__point_likelihood (system_x, observed_x, 
+                    sigma)
+
         return likeli
 
 
@@ -40,7 +41,7 @@ class LikelihoodFunction:
         """ Calculates the state of the variable var on times t and with 
             theta parameters. theta should be a RandomParameter object. """
         if (theta is not None):
-            for param in theta:
+            for param in theta.get_model_parameters ():
                 self.__ode.define_parameter (param.name, param.value)
 
         # TODO: the likelihood should be on a measurement of the system
@@ -71,7 +72,8 @@ class LikelihoodFunction:
         X_sys = self.__get_system_state (var, t, theta)
         var = experiment.var
         X_obs = experiment.values
-        return self.__calculate_likelihood (X_sys, X_obs)
+        sigma = theta.get_experimental_error ()
+        return self.__calculate_likelihood (X_sys, X_obs, sigma)
         
 
     def get_experiments_likelihood (self, experiments, theta):
@@ -81,11 +83,12 @@ class LikelihoodFunction:
         t = experiments[0].times
         var = experiments[0].var
         X_sys = self.__get_system_state (var, t, theta)
-        # print ("X_sys: " + str (X_sys))
+        sigma = theta.get_experimental_error ()
+        print ("X_sys: " + str (X_sys))
         l = 1
         for exp in experiments:
             X_obs = exp.values
-            # print ("\tX_obs: " + str (X_obs))
-            l *= self.__calculate_likelihood (X_sys, X_obs)
-            # print ("\tpartial likelihood: " + str (l))
+            print ("\tX_obs: " + str (X_obs))
+            l *= self.__calculate_likelihood (X_sys, X_obs, sigma)
+            print ("\tpartial likelihood: " + str (l))
         return l

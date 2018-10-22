@@ -15,8 +15,15 @@ if which_experiment == 0:
     odes = sbml_to_odes (sbml)
     # time = np.linspace (0, 500, 100)
     # odes.overtime_plot (["E", "S", "ES", "P"], time)
-    experiments = read_data_experiment_file ('../input/' \
-            'simple_enzymatic.data', 'E')
+    ex0 = read_data_experiment_file ('../input/' \
+            'simple_enzymatic_0.data', 'E')[0]
+    ex1 = read_data_experiment_file ('../input/' \
+            'simple_enzymatic_1.data', 'E')[0]
+    ex2 = read_data_experiment_file ('../input/' \
+            'simple_enzymatic_2.data', 'E')[0]
+    ex3 = read_data_experiment_file ('../input/' \
+            'simple_enzymatic_3.data', 'E')[0]
+    experiments = [ex0, ex1, ex2, ex3]
     ml.estimate_marginal_likelihood (experiments, sbml, odes)
 
 elif which_experiment == 1:

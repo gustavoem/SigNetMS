@@ -34,8 +34,15 @@ class RandomParameterList:
     def get_copy (self):
         """ Returns a copy of this parameter list. """
         copy = RandomParameterList ()
-        for p in self.__param_list:
-            copy.append (p.copy ())
+        last_idx = len (self.__param_list)
+
+        if self.__experimental_error != None:
+            last_idx = -1
+            sigma_cpy = self.__experimental_error.copy ()
+            copy.set_experimental_error_parameter (sigma_cpy)
+
+        for p in self.__param_list[:last_idx]:
+            copy.append (p.copy ()) 
         return copy
 
 
@@ -71,6 +78,15 @@ class RandomParameterList:
     def get_experimental_error (self):
         """ Returns the experimental error value. """
         return self.__experimental_error.value
+
+    
+    def get_model_parameters (self):
+        """ Returns all but the experimental error parameters. """
+        if self.__experimental_error == None:
+            idx = len (self.__param_list)
+        else:
+            idx = len (self.__param_list) - 1
+        return self.__param_list[:idx]
 
 
     def get_size (self):

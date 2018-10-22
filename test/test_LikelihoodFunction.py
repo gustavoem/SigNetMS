@@ -7,17 +7,22 @@ import numpy as np
 from ODES import ODES
 from LikelihoodFunction import LikelihoodFunction
 from Experiment import Experiment
+from RandomParameterList import RandomParameterList
+from RandomParameter import RandomParameter
 
 class TestLikelihoodFunction (unittest.TestCase):
     
     def setUp (self):
+        # dx1 (t)/dt = x1 (t), x1 (0) = 1
+        # x1 (t) = e ^ t
         self.odes = ODES ()
         self.odes.add_equation ("x1", "x1")
         self.odes.define_initial_value ("x1", 1.0)
-        self.theta = []
-        # dx1 (t)/dt = x1 (t), x1 (0) = 1
-        # x1 (t) = e ^ t
-
+        self.theta = RandomParameterList ()
+        sigma = RandomParameter ("sigma", 1, 1)
+        sigma.value = 1.0
+        self.theta.set_experimental_error_parameter (sigma)
+        
 
 
     def __gaussian (self, mu, sigma, x):
@@ -39,7 +44,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         var = "x1"
         experiment = Experiment (t, values, var)
 
-        likelihood_f = LikelihoodFunction (self.odes, 1.0)
+        likelihood_f = LikelihoodFunction (self.odes)
         l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
         assert (abs (f_D - l) < 1e-8)
@@ -55,7 +60,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
         
-        likelihood_f = LikelihoodFunction (self.odes, 1.0) 
+        likelihood_f = LikelihoodFunction (self.odes) 
         l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
         assert (abs (f_D - l) < 1e-8)
@@ -73,7 +78,7 @@ class TestLikelihoodFunction (unittest.TestCase):
             f_D *= self.__gaussian (y, 1, y)
         f_D **= 2
         
-        likelihood_f = LikelihoodFunction (self.odes, 1.0)
+        likelihood_f = LikelihoodFunction (self.odes)
         l = likelihood_f.get_experiments_likelihood (experiments, self.theta)
         assert (abs (f_D - l) < 1e-8)
 

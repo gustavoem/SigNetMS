@@ -27,13 +27,15 @@ class MCMCInitialization:
             param.set_rand_value ()
 
 
-    def __propose_independent_t (self, current_t, sigma):
+    def __propose_independent_t (self, current_t, jump_sigma):
         """ Given theta, propose a new theta, jumping each parameter
             indepenntly accorind to a lognormal distribution with
             mean zero and sqrt (variance) = sigma. """
         new_t = current_t.get_copy ()
-        for p in new_t:
-            pjump = np.random.lognormal (0, sigma) - 1
+        for i in range (new_t.get_size ()):
+            p = new_t[i]
+            jump_s = jump_sigma[i]
+            pjump = np.random.lognormal (0, jump_s) - 1
             if p.value + pjump >= 0:
                 p.value += pjump
         return new_t
@@ -43,30 +45,28 @@ class MCMCInitialization:
         """ Gives an initial value for the proposal distribution sigma
             on phase one of inferece. """
         params = self.__params
-        param_mean = 0.0
+        jump_sigma = []
         for p in params:
-            param_mean += p.value
-        param_mean /= params.get_size ()
-        sigma = np.random.gamma (2.0, param_mean)
-        return sigma / 2
+            sigma = np.random.gamma (2.0, p.value)
+            jump_sigma.append (sigma)
+        return jump_sigma
 
 
-    def __update_sigma (self, sigma, iterations, accepted_jumps):
+    def __update_sigma (self, jump_sigma, iterations, accepted_jumps):
         """ Updates sigma according to current acceptance rate. """
         acceptance_rate = accepted_jumps / iterations
-        if acceptance_rate > .4:
-            sigma += sigma * .5
-        if acceptance_rate < .25:
-            if (sigma > 1e-7):
-                sigma -= sigma * .5
-        return sigma
+        for i in range (len (jump_sigma)):
+            if acceptance_rate > .4 and jump_sigma[i] < 1e8:
+                jump_sigma[i] += jump_sigma[i] * .5
+            if acceptance_rate < .25 and jump_sigma[i] > 1e-4:
+                jump_sigma[i] -= jump_sigma[i] * .5
+        return jump_sigma
 
     
     def __sample_theta (self, N):
         jump_sigma = self.__init_jump_sigma ()
-        error_sigma = .5
         experiments = self.__experiments
-        likeli_f = LikelihoodFunction (self.__model, error_sigma)
+        likeli_f = LikelihoodFunction (self.__model)
         accepted_jumps = 0
 
         current_t = self.__params
@@ -95,9 +95,9 @@ class MCMCInitialization:
                     current_t = new_t
                     old_l = new_l
                     self.__sampled_params.append (current_t)
-            if (i + 1) % 20 == 0 : 
+            if (i + 1) % self.__sigma_update_n == 0 : 
                 jump_sigma = self.__update_sigma (jump_sigma, 
-                        self.__sigma_update_n, accepted_jumps)
+                        self.__sigma_update_n + 1, accepted_jumps)
                 accepted_jumps = 0
 
 

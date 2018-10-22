@@ -25,8 +25,7 @@ def estimate_marginal_likelihood (experiments, sbml, model):
     M_n = 20
     theta = get_theta (sbml, model)
     mcmc_init = MCMCInitialization (theta, model, experiments)
-    start_sample = mcmc_init.get_sample (5000)
-    print (start_sample)
+    start_sample = mcmc_init.get_sample (10000)
     amcmc = AdaptiveMCMC (model, experiments, start_sample)
     amcmc.get_sample (2000, 1000)
 
@@ -48,4 +47,6 @@ def get_theta (sbml, model):
         if param_original_name == "d1" or param_original_name == "kcat":
             rand_param = RandomParameter (param, 2.0, 0.1)
         theta.append (rand_param)
+    sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
+    theta.set_experimental_error_parameter (sigma)
     return theta

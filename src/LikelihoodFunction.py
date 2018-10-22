@@ -53,13 +53,6 @@ class LikelihoodFunction:
 
         # returns the state of a variable
         return system_states[var]
-
-        # This is temporary.
-        # X_sys = []
-        # for i in range (len (system_states["ERK"])):
-            # ratio = system_states["ERKPP"][i] / (system_states["ERK"][i] + system_states["ERKPP"][i])
-            # X_sys.append (ratio * 100)
-        # return X_sys
     
 
     def get_experiment_likelihood (self, experiment, theta):

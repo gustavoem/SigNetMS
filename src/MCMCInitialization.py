@@ -17,7 +17,7 @@ class MCMCInitialization:
         self.__experiments = experiments
         self.__start_params ()
         self.__sampled_params = []
-        self.__sigma_update_n = 100
+        self.__sigma_update_n = 500
 
 
     def __start_params (self):
@@ -89,8 +89,9 @@ class MCMCInitialization:
             print ("New likelihood: " + str (new_l), end='\n\n\n')
 
             if new_l > 0:
-                r = new_l / old_l
-                if np.random.uniform () <= r:
+                if old_l != 0:
+                    r = new_l / old_l
+                if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1
                     current_t = new_t
                     old_l = new_l

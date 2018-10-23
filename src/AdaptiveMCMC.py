@@ -1,6 +1,7 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from CovarianceMatrix import calc_covariance
+from utils import safe_power
 
 class AdaptiveMCMC:
     """ This class receives a current sample from a target distribution
@@ -58,8 +59,7 @@ class AdaptiveMCMC:
     def __adapting_phase (self, N1):
         """ Performs the adaptive phase of the algorithm. """
         experiments = self.__experiments
-        error_sigma = .5
-        likeli_f = LikelihoodFunction (self.__model, error_sigma)
+        likeli_f = LikelihoodFunction (self.__model)
 
         current_t = self.__sampled_params[-1].get_copy ()
         current_l = likeli_f.get_experiments_likelihood (experiments, 
@@ -130,7 +130,7 @@ class AdaptiveMCMC:
         experiments = self.__experiments
         betas = self.__sample_betas (20)
         theta_chains = self.__init_population (betas)
-        likeli_f = LikelihoodFunction (self.__model, .5)
+        likeli_f = LikelihoodFunction (self.__model)
         
         for i in range (N2):
             # Local move
@@ -148,14 +148,14 @@ class AdaptiveMCMC:
             for r in new_t:
                 print (r.value, end=' ')
             print ("")
-
             print ("Current likelihood: " + str (old_l))
             print ("New likelihood: " + str (new_l), end='\n\n\n')
+            
+            if old_l != 0:
+                r = (new_l / old_l) ** betas[j]
 
-            r = (new_l / old_l) ** betas[j]
-            if (np.random.uniform () <= r):
+            if old_l == 0 or np.random.uniform () <= r:
                 theta_chains[j] = new_t
-
             
             # Global move
             j = np.random.choice (range (len (theta_chains) - 1))
@@ -165,9 +165,14 @@ class AdaptiveMCMC:
                     theta1)
             theta2_l = likeli_f.get_experiments_likelihood (experiments, 
                     theta2)
+            
+            if theta1_l == 0 or theta2_l == 0:
+                continue
+
             t1ot2 = theta1_l / theta2_l
             t2ot1 = theta2_l / theta1_l
-            r = (t2ot1) ** betas[j] * (t1ot2) ** betas[j + 1]
+            r = safe_power (t2ot1, betas[j]) * \
+                    safe_power (t1ot2, betas[j + 1])
             if (np.random.uniform () <= r):
                 aux = theta_chains[j]
                 theta_chains[j] = theta_chains[j + 1]

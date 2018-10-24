@@ -34,6 +34,6 @@ class RandomParameter:
     
     
     def get_b (self):
-        """ Returns the scale of the gamma distribution of this random
-            parameter. """
+        """ Returns the inverse scale (shape) of the gamma distribution 
+            of this random parameter. """
         return self.__b

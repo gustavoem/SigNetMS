@@ -17,7 +17,7 @@ class MCMCInitialization:
         self.__experiments = experiments
         self.__start_params ()
         self.__sampled_params = []
-        self.__sigma_update_n = 500
+        self.__sigma_update_n = 200
 
 
     def __start_params (self):
@@ -36,8 +36,9 @@ class MCMCInitialization:
             p = new_t[i]
             jump_s = jump_sigma[i]
             pjump = np.random.lognormal (0, jump_s) - 1
-            if p.value + pjump >= 0:
-                p.value += pjump
+            new_value = pjump + p.value
+            if new_value > 0 and new_value < float ('inf'):
+                p.value = new_value
         return new_t
 
 
@@ -47,7 +48,7 @@ class MCMCInitialization:
         params = self.__params
         jump_sigma = []
         for p in params:
-            sigma = np.random.gamma (2.0, p.value)
+            sigma = p.value
             jump_sigma.append (sigma)
         return jump_sigma
 
@@ -75,16 +76,16 @@ class MCMCInitialization:
 
         for i in range (N):
             print ("\nCurrent theta: ", end='')
-            for r in current_t:
+            for r in current_t[:10]:
                 print (r.value, end=' ')
             print ("\nNew theta:     ", end='')
             new_t = self.__propose_independent_t (current_t, jump_sigma)
-            for r in new_t:
+            for r in new_t[:10]:
                 print (r.value, end=' ')
             
             new_l = likeli_f.get_experiments_likelihood (experiments, 
                     new_t)
-            print ("\nCurrent sigma: " + str (jump_sigma))
+            print ("\nCurrent sigma: " + str (jump_sigma[:10]))
             print ("Current likelihood: " + str (old_l))
             print ("New likelihood: " + str (new_l), end='\n\n\n')
 

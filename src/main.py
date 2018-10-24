@@ -7,7 +7,7 @@ from ExperimentReader import read_data_experiment_file
 import MarginalLikelihood as ml
 import numpy as np
 
-which_experiment = 0
+which_experiment = 2
 
 if which_experiment == 0:
     sbml = SBML ()
@@ -36,11 +36,14 @@ elif which_experiment == 1:
 
 else:
     sbml = SBML ()
-    sbml.load_file ('../input/model1.xml')
+    sbml.load_file ('../input/Kolch/model3.xml')
     odes = sbml_to_odes (sbml)
+    # time = np.linspace (0, 5000, 100)
+    # odes.overtime_plot (["ERK", "ERKPP"], time)
+
     experiments = []
     for i in range (1, 25):
-        ex = read_data_experiment_file ('../input/Kolch/ex' + str (i) +
+        ex = read_data_experiment_file ('../input/Kolch/ex_' + str (i) +
             '.data', 'ERKPP',)[0]
         experiments.append (ex)
     ml.estimate_marginal_likelihood (experiments, sbml, odes)

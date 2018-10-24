@@ -191,4 +191,4 @@ class AdaptiveMCMC:
         print ("ADAPTING PHASE")
         self.__adapting_phase (N1)
         print ("FIXED PHASE")
-        self.__fixed_phase (N2)
+        return self.__fixed_phase (N2)

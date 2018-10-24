@@ -853,7 +853,7 @@
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="reaction_27" name="ReceptorDegradation" reversible="false" />
+      <reaction id="reaction_27" name="ReceptorDegradation" reversible="false" >
 	<listOfReactants>
 	   <speciesReference species="boundEGFR"/>
 	</listOfReactants>

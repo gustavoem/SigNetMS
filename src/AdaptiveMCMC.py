@@ -14,15 +14,20 @@ class AdaptiveMCMC:
         fixed proposal distribution, as recommended on "Bayesian Data
         Analysis", Gelman. """
 
-    
-    def __init__ (self, model, experiments, start_sample):
+
+    # This is a good scheduling power according to "Estimating Bayes 
+    # Factors via Thermodynamic Integration and Population MCMC"
+    __SCHEDULE_POWER = 5
+
+
+    def __init__ (self, model, experiments, start_sample, n_strata, 
+            strata_size):
         self.__model = model
         self.__experiments = experiments
         self.__sampled_params = start_sample
         self.__covar_matrix = self.__estimate_cov_matrix ()
-
-        self.__NUMBER_OF_STRATA = 5
-        self.__SCHEDULE_POWER = 5
+        self.__n_strata = n_strata
+        self.__strata_size = strata_size
 
         self.__sampled_params = start_sample[len (start_sample) // 2:]
         print (self.__covar_matrix)
@@ -54,7 +59,6 @@ class AdaptiveMCMC:
             new_value = ith_jump + new_t[i].value
             if new_value > 0 and new_value < float ('inf'):
                 new_t[i].value = new_value
-                print ("New value: " + str (new_t[i].value))
         return new_t
 
     
@@ -91,16 +95,21 @@ class AdaptiveMCMC:
                     self.__covar_matrix = self.__estimate_cov_matrix ()
 
 
-    def __sample_betas (self, M_n):
-        """ Samples M_n beta from each of the NUMBER_OF_STRATA strata."""
+    @staticmethod
+    def get_sched_power ():
+        return AdaptiveMCMC.__SCHEDULE_POWER;
+
+
+    @staticmethod
+    def __sample_betas (n_strata, strata_size):
+        """ Samples strata_size beta from each of the n_strata 
+            strata."""
         betas = []
-        nof_strata = self.__NUMBER_OF_STRATA
-        sched_power = self.__SCHEDULE_POWER
-        
-        for i in range (nof_strata):
-            strata_start = (i /  nof_strata) ** sched_power
-            strata_end = ((i + 1) / nof_strata) ** sched_power
-            for j in range (M_n):
+        sched_power = AdaptiveMCMC.__SCHEDULE_POWER
+        for i in range (n_strata):
+            strata_start = (i /  n_strata) ** sched_power
+            strata_end = ((i + 1) / n_strata) ** sched_power
+            for j in range (strata_size):
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
@@ -130,7 +139,9 @@ class AdaptiveMCMC:
     def __fixed_phase (self, N2):
         """ Performs the fixed phase of the algorithm. """
         experiments = self.__experiments
-        betas = self.__sample_betas (20)
+        n_strata = self.__n_strata
+        strata_size = self.__strata_size
+        betas = AdaptiveMCMC.__sample_betas (n_strata, strata_size)
         theta_chains = self.__init_population (betas)
         likeli_f = LikelihoodFunction (self.__model)
         
@@ -179,7 +190,7 @@ class AdaptiveMCMC:
                 aux = theta_chains[j]
                 theta_chains[j] = theta_chains[j + 1]
                 theta_chains[j + 1] = aux
-        return (theta_chains, betas)
+        return (betas, theta_chains)
 
 
     def get_sample (self, N1, N2):

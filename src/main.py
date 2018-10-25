@@ -4,10 +4,10 @@ from SBMLtoODES import sbml_to_odes
 from Experiment import Experiment
 from ExperimentReader import read_txt_experiment_file 
 from ExperimentReader import read_data_experiment_file 
-import MarginalLikelihood as ml
+from MarginalLikelihood import MarginalLikelihood
 import numpy as np
 
-which_experiment = 2
+which_experiment = 0
 
 if which_experiment == 0:
     sbml = SBML ()
@@ -24,7 +24,10 @@ if which_experiment == 0:
     ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
             'simple_enzymatic_3.data', 'E')[0]
     experiments = [ex0, ex1, ex2, ex3]
-    ml.estimate_marginal_likelihood (experiments, sbml, odes)
+    ml = MarginalLikelihood (100, 100, 100, 10, 10)
+    log_l = ml.estimate_marginal_likelihood (experiments, sbml, odes)
+    print ("log_l = " + str (log_l))
+    
 
 elif which_experiment == 1:
     sbml = SBML ()

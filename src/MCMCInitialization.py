@@ -17,7 +17,7 @@ class MCMCInitialization:
         self.__experiments = experiments
         self.__start_params ()
         self.__sampled_params = []
-        self.__sigma_update_n = 200
+        self.__sigma_update_n = 300
 
 
     def __start_params (self):

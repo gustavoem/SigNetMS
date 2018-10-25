@@ -13,12 +13,6 @@ import numpy as np
 import random
 import re
 
-# NUMBER_OF_STRATA = 100
-# NUMBER_OF_STRATA = 5
-# SCHEDULE_POWER = 5
-# POPULATION_ITERATIONS = 100000
-# POPULATION_ITERATIONS = 1000
-
 
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
@@ -48,10 +42,14 @@ class MarginalLikelihood:
         """
         theta = self.__get_theta (sbml, model)
         mcmc_init = MCMCInitialization (theta, model, experiments)
-        start_sample = mcmc_init.get_sample (100)
-        amcmc = AdaptiveMCMC (model, experiments, start_sample)
-        betas, thetas = amcmc.get_sample (100, 200)
-        ml = calculate_marignal_likelihood (betas, thetas)
+        start_sample = mcmc_init.get_sample (self.__init_iterations)
+        N1, N2 = self.__adaptive_iterations, self.__fixed_iterations
+        amcmc = AdaptiveMCMC (model, experiments, start_sample, 
+                self.__n_strata, self.__strata_size)
+        betas, thetas = amcmc.get_sample (N1, N2)
+        ml = self.__calculate_marginal_likelihood (model, experiments,
+                betas, thetas)
+        return ml
 
 
     def __get_theta (self, sbml, model):
@@ -76,9 +74,36 @@ class MarginalLikelihood:
         return theta
 
 
-    def __calculate_marginal_likelihood (self, betas, thetas):
+    def __calculate_marginal_likelihood (self, model, experiments, 
+            betas, thetas):
         """ Given a list with samples, calculates the marginal 
             likelihood. """
         ml = 0
+        j = 0 
+        n_strata = self.__n_strata
+        strata_size = self.__strata_size
+        sched_power = AdaptiveMCMC.get_sched_power ()
+        likeli_f = LikelihoodFunction (model)
+    
+        print ("Estimating marginal likelihood")
+        
+        for i in range (n_strata):
+            strata_start = (n_strata) ** sched_power
+            strata_end = ((i + 1) / n_strata) ** sched_power
+            del_strata = strata_end - strata_start
+                
+            strat_sum = 0
+            while j < len (betas) and betas[j] < strata_end:
+                p_y_given_theta = likeli_f.get_experiments_likelihood (
+                    experiments, thetas[j])
+                # print ("\tTheta: ", end='')
+                # for r in thetas[j]:
+                    # print (r.value, end=' ')
+                # print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
 
+                strat_sum += np.log (p_y_given_theta)
+                j += 1
 
+            strat_sum *= (del_strata / strata_size)
+            ml += strat_sum
+        return ml

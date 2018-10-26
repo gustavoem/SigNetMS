@@ -1,6 +1,5 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 class MCMCInitialization:
@@ -19,9 +18,8 @@ class MCMCInitialization:
         self.__experiments = experiments
         self.__start_params ()
         self.__sampled_params = []
-        self.__sigma_update_n = 500
+        self.__sigma_update_n = 1000
 
-        self.__debug_jump = []
 
     def __start_params (self):
         """ Starts the parameter with a random value sampled from its
@@ -40,17 +38,7 @@ class MCMCInitialization:
             jump_s = jump_sigma[i]
             lognorm_mean = np.exp (jump_s * jump_s / 2)
             pjump = np.random.lognormal (0, jump_s) - lognorm_mean
-
-            print ("\n")
-            print (pjump)
-            self.__debug_jump.append (pjump)
-            if len (self.__debug_jump) == 100:
-                a = sns.kdeplot (np.asarray (self.__debug_jump), shade=True)
-                b = sns.rugplot (np.asarray (self.__debug_jump))
-                plt.show ([a,b])
-                
             new_value = pjump + p.value
-            print ("new_value = " + str (new_value))
             if new_value > 0 and new_value < float ('inf'):
                 p.value = new_value
         return new_t
@@ -89,6 +77,8 @@ class MCMCInitialization:
                 current_t)
 
         for i in range (N):
+            if i + 1 % 1000 == 0:
+                print ("Iteração " + str (i + 1) + " da primeira fase do algoritmo.")
             print ("\nCurrent theta: ", end='')
             for r in current_t[:10]:
                 print (r.value, end=' ')

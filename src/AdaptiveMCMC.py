@@ -55,7 +55,8 @@ class AdaptiveMCMC:
         for i in range (len (jump)):
             # To make a normal random variable lognormal you should
             # exponentiate it
-            ith_jump = np.exp (jump[i]) - 1
+            lognorm_mean = np.exp (cov[i][i] * cov[i][i] / 2)
+            ith_jump = np.exp (jump[i]) - lognorm_mean 
             new_value = ith_jump + new_t[i].value
             if new_value > 0 and new_value < float ('inf'):
                 new_t[i].value = new_value

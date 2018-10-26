@@ -59,17 +59,20 @@ class MarginalLikelihood:
         params = model.get_all_parameters ()
         for param in params:
             param_original_name = sbml.get_original_param_name (param)
-            if re.search ("Km", param_original_name):
-                rand_param = RandomParameter (param, 2.0, 3333.0)
-            else:
-                rand_param = RandomParameter (param, 1.1, 9.0)
+            # if re.search ("Km", param_original_name):
+                # rand_param = RandomParameter (param, 2.0, 3333.0)
+            # else:
+                # rand_param = RandomParameter (param, 1.1, 9.0)
 
             if param_original_name == "k1":
                 rand_param = RandomParameter (param, 2.0, 0.01)
             if param_original_name == "d1" or param_original_name == "kcat":
                 rand_param = RandomParameter (param, 2.0, 0.1)
+
+            # rand_param = RandomParameter (param, 4, .5)
             theta.append (rand_param)
-        sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
+        # sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
+        sigma = RandomParameter ("experimental_sigma", 1, 1)
         theta.set_experimental_error_parameter (sigma)
         return theta
 
@@ -100,8 +103,8 @@ class MarginalLikelihood:
                 # for r in thetas[j]:
                     # print (r.value, end=' ')
                 # print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
-
-                strat_sum += np.log (p_y_given_theta)
+                if p_y_given_theta > 0:
+                    strat_sum += np.log (p_y_given_theta)
                 j += 1
 
             strat_sum *= (del_strata / strata_size)

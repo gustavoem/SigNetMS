@@ -11,14 +11,14 @@ class MCMCInitialization:
         Multiple Perturbation Measurements of Specific Biochemical 
         Species", Tian-Rui Xu et. al. """
 
-    def __init__ (self, param_list, model, experiments):
+    def __init__ (self, param_list, model, experiments, sigma_update_n):
         """ Default constructor. """
         self.__params = param_list
         self.__model = model
         self.__experiments = experiments
         self.__start_params ()
         self.__sampled_params = []
-        self.__sigma_update_n = 1000
+        self.__sigma_update_n = sigma_update_n
 
 
     def __start_params (self):
@@ -50,7 +50,7 @@ class MCMCInitialization:
         params = self.__params
         jump_sigma = []
         for p in params:
-            sigma = p.value
+            sigma = p.value / 2 
             jump_sigma.append (sigma)
         return jump_sigma
 

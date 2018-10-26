@@ -52,7 +52,10 @@ class LikelihoodFunction:
         system_states = self.__ode.evaluate_on (t)
 
         # returns the state of a variable
-        return np.asarray (system_states[var])
+        if var == "ERKPP":
+            return np.asarray (system_states[var]) / 100
+        else:
+            return np.asarray (system_states[var])
     
 
     def get_experiment_likelihood (self, experiment, theta):

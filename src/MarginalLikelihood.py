@@ -10,6 +10,8 @@ from MCMCInitialization import MCMCInitialization
 from AdaptiveMCMC import AdaptiveMCMC
 from ODES import ODES
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 import random
 import re
 
@@ -18,19 +20,22 @@ class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
     
-    def __init__ (self, init_iterations, adaptive_iterations, 
-            fixed_iterations, n_strata, strata_size):
+    def __init__ (self, init_iterations, sigma_update_n, 
+            adaptive_iterations, fixed_iterations, n_strata, 
+            strata_size):
         """ Default constructor. init_iterations is the number of 
             iterations performed by the MCMCInitialize sampler, which is
             an adaptive sampler that performs independent MCMC on each
-            system variable. adaptive_iterations is the number of 
-            iterations performed in the adaptive phase of AdaptiveMCMC
-            object and fixed_iterations is the number of iterations in 
-            the fixed phase of the same object. n_strata is the number 
-            of strata used in the populational phase of AdaptiveMCMC 
-            (fixed phase), and strata_size is the number of individuals
-            per strata."""
+            system variable. sigma_update_n is the number of iterations
+            before updating sigma in intial phase. adaptive_iterations 
+            is the number of iterations performed in the adaptive phase 
+            of AdaptiveMCMC object and fixed_iterations is the number of 
+            iterations in the fixed phase of the same object. n_strata 
+            is the number of strata used in the populational phase of 
+            AdaptiveMCMC (fixed phase), and strata_size is the number of 
+            individuals per strata."""
         self.__init_iterations = init_iterations
+        self.__sigma_update_n = sigma_update_n
         self.__adaptive_iterations = adaptive_iterations
         self.__fixed_iterations = fixed_iterations
         self.__n_strata = n_strata
@@ -47,8 +52,17 @@ class MarginalLikelihood:
         n_strata = self.__n_strata
         strata_size = self.__strata_size
 
-        mcmc_init = MCMCInitialization (experiments, model, theta_prior)
+        mcmc_init = MCMCInitialization (theta_prior, model, experiments,
+                self.__sigma_update_n)
         start_sample = mcmc_init.get_sample (n_init)
+
+        # print posterior
+        x = np.array ([theta[0].value for theta in start_sample])
+        sns_plot = sns.kdeplot (x)
+        fig = sns_plot.get_figure ()
+        fig.savefig ("posterior_after_first_phase_" + start_sample[0][0].name + ".png")
+
+        
 
         amcmc = AdaptiveMCMC (model, experiments, start_sample, 
                 n_strata, strata_size)

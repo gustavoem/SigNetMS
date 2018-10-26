@@ -4,57 +4,14 @@ from SBMLtoODES import sbml_to_odes
 from Experiment import Experiment
 from ExperimentReader import read_txt_experiment_file 
 from ExperimentReader import read_data_experiment_file 
+from RandomParameterList import RandomParameterList
+from RandomParameter import RandomParameter
 from MarginalLikelihood import MarginalLikelihood
 import numpy as np
+import re
+from sys import argv
 
-which_experiment = 1 
-
-if which_experiment == 0:
-    sbml = SBML ()
-    sbml.load_file ('../input/simple_enzymatic/simple_enzymatic.xml')
-    odes = sbml_to_odes (sbml)
-    # time = np.linspace (0, 500, 100)
-    # odes.overtime_plot (["E", "S", "ES", "P"], time)
-    ex0 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_0.data', 'E')[0]
-    ex1 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_1.data', 'E')[0]
-    ex2 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_2.data', 'E')[0]
-    ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_3.data', 'E')[0]
-    experiments = [ex0, ex1, ex2, ex3]
-    ml = MarginalLikelihood (5000, 2000, 1000, 10, 10)
-    log_l = ml.estimate_marginal_likelihood (experiments, sbml, odes)
-    print ("log_l = " + str (log_l))
-    
-
-elif which_experiment == 1:
-    sbml = SBML ()
-    sbml.load_file ('../input/goodwin3.xml')
-    odes = sbml_to_odes (sbml)
-    experiments = read_data_experiment_file ('../input/goodwin3.data', 
-            'x1')
-    ml = MarginalLikelihood (20000, 500, 500, 10, 20)
-    ml.estimate_marginal_likelihood (experiments, sbml, odes)
-
-else:
-    sbml = SBML ()
-    sbml.load_file ('../input/Kolch/model2.xml')
-    odes = sbml_to_odes (sbml)
-    # time = np.linspace (0, 5000, 100)
-    # odes.overtime_plot (["ERK", "ERKPP"], time)
-
-    experiments = []
-    for i in range (1, 25):
-        ex = read_data_experiment_file ('../input/Kolch/ex_' + str (i) +
-            '.data', 'ERKPP',)[0]
-        experiments.append (ex)
-    ml = MarginalLikelihood (20000, 200, 100, 10, 10)
-    ml.estimate_marginal_likelihood (experiments, sbml, odes)
-    
-
-def __get_theta (self, sbml, model, which_experiment):
+def get_theta (sbml, model, which_experiment):
     """ Given a model, construct a list containing all parameters of 
         the model as random variables. """
     theta_prior = RandomParameterList ()
@@ -74,7 +31,7 @@ def __get_theta (self, sbml, model, which_experiment):
                 rand_param = RandomParameter (param, 2.0, 3333.0)
             else:
                 rand_param = RandomParameter (param, 1.1, 9.0)
-        theta.append (rand_param)
+        theta_prior.append (rand_param)
     
     if which_experiment == 0:
         sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
@@ -83,6 +40,56 @@ def __get_theta (self, sbml, model, which_experiment):
     else:
         sigma = RandomParameter ("experimental_sigma", 2.0, 3333.0)
 
-    theta.set_experimental_error_parameter (sigma)
-    return theta
+    theta_prior.set_experimental_error_parameter (sigma)
+    return theta_prior
 
+
+which_experiment = argv[1] 
+print (which_experiment)
+
+if which_experiment == 0:
+    sbml = SBML ()
+    sbml.load_file ('../input/simple_enzymatic/simple_enzymatic.xml')
+    odes = sbml_to_odes (sbml)
+    ex0 = read_data_experiment_file ('../input/simple_enzymatic/' + \
+            'simple_enzymatic_0.data', 'E')[0]
+    ex1 = read_data_experiment_file ('../input/simple_enzymatic/' + \
+            'simple_enzymatic_1.data', 'E')[0]
+    ex2 = read_data_experiment_file ('../input/simple_enzymatic/' + \
+            'simple_enzymatic_2.data', 'E')[0]
+    ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
+            'simple_enzymatic_3.data', 'E')[0]
+    experiments = [ex0, ex1, ex2, ex3]
+    ml = MarginalLikelihood (5000, 500, 1000, 1000, 10, 10)
+    theta_priors = get_theta (sbml, odes, which_experiment)
+    log_l = ml.estimate_marginal_likelihood (experiments, odes, 
+            theta_priors)
+    print ("log_l = " + str (log_l))
+    
+elif which_experiment == 1:
+    sbml = SBML ()
+    sbml.load_file ('../input/goodwin3.xml')
+    odes = sbml_to_odes (sbml)
+    experiments = read_data_experiment_file ('../input/goodwin3.data', 
+            'x1')
+    theta_priors = get_theta (sbml, odes, which_experiment)
+    ml = MarginalLikelihood (20000, 1000, 500, 500, 10, 10)
+    log_l = ml.estimate_marginal_likelihood (experiments, odes, 
+            theta_priors)
+    print ("log_l = " + str (log_l))
+
+else:
+    sbml = SBML ()
+    sbml.load_file ('../input/Kolch/model2.xml')
+    odes = sbml_to_odes (sbml)
+
+    experiments = []
+    for i in range (1, 25):
+        ex = read_data_experiment_file ('../input/Kolch/ex_' + str (i) +
+            '.data', 'ERKPP',)[0]
+        experiments.append (ex)
+    theta_priors = get_theta (sbml, odes, which_experiment)
+    ml = MarginalLikelihood (50000, 1000, 10000, 2000, 10, 10)
+    log_l = ml.estimate_marginal_likelihood (experiments, odes, 
+            theta_priors)
+    print ("log_l = " + str (log_l))

@@ -52,3 +52,37 @@ else:
         experiments.append (ex)
     ml = MarginalLikelihood (20000, 200, 100, 10, 10)
     ml.estimate_marginal_likelihood (experiments, sbml, odes)
+    
+
+def __get_theta (self, sbml, model, which_experiment):
+    """ Given a model, construct a list containing all parameters of 
+        the model as random variables. """
+    theta_prior = RandomParameterList ()
+    params = model.get_all_parameters ()
+
+    for param in params:
+        param_original_name = sbml.get_original_param_name (param)
+        if which_experiment == 0:
+            if param_original_name == "k1":
+                rand_param = RandomParameter (param, 2.0, 0.01)
+            if param_original_name == "d1" or param_original_name == "kcat":
+                rand_param = RandomParameter (param, 2.0, 0.1)
+        elif which_experiment == 1:
+            rand_param = RandomParameter (param, 4, .5)
+        else:
+            if re.search ("Km", param_original_name):
+                rand_param = RandomParameter (param, 2.0, 3333.0)
+            else:
+                rand_param = RandomParameter (param, 1.1, 9.0)
+        theta.append (rand_param)
+    
+    if which_experiment == 0:
+        sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
+    elif which_experiment == 1:
+        sigma = RandomParameter ("experimental_sigma", 1, 1)
+    else:
+        sigma = RandomParameter ("experimental_sigma", 2.0, 3333.0)
+
+    theta.set_experimental_error_parameter (sigma)
+    return theta
+

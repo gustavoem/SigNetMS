@@ -37,44 +37,26 @@ class MarginalLikelihood:
         self.__strata_size = strata_size
 
 
-    def estimate_marginal_likelihood (self, experiments, sbml, model):
+    def estimate_marginal_likelihood (self, experiments, model, 
+            theta_prior):
         """ This function estimates the marginal likelihood of a  model.
         """
-        theta = self.__get_theta (sbml, model)
-        mcmc_init = MCMCInitialization (theta, model, experiments)
-        start_sample = mcmc_init.get_sample (self.__init_iterations)
-        N1, N2 = self.__adaptive_iterations, self.__fixed_iterations
+        n_init = self.__init_iterations
+        n_adap = self.__adaptive_iterations
+        n_fixed = self.__fixed_iterations
+        n_strata = self.__n_strata
+        strata_size = self.__strata_size
+
+        mcmc_init = MCMCInitialization (experiments, model, theta_prior)
+        start_sample = mcmc_init.get_sample (n_init)
+
         amcmc = AdaptiveMCMC (model, experiments, start_sample, 
-                self.__n_strata, self.__strata_size)
-        betas, thetas = amcmc.get_sample (N1, N2)
+                n_strata, strata_size)
+        betas, thetas = amcmc.get_sample (n_adap, n_fixed)
+
         ml = self.__calculate_marginal_likelihood (model, experiments,
                 betas, thetas)
         return ml
-
-
-    def __get_theta (self, sbml, model):
-        """ Given a model, construct a list containing all parameters of 
-        the model as random variables. """
-        theta = RandomParameterList ()
-        params = model.get_all_parameters ()
-        for param in params:
-            param_original_name = sbml.get_original_param_name (param)
-            # if re.search ("Km", param_original_name):
-                # rand_param = RandomParameter (param, 2.0, 3333.0)
-            # else:
-                # rand_param = RandomParameter (param, 1.1, 9.0)
-
-            if param_original_name == "k1":
-                rand_param = RandomParameter (param, 2.0, 0.01)
-            if param_original_name == "d1" or param_original_name == "kcat":
-                rand_param = RandomParameter (param, 2.0, 0.1)
-
-            # rand_param = RandomParameter (param, 4, .5)
-            theta.append (rand_param)
-        # sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
-        sigma = RandomParameter ("experimental_sigma", 1, 1)
-        theta.set_experimental_error_parameter (sigma)
-        return theta
 
 
     def __calculate_marginal_likelihood (self, model, experiments, 

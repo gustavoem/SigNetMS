@@ -50,7 +50,7 @@ class MCMCInitialization:
         params = self.__params
         jump_sigma = []
         for p in params:
-            sigma = p.value / 2 
+            sigma = np.log (p.value + 1)
             jump_sigma.append (sigma)
         return jump_sigma
 

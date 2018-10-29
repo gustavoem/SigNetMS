@@ -16,9 +16,12 @@ def get_theta (sbml, model, which_experiment):
         the model as random variables. """
     theta_prior = RandomParameterList ()
     params = model.get_all_parameters ()
-
+    
+    print (params)
+    
     for param in params:
         param_original_name = sbml.get_original_param_name (param)
+        
         if which_experiment == 0:
             if param_original_name == "k1":
                 rand_param = RandomParameter (param, 2.0, 0.01)
@@ -44,8 +47,7 @@ def get_theta (sbml, model, which_experiment):
     return theta_prior
 
 
-which_experiment = argv[1] 
-print (which_experiment)
+which_experiment = int (argv[1])
 
 if which_experiment == 0:
     sbml = SBML ()

@@ -14,15 +14,21 @@ class TestExperimentReader (unittest.TestCase):
         self.assertEqual (len (data), 25)
         exp0_data = data[0]
         self.assertEqual (len (exp0_data.times), 6)
-        self.assertEqual (exp0_data.var, "ERK")
+        self.assertEqual (exp0_data.measure_expression, "ERK")
         self.assertEqual (len (exp0_data.values), 6)
 
     def test_read_data_experiment (self):
         """ Tests if the module can read a data experiment file. """
         data = read_data_experiment_file ("input/goodwin3.data", "x1")
-        self.assertEqual (len (data), 1)
+        self.assertEqual (len (data), 2)
         exp0_data = data[0]
         self.assertEqual (len (exp0_data.times), 80)
-        self.assertEqual (exp0_data.var, "x1")
+        self.assertEqual (exp0_data.measure_expression, "x1")
         self.assertEqual (len (exp0_data.values), 80)
         
+    def test_read_multiple_measurements (self):
+        """ Tests if the module can read a data experiment with multiple
+            measurements. """
+        data = read_data_experiment_file ("input/goodwin3.data", "x1")
+        self.assertEqual (len (data), 2)
+

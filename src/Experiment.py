@@ -3,11 +3,11 @@ from lxml import etree
 class Experiment:
     """ This class stores experiments. """
 
-    def __init__ (self, times, values, var):
+    def __init__ (self, times, values, measure):
         """ Default constructor. The list times represents the times
             of each read in values. var is the name of the variable read
             on those reads. """
-        self.var = var
+        self.measure_expression = measure
         self.times = times
         self.values = values
 
@@ -41,4 +41,5 @@ class Experiment:
         var_interp.set ("col", "1")
 
         tree = etree.ElementTree (root)
-        tree.write(file_name, pretty_print=True, encoding='utf-8', standalone=True, xml_declaration=True) 
+        tree.write(file_name, pretty_print=True, encoding='utf-8', 
+                standalone=True, xml_declaration=True) 

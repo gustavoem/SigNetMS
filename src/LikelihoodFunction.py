@@ -64,9 +64,8 @@ class LikelihoodFunction:
             random parameters are theta. Initial variable values are
             stored in the ode object. """
         t = experiment.times
-        var = experiment.var
-        X_sys = self.__get_system_state (var, t, theta)
-        var = experiment.var
+        measure_expression = experiment.measure_expression
+        X_sys = self.__get_system_state (measure_expression, t, theta)
         X_obs = experiment.values
         sigma = theta.get_experimental_error ()
         return self.__calculate_likelihood (X_sys, X_obs, sigma)
@@ -75,10 +74,10 @@ class LikelihoodFunction:
     def get_experiments_likelihood (self, experiments, theta):
         """ Given a list of independent experiments that happens all 
             with the same time intervals and with respect to the same 
-            variable, calculates the likelihood of all expeirments. """
+            measure, calculates the likelihood of all expeirments. """
         t = experiments[0].times
-        var = experiments[0].var
-        X_sys = self.__get_system_state (var, t, theta)
+        measure_expression = experiments[0].measure_expression
+        X_sys = self.__get_system_state (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
         # print ("X_sys: " + str (X_sys))
         l = 1

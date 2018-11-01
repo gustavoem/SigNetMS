@@ -62,7 +62,7 @@ if which_experiment == 0:
     ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
             'simple_enzymatic_3.data', 'E')[0]
     experiments = [ex0, ex1, ex2, ex3]
-    ml = MarginalLikelihood (5000, 500, 1000, 1000, 10, 10)
+    ml = MarginalLikelihood (100, 500, 500, 500, 10, 10)
     theta_priors = get_theta (sbml, odes, which_experiment)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)

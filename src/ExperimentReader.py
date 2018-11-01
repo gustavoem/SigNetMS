@@ -64,13 +64,17 @@ def read_data_experiment_file (file_name, var):
             interpretation = read_interpretation (children, file_name)
         else:
             print ("Unexpected child of dataset in" + file_name)
-
+    
+    experiments = []
     time_idx = interpretation.index ("time")
-    var_idx = interpretation.index (var)
     times = values[time_idx]
-    var_values = values[var_idx]
-    experiment = Experiment (times, var_values, var)
-    return [experiment]
+    del interpretation[time_idx]
+    for i in range (len (interpretation)):
+        expression = interpretation[i]
+        var_values = values[i]
+        experiment = Experiment (times, var_values, var)
+        experiments.append (experiment)
+    return experiments
 
 
 def read_interpretation (interp, file_name):

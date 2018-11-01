@@ -7,6 +7,7 @@
 import numpy as np
 from scipy.stats import lognorm
 import RandomParameter
+from asteval import Interpreter
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data
@@ -37,26 +38,24 @@ class LikelihoodFunction:
         return likeli
 
 
-    def __get_system_state (self, var, t, theta):
-        """ Calculates the state of the variable var on times t and with 
+    def __get_sys_measure (self, measure_expression, t, theta):
+        """ Calculates the values of the measure on times t and with 
             theta parameters. theta should be a RandomParameter object. """
         if (theta is not None):
             for param in theta.get_model_parameters ():
                 self.__ode.define_parameter (param.name, param.value)
 
-        # TODO: the likelihood should be on a measurement of the system
-        # and not directly on the state.
-        # We could create this measure as a variable on the sbml model!
-        # That would make the result of this function just the value of
-        # this variable
         system_states = self.__ode.evaluate_on (t)
+        aeval = Interpreter ()
 
-        # returns the state of a variable
-        if var == "ERKPP":
-            return np.asarray (system_states[var]) / 100
-        else:
-            return np.asarray (system_states[var])
-    
+        sys_measures = []
+        for i in range (len (t)):
+            for var in system_states:
+                aeval.symtable[var] = system_states[var][i]
+            measure_value = aeval (measure_expression)
+            sys_measures.append (measure_value)
+            
+        return sys_measures 
 
     def get_experiment_likelihood (self, experiment, theta):
         """ Given an experiment, what is the probability that the values
@@ -64,9 +63,8 @@ class LikelihoodFunction:
             random parameters are theta. Initial variable values are
             stored in the ode object. """
         t = experiment.times
-        var = experiment.var
-        X_sys = self.__get_system_state (var, t, theta)
-        var = experiment.var
+        measure_expression = experiment.measure_expression
+        X_sys = self.__get_sys_measure (measure_expression, t, theta)
         X_obs = experiment.values
         sigma = theta.get_experimental_error ()
         return self.__calculate_likelihood (X_sys, X_obs, sigma)
@@ -75,12 +73,12 @@ class LikelihoodFunction:
     def get_experiments_likelihood (self, experiments, theta):
         """ Given a list of independent experiments that happens all 
             with the same time intervals and with respect to the same 
-            variable, calculates the likelihood of all expeirments. """
+            measure, calculates the likelihood of all expeirments. """
         t = experiments[0].times
-        var = experiments[0].var
-        X_sys = self.__get_system_state (var, t, theta)
+        measure_expression = experiments[0].measure_expression
+        X_sys = self.__get_sys_measure (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
-        # print ("X_sys: " + str (X_sys))
+        # print ("\nX_sys: " + str (X_sys))
         l = 1
         for exp in experiments:
             X_obs = exp.values

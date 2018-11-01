@@ -68,8 +68,9 @@ def read_data_experiment_file (file_name, var):
     experiments = []
     time_idx = interpretation.index ("time")
     times = values[time_idx]
-    del interpretation[time_idx]
     for i in range (len (interpretation)):
+        if i == time_idx:
+            continue
         expression = interpretation[i]
         var_values = values[i]
         experiment = Experiment (times, var_values, var)

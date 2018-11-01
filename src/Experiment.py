@@ -37,7 +37,7 @@ class Experiment:
         time_interp = etree.SubElement (interpretation, "time")
         time_interp.set ("col", "0")
         var_interp = etree.SubElement (interpretation, "readout")
-        var_interp.set ("expression", self.var)
+        var_interp.set ("expression", self.measure_expression)
         var_interp.set ("col", "1")
 
         tree = etree.ElementTree (root)

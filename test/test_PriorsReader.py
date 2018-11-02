@@ -11,10 +11,10 @@ class TestPriorsReader (unittest.TestCase):
             file. """
         priors = read_priors_file ('input/simple_enzymatic.priors')
         for x in priors:
-            if x.name == 'd1':
+            if x.name == 'k1':
                 self.assertEqual (x.get_a (), 2.0)
                 self.assertEqual (x.get_b (), 0.01)
-            elif x.name == 'k1' or x.name == 'kcat':
+            elif x.name == 'd1' or x.name == 'kcat':
                 self.assertEqual (x.get_a (), 2.0)
                 self.assertEqual (x.get_b (), 0.1)
             else:

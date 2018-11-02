@@ -1,5 +1,6 @@
 from Experiment import Experiment
 from lxml import etree
+from utils import clean_tag
 
 def read_txt_experiment_file (file_name, var):
     """ This function can read experiment files. The experiment data is 
@@ -36,11 +37,6 @@ def read_txt_experiment_file (file_name, var):
 
     f.close ()
     return experiments
-
-
-def clean_tag (xmlnode):
-    """ Removes the namespace of an element tag. """
-    return etree.QName (xmlnode.tag).localname
 
 
 def read_data_experiment_file (file_name):

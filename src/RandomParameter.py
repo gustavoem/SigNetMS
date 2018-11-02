@@ -5,7 +5,7 @@ class RandomParameter:
     
     def __init__ (self, name, a, b):
         """ Default constructor. Instantiate a gamma distributed 
-            parameter with shape a and inverse scale parameter b. """
+            parameter with shape a and scale parameter b. """
         self.name = name
         self.__a = a
         self.__b = b

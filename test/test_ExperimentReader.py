@@ -19,7 +19,7 @@ class TestExperimentReader (unittest.TestCase):
 
     def test_read_data_experiment (self):
         """ Tests if the module can read a data experiment file. """
-        data = read_data_experiment_file ("input/goodwin3.data", "x1")
+        data = read_data_experiment_file ("input/goodwin3.data")
         self.assertEqual (len (data), 2)
         exp0_data = data[0]
         self.assertEqual (len (exp0_data.times), 80)
@@ -29,6 +29,6 @@ class TestExperimentReader (unittest.TestCase):
     def test_read_multiple_measurements (self):
         """ Tests if the module can read a data experiment with multiple
             measurements. """
-        data = read_data_experiment_file ("input/goodwin3.data", "x1")
+        data = read_data_experiment_file ("input/goodwin3.data")
         self.assertEqual (len (data), 2)
 

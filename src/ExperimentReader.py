@@ -43,8 +43,7 @@ def clean_tag (xmlnode):
     return etree.QName (xmlnode.tag).localname
 
 
-
-def read_data_experiment_file (file_name, var):
+def read_data_experiment_file (file_name):
     """ This function can read data experiment files. The experiment 
         data is organized in a list of Experiment objects. """
     tree = etree.parse (file_name)
@@ -73,7 +72,7 @@ def read_data_experiment_file (file_name, var):
             continue
         expression = interpretation[i]
         var_values = values[i]
-        experiment = Experiment (times, var_values, var)
+        experiment = Experiment (times, var_values, expression)
         experiments.append (experiment)
     return experiments
 

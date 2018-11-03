@@ -39,7 +39,7 @@ class RandomParameterList:
         if self.__experimental_error != None:
             last_idx = -1
             sigma_cpy = self.__experimental_error.copy ()
-            copy.set_experimental_error_parameter (sigma_cpy)
+            copy.set_experimental_error (sigma_cpy)
 
         for p in self.__param_list[:last_idx]:
             copy.append (p.copy ()) 

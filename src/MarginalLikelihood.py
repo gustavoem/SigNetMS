@@ -9,9 +9,8 @@ from LikelihoodFunction import LikelihoodFunction
 from MCMCInitialization import MCMCInitialization
 from AdaptiveMCMC import AdaptiveMCMC
 from ODES import ODES
+from utils import plot_theta_var_sample
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import random
 import re
 
@@ -57,10 +56,9 @@ class MarginalLikelihood:
         start_sample = mcmc_init.get_sample (n_init)
 
         # print posterior
-        x = np.array ([theta[0].value for theta in start_sample])
-        sns_plot = sns.kdeplot (x)
-        fig = sns_plot.get_figure ()
-        fig.savefig ("posterior_after_first_phase_" + start_sample[0][0].name + ".png")
+        figname = "posterior_after_first_phase_" + \
+                start_sample[0][0].name + ".png"
+        plot_theta_var_sample (start_sample, 0, figname)
 
         
 

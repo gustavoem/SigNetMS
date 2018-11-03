@@ -2,10 +2,9 @@ import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from CovarianceMatrix import calc_covariance
 from utils import safe_power
+from utils import plot_theta_var_sample
 
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 class AdaptiveMCMC:
     """ This class receives a current sample from a target distribution
@@ -197,10 +196,10 @@ class AdaptiveMCMC:
                 theta_chains[j + 1] = aux
         
         # print posterior
-        x = np.array ([theta[0].value for theta in theta_chains])
-        sns_plot = sns.kdeplot (x)
-        fig = sns_plot.get_figure ()
-        fig.savefig ("posterior_after_third_phase_" + theta_chains[0][0].name + ".png")
+        figname = "posterior_after_third_phase_" + \
+                theta_chains[0][0].name + ".png"
+        plot_theta_var_sample (theta_chains, 0, figname)
+        
         return (betas, theta_chains)
 
 
@@ -214,10 +213,10 @@ class AdaptiveMCMC:
         self.__adapting_phase (N1)
         
         # print posterior
-        x = np.array ([theta[0].value for theta in self.__sampled_params])
-        sns_plot = sns.kdeplot (x)
-        fig = sns_plot.get_figure ()
-        fig.savefig ("posterior_after_second_phase_" + self.__sampled_params[0][0].name + ".png")
+        figname = "posterior_after_second_phase_" + \
+                self.__sampled_params[0][0].name + ".png"
+        plot_theta_var_sample (self.__sampled_params, 0, figname)
+
         
         print ("FIXED PHASE")
         return self.__fixed_phase (N2)

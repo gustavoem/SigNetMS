@@ -1,6 +1,5 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
-import matplotlib.pyplot as plt
 
 class MCMCInitialization:
     """ This class is able to return a sample of theta using an adaptive

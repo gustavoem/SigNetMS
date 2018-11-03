@@ -17,8 +17,6 @@ def get_theta (sbml, model, which_experiment):
     theta_prior = RandomParameterList ()
     params = model.get_all_parameters ()
     
-    print (params)
-    
     for param in params:
         param_original_name = sbml.get_original_param_name (param)
         
@@ -53,16 +51,17 @@ if which_experiment == 0:
     sbml = SBML ()
     sbml.load_file ('../input/simple_enzymatic/simple_enzymatic.xml')
     odes = sbml_to_odes (sbml)
+    
     ex0 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_0.data', 'E')[0]
+            'simple_enzymatic_0.data')[0]
     ex1 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_1.data', 'E')[0]
+            'simple_enzymatic_1.data')[0]
     ex2 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_2.data', 'E')[0]
+            'simple_enzymatic_2.data')[0]
     ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
-            'simple_enzymatic_3.data', 'E')[0]
+            'simple_enzymatic_3.data')[0]
     experiments = [ex0, ex1, ex2, ex3]
-    ml = MarginalLikelihood (100, 500, 500, 500, 10, 10)
+    ml = MarginalLikelihood (1000, 500, 500, 500, 10, 10)
     theta_priors = get_theta (sbml, odes, which_experiment)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)

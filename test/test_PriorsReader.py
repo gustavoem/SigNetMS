@@ -20,3 +20,10 @@ class TestPriorsReader (unittest.TestCase):
             else:
                 self.fail ()
 
+    def test_sigma_prior (self):
+        """ Tests if the module can read the experimental error 
+            prior. """
+        priors = read_priors_file ('input/simple_enzymatic.priors')
+        sigma = priors.get_experimental_error ()
+        self.assertEqual (sigma.get_a (), 2.0)
+        self.assertEqual (sigma.get_b (), 2.6)

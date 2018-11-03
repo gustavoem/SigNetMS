@@ -19,7 +19,13 @@ def read_priors_file (filename):
             name = attribs["name"]
             a = float (attribs["a"])
             b = float (attribs["b"])
-            
             priors.append (RandomParameter (name, a, b))
+        elif clean_tag (children) == "experimental_error":
+            name = attribs["name"]
+            a = float (attribs["a"])
+            b = float (attribs["b"])
+            priors.set_experimental_error (RandomParameter (name, a ,b))
+        else:
+            print ("Warning: unindentified prior definition on " + filename)
 
     return priors

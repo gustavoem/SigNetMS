@@ -43,7 +43,7 @@ def get_theta (sbml, model, which_experiment):
     else:
         sigma = RandomParameter ("experimental_sigma", 2.0, 3333.0)
 
-    theta_prior.set_experimental_error_parameter (sigma)
+    theta_prior.set_experimental_error (sigma)
     return theta_prior
 
 

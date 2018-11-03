@@ -3,4 +3,6 @@
     <prior distribution="gamma" a="2.0" b="0.01" name="k1"/>
     <prior distribution="gamma" a="2.0" b="0.1" name="d1"/>
     <prior distribution="gamma" a="2.0" b="0.1" name="kcat"/>
+    <experimental_error distribution="gamma" a="2.0" b="2.6" 
+        name="Sigma"/>
 </priors>

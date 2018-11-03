@@ -46,7 +46,7 @@ class RandomParameterList:
         return copy
 
 
-    def set_experimental_error_parameter (self, p):
+    def set_experimental_error (self, p):
         """ Sets the random parameter that represents the experimental
             error. """
         self.__param_list.append (p)

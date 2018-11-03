@@ -21,7 +21,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         self.theta = RandomParameterList ()
         sigma = RandomParameter ("sigma", 1, 1)
         sigma.value = 1.0
-        self.theta.set_experimental_error_parameter (sigma)
+        self.theta.set_experimental_error (sigma)
         
 
 

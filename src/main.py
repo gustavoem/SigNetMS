@@ -7,6 +7,7 @@ from ExperimentReader import read_data_experiment_file
 from RandomParameterList import RandomParameterList
 from RandomParameter import RandomParameter
 from MarginalLikelihood import MarginalLikelihood
+from PriorsReader import read_priors_file
 import numpy as np
 import re
 from sys import argv
@@ -20,12 +21,7 @@ def get_theta (sbml, model, which_experiment):
     for param in params:
         param_original_name = sbml.get_original_param_name (param)
         
-        if which_experiment == 0:
-            if param_original_name == "k1":
-                rand_param = RandomParameter (param, 2.0, 0.01)
-            if param_original_name == "d1" or param_original_name == "kcat":
-                rand_param = RandomParameter (param, 2.0, 0.1)
-        elif which_experiment == 1:
+        if which_experiment == 1:
             rand_param = RandomParameter (param, 4, .5)
         else:
             if re.search ("Km", param_original_name):
@@ -34,9 +30,7 @@ def get_theta (sbml, model, which_experiment):
                 rand_param = RandomParameter (param, 1.1, 9.0)
         theta_prior.append (rand_param)
     
-    if which_experiment == 0:
-        sigma = RandomParameter ("experimental_sigma", 2.0, 2.6)
-    elif which_experiment == 1:
+    if which_experiment == 1:
         sigma = RandomParameter ("experimental_sigma", 1, 1)
     else:
         sigma = RandomParameter ("experimental_sigma", 2.0, 3333.0)
@@ -61,8 +55,9 @@ if which_experiment == 0:
     ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
             'simple_enzymatic_3.data')[0]
     experiments = [ex0, ex1, ex2, ex3]
-    ml = MarginalLikelihood (1000, 500, 500, 500, 10, 10)
-    theta_priors = get_theta (sbml, odes, which_experiment)
+    ml = MarginalLikelihood (5000, 1000, 1000, 1000, 100, 100)
+    theta_priors = read_priors_file ('../input/simple_enzymatic/' + \
+            'simple_enzymatic.priors')
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     print ("log_l = " + str (log_l))
@@ -83,6 +78,8 @@ else:
     sbml = SBML ()
     sbml.load_file ('../input/Kolch/model2.xml')
     odes = sbml_to_odes (sbml)
+    t = np.linspace (0, 120, 200)
+    odes.overtime_plot (['EGF', 'ERK', 'ERKPP'], t)
 
     experiments = []
     for i in range (1, 25):

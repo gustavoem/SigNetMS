@@ -79,6 +79,12 @@ class RandomParameterList:
         """ Returns the experimental error value. """
         return self.__experimental_error.value
 
+
+    def get_experimental_error_distribution (self):
+        """ Returns a copy of the RandomParameter that defines the 
+            distribution of the experimental error. """
+        return self.__experimental_error.copy ()
+
     
     def get_model_parameters (self):
         """ Returns all but the experimental error parameters. """

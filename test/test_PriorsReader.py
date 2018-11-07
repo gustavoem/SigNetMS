@@ -38,5 +38,7 @@ class TestPriorsReader (unittest.TestCase):
         model = SBML ()
         model.load_file ("input/model1.xml")
         theta = define_sbml_params_priors (model, 'input/model1.priors')
-        self.assertEqual (theta.get_size (), 
+        self.assertEqual (theta.get_size () - 1, 
                 len (model.get_all_param ()))
+        sigma = theta.get_experimental_error ()
+        assert (sigma > 0)

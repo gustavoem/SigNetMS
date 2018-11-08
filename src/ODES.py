@@ -63,12 +63,21 @@ class ODES:
         return self.param_table
 
 
-    def evaluate_on (self, time_points):
+    def evaluate_on (self, time_points, initial_state_map=None):
         """ Returns the state of the systems variables at the specified
-            time points. """
+            time points. initial_state_map is an optional parameter 
+            that shoud contain a map variable -> value that is used
+            to modify the initial state of a few (or even all) variables
+            of the system. """
+        initial_state = self.initial_state.copy ()
+        if initial_state_map != None:
+            for var in initial_state_map:
+                idx = self.index_map[var]
+                initial_state[idx] = initial_state_map[var]
+
         sys_function = self.__create_system_function ()
-        y, infodict = odeint (sys_function, self.initial_state, 
-                time_points, mxstep=1000,full_output=True)
+        y, infodict = odeint (sys_function, initial_state, time_points, 
+                mxstep=1000,full_output=True)
         # print ()
         # print (infodict)
         values_map = {}

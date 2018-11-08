@@ -1,3 +1,4 @@
+asteval==0.9.13
 cycler==0.10.0
 kiwisolver==1.0.1
 lxml==4.2.5

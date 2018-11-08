@@ -3,6 +3,8 @@ sys.path.insert (0, '../src/')
 
 import unittest
 from PriorsReader import read_priors_file
+from PriorsReader import define_sbml_params_priors 
+from SBML import SBML
 
 class TestPriorsReader (unittest.TestCase):
 
@@ -27,4 +29,16 @@ class TestPriorsReader (unittest.TestCase):
             prior. """
         priors = read_priors_file ('input/simple_enzymatic.priors')
         sigma = priors.get_experimental_error ()
+        assert (sigma > 0)
+
+
+    def test_with_sbml (self):
+        """ Tests if the module can define the prior of sbml parameters.
+        """
+        model = SBML ()
+        model.load_file ("input/model1.xml")
+        theta = define_sbml_params_priors (model, 'input/model1.priors')
+        self.assertEqual (theta.get_size () - 1, 
+                len (model.get_all_param ()))
+        sigma = theta.get_experimental_error ()
         assert (sigma > 0)

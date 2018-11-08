@@ -128,6 +128,20 @@ class TestODESMethods (unittest.TestCase):
             analytic = 1 / (1 - t[i])
             assert (abs (y["x"][i] - analytic) < 1e-2)
 
+    def test_solve_with_arbitrary_initial_state (self):
+        """ Tests if one can solve an ODES with an arbitrary initial 
+            state set as a parameter. """
+        odes = ODES ()
+        # dx1 (t)/dt = x1 (t)
+        # Solution is x1 (t) = 10 * exp (t) when x1(0) = 10
+        odes.add_equation ("x1", "x1")
+        odes.define_initial_value ("x1", 1.0)
+        t = np.linspace (0, 2, 11)
+        initial_state = {"x1": 10.0}
+        y = odes.evaluate_on (t, initial_state)
+        for i in range (len (t)):
+            analytic = 10 * math.exp (t[i])
+            assert (abs (y["x1"][i] - analytic) < 1e-2)
 
 if __name__ == '__main__':
     unittest.main ()

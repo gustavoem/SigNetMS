@@ -35,9 +35,9 @@ class MCMCInitialization:
         for i in range (new_t.get_size ()):
             p = new_t[i]
             jump_s = jump_sigma[i]
-            lognorm_mean = np.exp (jump_s * jump_s / 2)
-            pjump = np.random.lognormal (0, jump_s) - lognorm_mean
-            new_value = pjump + p.value
+            lognormal_mean = np.exp (jump_s * jump_s / 2)
+            jump = np.random.lognormal (0, jump_s)
+            new_value = jump + p.value - lognormal_mean
             if new_value > 0 and new_value < float ('inf'):
                 p.value = new_value
         return new_t
@@ -49,8 +49,11 @@ class MCMCInitialization:
         params = self.__params
         jump_sigma = []
         for p in params:
-            sigma = np.log (p.value + 1)
-            jump_sigma.append (sigma)
+            a = p.get_a ()
+            b = p.get_b ()
+
+            sigma2 = np.log (np.sqrt (a * b) + 1)
+            jump_sigma.append (np.sqrt (sigma2))
         return jump_sigma
 
 

@@ -87,10 +87,11 @@ class ODES:
         return values_map
 
 
-    def overtime_plot (self, var_list, t):
+    def overtime_plot (self, var_list, t, initial_state_map=None, 
+            filename=''):
         """ Plots the values of a variable VAR over time t. """
-        values_map = self.evaluate_on (t)
-        ODES.__plot (values_map, var_list, t)
+        values_map = self.evaluate_on (t, initial_state_map)
+        ODES.__plot (values_map, var_list, t, filename)
 
 
     # possible speedup: call this function only when it's necessary
@@ -213,7 +214,7 @@ class ODES:
 
 
     @staticmethod
-    def __plot (values_map, var_list, t):
+    def __plot (values_map, var_list, t, filename):
         """ Plots values of vars in var_list that were observed on time 
             t. """
         legend = []
@@ -222,4 +223,8 @@ class ODES:
             values = values_map[var]
             plt.plot (t, values)
         plt.legend (legend)
-        plt.show ()
+        if filename:
+            plt.savefig (filename)
+        else:
+            plt.show ()
+        plt.clf ()

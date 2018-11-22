@@ -35,8 +35,13 @@ class MCMCInitialization:
         for i in range (new_t.get_size ()):
             p = new_t[i]
             jump_s = jump_sigma[i]
-            lognormal_mean = np.exp (jump_s * jump_s / 2)
-            jump = np.random.lognormal (0, jump_s)
+            normal_mean = np.log (p.value) - jump_s * jump_s / 2
+            # If X is lognormal (mu, sigma), then E[X] is 
+            #     exp (mu + sigma * sigma / 2)
+            # If we set X as lognormal (log (mu) - sigma*sigma/2, sigma)
+            # then E[X] is 
+            #     exp (log (mu)) = mu
+            jump = np.random.lognormal (normal_mean, jump_s)
             new_value = jump + p.value - lognormal_mean
             if new_value > 0 and new_value < float ('inf'):
                 p.value = new_value
@@ -51,7 +56,6 @@ class MCMCInitialization:
         for p in params:
             a = p.get_a ()
             b = p.get_b ()
-
             sigma2 = np.log (np.sqrt (a * b) + 1)
             jump_sigma.append (np.sqrt (sigma2))
         return jump_sigma
@@ -97,7 +101,8 @@ class MCMCInitialization:
 
             if new_l > 0:
                 if old_l != 0:
-                    r = new_l / old_l
+                    # AQUI
+                    r = (new_l / old_l) *
                 if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1
                     current_t = new_t

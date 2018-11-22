@@ -34,7 +34,7 @@ class TestLognormal (unittest.TestCase):
         # If the underlying Normal distribution is N (mu, s²) then,
         # the pdf of X is f(x):
         # 1/sqrt (2pi * s²) exp (-(ln(x) - mu)²/(2 * s²)) * 1/x
-        analytic = (1 / sqrt (2 * np.pi * s * s)) \
+        analytic = (1 / np.sqrt (2 * np.pi * s * s)) \
                     * np.exp (-(np.log (x) - mu) ** 2 / (2 * s * s)) \
                     * (1 / x)
         assert (abs (X.pdf (x) - analytic) < 1e-4)

@@ -135,13 +135,15 @@ class ODES:
         for i in range (len (self.rate_eq)):
             J_functions.append ([])
             f_i = self.rate_eq[i]
+            
+            J_functions[i] = [None for x in range (len (self.rate_eq))]
 
             # For each var we calculate  df_i/dx_j
             for var in self.index_map:
                 j = self.index_map[var]
                 dfdvar = ODES.__derivate (f_i, var)
                 J_ij = ODES.__formula_to_lambda (dfdvar)
-                J_functions[i].append (J_ij)
+                J_functions[i][j] = J_ij
         
         # J is a matrix of lambdas
         # define a function here that returns the J matrix evaluated

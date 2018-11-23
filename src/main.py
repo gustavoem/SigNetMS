@@ -55,7 +55,7 @@ if which_experiment == 0:
     ex3 = read_data_experiment_file ('../input/simple_enzymatic/' + \
             'simple_enzymatic_3.data')[0]
     experiments = [ex0, ex1, ex2, ex3]
-    ml = MarginalLikelihood (5000, 1000, 1000, 1000, 100, 100)
+    ml = MarginalLikelihood (50000, 1000, 1000, 1000, 100, 100)
     theta_priors = read_priors_file ('../input/simple_enzymatic/' + \
             'simple_enzymatic.priors')
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 

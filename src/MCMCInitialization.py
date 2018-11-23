@@ -1,5 +1,10 @@
+import sys
+sys.path.insert (0, './distributions/')
+
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
+from Lognormal import Lognormal
+
 
 class MCMCInitialization:
     """ This class is able to return a sample of theta using an adaptive
@@ -30,7 +35,8 @@ class MCMCInitialization:
     def __propose_independent_t (self, current_t, jump_sigma):
         """ Given theta, propose a new theta, jumping each parameter
             indepenntly accorind to a lognormal distribution with
-            mean zero and sqrt (variance) = sigma. """
+            mean zero and sqrt (variance) = sigma. Returns a tuple 
+            containing a new list of parameter and its likelihood."""
         new_t = current_t.get_copy ()
         for i in range (new_t.get_size ()):
             p = new_t[i]
@@ -41,11 +47,25 @@ class MCMCInitialization:
             # If we set X as lognormal (log (mu) - sigma*sigma/2, sigma)
             # then E[X] is 
             #     exp (log (mu)) = mu
-            jump = np.random.lognormal (normal_mean, jump_s)
-            new_value = jump + p.value - lognormal_mean
-            if new_value > 0 and new_value < float ('inf'):
-                p.value = new_value
+            jump_dist = Lognormal (normal_mean, jump_s)
+            new_value = jump_dist.rvs ()
+            p.value = new_value
         return new_t
+
+
+    def __calc_jump_prob (self, t1, t2, jump_sigma):
+        """ Calculates the probability of jumping from one set of 
+            parameters to another. That is, returns 
+            P (theta^t = t2 | theta^{t-1} = t1). """
+        p = 1
+        for i in range (t1.get_size ()):
+            t1_param = t1[i].value
+            t2_param = t2[i].value
+            s = jump_sigma[i]
+            mean = np.log (t1_param) - s * s / 2
+            jump_dist = Lognormal (mean, s)
+            p *= jump_dist.pdf (t2_param)
+        return p
 
 
     def __init_jump_sigma (self):
@@ -57,7 +77,7 @@ class MCMCInitialization:
             a = p.get_a ()
             b = p.get_b ()
             sigma2 = np.log (np.sqrt (a * b) + 1)
-            jump_sigma.append (np.sqrt (sigma2))
+            jump_sigma.append (2 * np.sqrt (sigma2))
         return jump_sigma
 
 
@@ -101,13 +121,18 @@ class MCMCInitialization:
 
             if new_l > 0:
                 if old_l != 0:
-                    # AQUI
-                    r = (new_l / old_l) *
+                    p_new_given_old = self.__calc_jump_prob (current_t,
+                            new_t, jump_sigma)
+                    p_old_given_new = self.__calc_jump_prob (new_t, 
+                            current_t, jump_sigma)
+                    r = (new_l / old_l) * (p_new_given_old / p_old_given_new)
+                
                 if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1
                     current_t = new_t
                     old_l = new_l
                     self.__sampled_params.append (current_t)
+
             if (i + 1) % self.__sigma_update_n == 0 : 
                 jump_sigma = self.__update_sigma (jump_sigma, 
                         self.__sigma_update_n + 1, accepted_jumps)

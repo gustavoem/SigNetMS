@@ -50,19 +50,18 @@ class AdaptiveMCMC:
         """ Proposes a jump on current_t. This jump is log multivariate
             normal with covariance matrix self.__covar_matrix. """
         n = current_t.get_size ()
-        mean = np.zeros (n)
         cov = self.__covar_matrix
-        jump = np.random.multivariate_normal (mean, cov)
-
+        # The mean of the normal distribution should be 
+        #      log (current_t) + 1/2 diagonal (S)
+        # to guarantee that the jump has current_t as its mean value
+        current_t_values = np.array (current_t.get_values ())
+        variances = cov.diagonal ()
+        mean = np.log (current_t_values) - variances / 2
+        jump_dist = MultivariateLognormal (mean, cov)
+        new_values = jump_dist.rvs ()
         new_t = current_t.get_copy ()
-        for i in range (len (jump)):
-            # To make a normal random variable lognormal you should
-            # exponentiate it
-            lognorm_mean = np.exp (cov[i][i] / 2)
-            ith_jump = np.exp (jump[i]) - lognorm_mean 
-            new_value = ith_jump + new_t[i].value
-            if new_value > 0 and new_value < float ('inf'):
-                new_t[i].value = new_value
+        for i in range (n):
+            new_t[i].value = new_values[i]
         return new_t
 
     
@@ -74,24 +73,38 @@ class AdaptiveMCMC:
         current_t = self.__sampled_params[-1].get_copy ()
         current_l = likeli_f.get_experiments_likelihood (experiments, 
                 current_t)
+        mean = current_t.get_values ()
+        covar = self.__covar_matrix
+        current_jump_dist = MultivariateLognormal (mean, covar)
 
         for i in range (N1):
+            new_t = self.__propose_jump (current_t)
+            new_l = likeli_f.get_experiments_likelihood (experiments, 
+                    new_t)
+            
+            # Debugging #
             print ("\nCurrent theta: ", end='')
             for r in current_t:
                 print (r.value, end=' ')
-            new_t = self.__propose_jump (current_t)
             print ("\nNew theta:     ", end='')
             for r in new_t:
                 print (r.value, end=' ')
             print ("")
-            
-            new_l = likeli_f.get_experiments_likelihood (experiments, 
-                    new_t)
             print ("Current likelihood: " + str (current_l))
             print ("New likelihood: " + str (new_l), end='\n\n\n')
+            # Debugging #
 
             if new_l > 0:
-                r = new_l / current_l
+                mean = new_t.get_values ()
+                covar = self.__covar_matrix
+                new_jump_dist = MultivariateLognormal (mean, covarr)
+                
+                new_values = new_t.get_values ()
+                current_values = current_t.get_values ()
+                new_gv_old = current_jump_dist.pdf (new_values)
+                old_gv_new = new_jump_dist.pdf (current_values)
+
+                r = (new_l / current_l) * (old_gv_new / new_gv_old)
                 if np.random.uniform () <= r:
                     current_t = new_t
                     current_l = new_l

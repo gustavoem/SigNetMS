@@ -103,29 +103,32 @@ class MCMCInitialization:
                 current_t)
 
         for i in range (N):
+            new_t = self.__propose_independent_t (current_t, jump_sigma)
+            new_l = likeli_f.get_experiments_likelihood (experiments, 
+                    new_t)
+            
+            # Debugging #
             if i + 1 % 1000 == 0:
-                print ("Iteração " + str (i + 1) + " da primeira fase do algoritmo.")
+                print ("Iteration " + str (i + 1) + \
+                        " on MCMCInitialization.")
             print ("\nCurrent theta: ", end='')
             for r in current_t[:10]:
                 print (r.value, end=' ')
             print ("\nNew theta:     ", end='')
-            new_t = self.__propose_independent_t (current_t, jump_sigma)
             for r in new_t[:10]:
                 print (r.value, end=' ')
-            
-            new_l = likeli_f.get_experiments_likelihood (experiments, 
-                    new_t)
             print ("\nCurrent sigma: " + str (jump_sigma[:10]))
             print ("Current likelihood: " + str (old_l))
             print ("New likelihood: " + str (new_l), end='\n\n\n')
+            # Debugging #
 
             if new_l > 0:
                 if old_l != 0:
-                    p_new_given_old = self.__calc_jump_prob (current_t,
+                    new_gv_old = self.__calc_jump_prob (current_t,
                             new_t, jump_sigma)
-                    p_old_given_new = self.__calc_jump_prob (new_t, 
+                    old_gv_new = self.__calc_jump_prob (new_t, 
                             current_t, jump_sigma)
-                    r = (new_l / old_l) * (p_new_given_old / p_old_given_new)
+                    r = (new_l / old_l) * (old_gv_new / new_gv_old)
                 
                 if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1

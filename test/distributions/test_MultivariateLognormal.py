@@ -10,23 +10,23 @@ class TestMultivariateLognormal (unittest.TestCase):
     def test_get_mean (self):
         """ Tests if one can get the mean of the random variable. """
         mu = [1, 2, 3, 4]
-        S = [[2, 0, 0, 0], 
+        S = np.array ([[2, 0, 0, 0], 
              [0, 1, 0, 0], 
              [0, 0, 4, 1],
-             [0, 0, 1, 2]]
+             [0, 0, 1, 2]])
         X = MultivariateLognormal (mu, S)
-        assert (abs (X.mean () - np.exp (np.array (mu) + S / 2)) < 1e-4)
+        assert all (abs (X.mean () - np.exp (np.array (mu) \
+                + S.diagonal () / 2)) < 1e-4)
 
 
     def test_get_random_value (self):
         """ Tests if one can get the a random value from the random
             variable. """
-        mu = -100
-        s = 1
+        mu = [2, 1]
+        s = [[1, 0], [0, 1]]
         X = MultivariateLognormal (mu, s)
         X_0 = X.rvs ()
-        for xi in X_0:
-            assert (xi > 0)
+        assert all (X_0 > 0)
 
 
     def test_get_pdf (self):

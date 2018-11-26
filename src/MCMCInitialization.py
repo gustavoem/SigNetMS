@@ -74,9 +74,9 @@ class MCMCInitialization:
         params = self.__params
         jump_sigma = []
         for p in params:
-            a = p.get_a ()
-            b = p.get_b ()
-            sigma2 = np.log (np.sqrt (a * b) + 1)
+            param_dist = p.get_distribution ()
+            mean = param_dist.mean ()
+            sigma2 = np.log (np.sqrt (2 * mean) + 1)
             jump_sigma.append (2 * np.sqrt (sigma2))
         return jump_sigma
 
@@ -128,7 +128,9 @@ class MCMCInitialization:
                             new_t, jump_sigma)
                     old_gv_new = self.__calc_jump_prob (new_t, 
                             current_t, jump_sigma)
-                    r = (new_l / old_l) * (old_gv_new / new_gv_old)
+                    new_prior = new_t.get_p ()
+                    old_prior = current_t.get_p ()
+                    r = (new_l / old_l) * (new_prior / old_prior)* (old_gv_new / new_gv_old)
                 
                 if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1

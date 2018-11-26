@@ -1,5 +1,6 @@
 from RandomParameter import RandomParameter
 from RandomParameterList import RandomParameterList
+from Gamma import Gamma
 from utils import clean_tag
 from lxml import etree
 import sys
@@ -20,12 +21,15 @@ def read_priors_file (filename):
             name = attribs["name"]
             a = float (attribs["a"])
             b = float (attribs["b"])
-            priors.append (RandomParameter (name, a, b))
+            gamma = Gamma (a, b)
+            priors.append (RandomParameter (name, gamma))
         elif clean_tag (children) == "experimental_error":
             name = attribs["name"]
             a = float (attribs["a"])
             b = float (attribs["b"])
-            priors.set_experimental_error (RandomParameter (name, a ,b))
+            gamma = Gamma (a, b)
+            priors.set_experimental_error (RandomParameter (name, 
+                gamma))
         else:
             print ("Warning: unindentified prior definition on " + filename)
 
@@ -42,8 +46,7 @@ def define_sbml_params_priors (sbml, filename):
         param_prior = None
         for prior_p in default_priors.get_model_parameters ():
             if original_name == prior_p.name:
-                param_prior = RandomParameter (param, prior_p.get_a (), 
-                        prior_p.get_b ())
+                param_prior = prior_p.copy ()
                 break
         
         if param_prior == None:

@@ -6,6 +6,7 @@ import math
 import numpy as np
 from ODES import ODES
 from LikelihoodFunction import LikelihoodFunction
+from Gamma import Gamma
 from Experiment import Experiment
 from RandomParameterList import RandomParameterList
 from RandomParameter import RandomParameter
@@ -19,7 +20,8 @@ class TestLikelihoodFunction (unittest.TestCase):
         self.odes.add_equation ("x1", "x1")
         self.odes.define_initial_value ("x1", 1.0)
         self.theta = RandomParameterList ()
-        sigma = RandomParameter ("sigma", 1, 1)
+        sigma_dist = Gamma (1, 1)
+        sigma = RandomParameter ("sigma", sigma_dist)
         sigma.value = 1.0
         self.theta.set_experimental_error (sigma)
         

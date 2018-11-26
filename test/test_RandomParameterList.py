@@ -4,13 +4,14 @@ sys.path.insert (0, '../../src/')
 import unittest
 from RandomParameterList import RandomParameterList
 from RandomParameter import RandomParameter
+from Gamma import Gamma
 
 
 class TestRandomParameterList (unittest.TestCase):
 
     def test_append (self):
         """ Tests if one can append a parameter to the list. """
-        p = RandomParameter ('', 2, 2)
+        p = RandomParameter ('', Gamma (2, 2))
         theta = RandomParameterList ()
         theta.append (p)
         theta.append (p)
@@ -20,8 +21,8 @@ class TestRandomParameterList (unittest.TestCase):
 
     def test_get_copy (self):
         """ Tests if an object can produce a copy of itself. """
-        p1 = RandomParameter ('p1', 2, 2)
-        p2 = RandomParameter ('p2', 2, 2)
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (2, 2))
         theta = RandomParameterList ()
         theta.append (p1)
         theta.append (p2)
@@ -37,8 +38,8 @@ class TestRandomParameterList (unittest.TestCase):
 
     def test_iterator (self):
         """ Tests if we can iterate through parameters. """
-        p1 = RandomParameter ('p1', 2, 2)
-        p2 = RandomParameter ('p2', 2, 2)
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (2, 2))
         theta = RandomParameterList ()
         theta.append (p1)
         theta.append (p2)
@@ -48,8 +49,8 @@ class TestRandomParameterList (unittest.TestCase):
 
     def test_get_values (self):
         """ Tests if we can get only the values of the parameters. """
-        p1 = RandomParameter ('p1', 2, 2)
-        p2 = RandomParameter ('p2', 3, 2)
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (3, 2))
         p1.value = 1
         p2.value = 2
         theta = RandomParameterList ()
@@ -62,8 +63,8 @@ class TestRandomParameterList (unittest.TestCase):
 
     def test_idexing (self):
         """ Tests if one can access a parameter with an index. """
-        p1 = RandomParameter ('p1', 2, 2)
-        p2 = RandomParameter ('p2', 3, 2)
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (3, 2))
         p1.value = 1
         p2.value = 2
         theta = RandomParameterList ()
@@ -75,11 +76,11 @@ class TestRandomParameterList (unittest.TestCase):
     def test_get_experimental_error (self):
         """ Tests if we can have an experimental error on the list of
             random parameters. """
-        p1 = RandomParameter ('p1', 2, 2)
-        p2 = RandomParameter ('p2', 3, 2)
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (3, 2))
         p1.value = 1
         p2.value = 2
-        sigma = RandomParameter ('sigma', 2, .1)
+        sigma = RandomParameter ('sigma', Gamma (2, .1))
         sigma.value = 123
 
         theta = RandomParameterList ()

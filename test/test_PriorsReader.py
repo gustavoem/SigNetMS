@@ -13,12 +13,13 @@ class TestPriorsReader (unittest.TestCase):
             file. """
         priors = read_priors_file ('input/simple_enzymatic.priors')
         for x in priors:
+            distribution = x.get_distribution ()
             if x.name == 'k1':
-                self.assertEqual (x.get_a (), 2.0)
-                self.assertEqual (x.get_b (), 0.01)
+                self.assertEqual (distribution.get_a (), 2.0)
+                self.assertEqual (distribution.get_b (), 0.01)
             elif x.name == 'd1' or x.name == 'kcat':
-                self.assertEqual (x.get_a (), 2.0)
-                self.assertEqual (x.get_b (), 0.1)
+                self.assertEqual (distribution.get_a (), 2.0)
+                self.assertEqual (distribution.get_b (), 0.1)
             elif x.name == "Sigma":
                 pass
             else:

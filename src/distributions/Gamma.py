@@ -32,7 +32,7 @@ class Gamma:
         elif a == 2:
             return 1
         else:
-            return (a - 1) * self.__gamma_function (a - 1)
+            return (a - 1) * Gamma.__gamma_function (a - 1)
         
 
     def mean (self):
@@ -49,6 +49,16 @@ class Gamma:
             return np.random.gamma (a, b)
         else:
             return [np.random.gamma (a, b) for i in range (n)]
+
+
+    def get_a (self):
+        """ Retuns the parameter a. """
+        return self.__a
+    
+    
+    def get_b (self):
+        """ Retuns the parameter b. """
+        return self.__b
 
 
     def pdf (self, x):

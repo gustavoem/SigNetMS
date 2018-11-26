@@ -14,6 +14,14 @@ class MultivariateLognormal:
         self.__inv_S = None
         self.__det_S = None
 
+    
+    def copy (self):
+        """ Returns a copy of this object. """
+        cpy = MultivariateLognormal (self.__mu, self.__S)
+        cpy.__inv_S = self.__inv_S
+        cpy.__det_S = self.__det_S
+        return cpy
+
 
     def __get_S_inverse (self):
         """ Returns the inverse of the S matrix. """
@@ -52,6 +60,9 @@ class MultivariateLognormal:
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
+        if any (xi <= 0 for xi in x):        
+            return 0
+
         mu = self.__mu
         S = self.__S
         n = len (mu)

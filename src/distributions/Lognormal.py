@@ -10,6 +10,13 @@ class Lognormal:
         self.__mu = mu
         self.__s = sigma
 
+    
+    def copy (self):
+        """ Returns a copy of this object. """
+        cpy = Lognormal (self.__mu, self.__sigma)
+        return cpy
+        
+
 
     def mean (self):
         """ Returns the mean of this random variable. """
@@ -32,6 +39,9 @@ class Lognormal:
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
+        if x <= 0:
+            return 0        
+
         mu = self.__mu
         s = self.__s
         return (1 / x) * (1 / np.sqrt (2 * np.pi * s * s)) \

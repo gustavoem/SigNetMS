@@ -94,6 +94,16 @@ class RandomParameterList:
             idx = len (self.__param_list) - 1
         return self.__param_list[:idx]
 
+    
+    def get_p (self):
+        """ Given the parameters and its distributions (priors), returns
+            the value of the pdf of the joint distribution of parameters
+            on the point represented by this object. """
+        prob = 1
+        for p in self.__param_list:
+            prob *= p.get_p ()
+        return prob
+
 
     def get_size (self):
         """ Returns the number of elements. """

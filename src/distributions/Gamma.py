@@ -17,6 +17,13 @@ class Gamma:
         self.__pdf_const = 1 / (gamma_a * (b ** a))
 
 
+    def copy (self):
+        """ Return a copy of this object. """
+        cpy = Gamma (self.__a, self.__b)
+        cpy.__pdf_const = self.__pdf_const
+        return cpy
+
+
     @staticmethod   
     def __gamma_function (a):
         """ Calculates the gamma function of an integer a. """
@@ -47,6 +54,9 @@ class Gamma:
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
+        if x <= 0:
+            return 0
+    
         a = self.__a
         b = self.__b
         term1 = pow (x, a - 1)

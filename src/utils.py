@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 from lxml import etree
 import numpy as np
 import seaborn as sns

@@ -1,4 +1,6 @@
 import re
+import matplotlib
+matplotlib.use('Agg')
 
 from scipy.integrate import odeint
 from scipy.interpolate import spline

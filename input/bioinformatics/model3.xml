@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model3" name="Case Study 1, Model 3 (Incorrect)">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="HMM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="EXPLE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> modifier </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="R" name="R" compartment="compartment" initialConcentration="1"/>
+      <species id="Rpp" name="Rpp" compartment="compartment" initialConcentration="0"/>
+      <species id="S" name="S" compartment="compartment" initialConcentration="1"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="Noise" value="0.4"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="reaction_0" name="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="R"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Rpp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="S"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> EXPLE </ci>
+                <ci> V </ci>
+                <ci> R </ci>
+                <ci> S </ci>
+                <ci> Km </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="0.1"/>
+            <parameter id="Km" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="R2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Rpp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="R"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> HMM </ci>
+                <ci> Rpp </ci>
+                <ci> Km </ci>
+                <ci> V </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.1"/>
+            <parameter id="V" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

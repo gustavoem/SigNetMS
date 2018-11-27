@@ -74,7 +74,7 @@ elif which_experiment == 1:
             theta_priors)
     print ("log_l = " + str (log_l))
 
-else:
+elif which_experiment == 2:
     sbml = SBML ()
     sbml.load_file ('../input/Kolch/model2.xml')
     odes = sbml_to_odes (sbml)
@@ -91,3 +91,8 @@ else:
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     print ("log_l = " + str (log_l))
+
+else:
+    sbml = SBML ()
+    sbml.load_file ('../input/bioinformatics/model1.xml')
+    odes = sbml_to_odes (sbml)

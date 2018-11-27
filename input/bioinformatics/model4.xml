@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model4" name="Case Study 1, Model 4 (overcomplicated)">
+    <listOfCompartments>
+      <compartment id="compartment" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="S" name="S" compartment="compartment" initialConcentration="1"/>
+      <species id="dS" name="dS" compartment="compartment" initialConcentration="0"/>
+      <species id="R" name="R" compartment="compartment" initialConcentration="1"/>
+      <species id="RS" name="RS" compartment="compartment" initialConcentration="0"/>
+      <species id="Rpp" name="Rpp" compartment="compartment" initialConcentration="0"/>
+      <species id="PhA" name="PhA" compartment="compartment" initialConcentration="1"/>
+      <species id="RppPhA" name="RppPhA" compartment="compartment" initialConcentration="0"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="Noise" value="0.06"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="reaction_0" name="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="dS"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> S </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.05"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="R2">
+        <listOfReactants>
+          <speciesReference species="R"/>
+          <speciesReference species="S"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="RS"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k1 </ci>
+                  <ci> R </ci>
+                  <ci> S </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k2 </ci>
+                  <ci> RS </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.4"/>
+            <parameter id="k2" value="0.02"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_2" name="R3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="RS"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Rpp"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> RS </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.4"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_3" name="R4">
+        <listOfReactants>
+          <speciesReference species="Rpp"/>
+          <speciesReference species="PhA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="RppPhA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k1 </ci>
+                  <ci> Rpp </ci>
+                  <ci> PhA </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k2 </ci>
+                  <ci> RppPhA </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+            <parameter id="k2" value="0.005"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_4" name="R5" reversible="false">
+        <listOfReactants>
+          <speciesReference species="RppPhA"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="R"/>
+          <speciesReference species="PhA"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> RppPhA </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.005"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

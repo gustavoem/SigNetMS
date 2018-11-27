@@ -62,6 +62,7 @@ if which_experiment == 0:
             theta_priors)
     print ("log_l = " + str (log_l))
     
+
 elif which_experiment == 1:
     sbml = SBML ()
     sbml.load_file ('../input/goodwin3.xml')
@@ -74,6 +75,7 @@ elif which_experiment == 1:
             theta_priors)
     print ("log_l = " + str (log_l))
 
+
 elif which_experiment == 2:
     sbml = SBML ()
     sbml.load_file ('../input/Kolch/model2.xml')
@@ -84,15 +86,33 @@ elif which_experiment == 2:
     experiments = []
     for i in range (1, 25):
         ex = read_data_experiment_file ('../input/Kolch/ex_' + str (i) +
-            '.data', 'ERKPP',)[0]
+            '.data', 'ERKPP')[0]
         experiments.append (ex)
+
     theta_priors = get_theta (sbml, odes, which_experiment)
     ml = MarginalLikelihood (50000, 1000, 10000, 2000, 10, 10)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     print ("log_l = " + str (log_l))
 
+
 else:
     sbml = SBML ()
     sbml.load_file ('../input/bioinformatics/model1.xml')
     odes = sbml_to_odes (sbml)
+    
+    # t = [0, 2, 5, 10, 20, 40, 60, 100]
+    # odes.overtime_plot (['Rpp'], t)
+
+    experiments = []
+    for i in range (3):
+        ex = read_data_experiment_file ('../input/bioinformatics/ex_' +
+                str (i) + '.data')[0]
+        experiments.append (ex)
+
+    theta_priors = read_priors_file ('../input/bioinformatics/' + \
+            'model.priors')
+
+    ml = MarginalLikelihood (50000, 1000, 2000, 1000, 40, 100)
+    log_l = ml.estimate_marginal_likelihood (experiments, odes,
+            theta_priors)

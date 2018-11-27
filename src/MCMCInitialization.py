@@ -130,7 +130,8 @@ class MCMCInitialization:
                             current_t, jump_sigma)
                     new_prior = new_t.get_p ()
                     old_prior = current_t.get_p ()
-                    r = (new_l / old_l) * (new_prior / old_prior)* (old_gv_new / new_gv_old)
+                    r = (new_l / old_l) * (new_prior / old_prior)* \
+                            (old_gv_new / new_gv_old)
                 
                 if old_l == 0 or np.random.uniform () <= r:
                     accepted_jumps += 1

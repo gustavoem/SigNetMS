@@ -1,6 +1,7 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from CovarianceMatrix import calc_covariance
+from MultivariateLognormal import MultivariateLognormal
 from utils import safe_power
 from utils import plot_theta_var_sample
 
@@ -97,14 +98,19 @@ class AdaptiveMCMC:
             if new_l > 0:
                 mean = new_t.get_values ()
                 covar = self.__covar_matrix
-                new_jump_dist = MultivariateLognormal (mean, covarr)
+                new_jump_dist = MultivariateLognormal (mean, covar)
                 
                 new_values = new_t.get_values ()
                 current_values = current_t.get_values ()
                 new_gv_old = current_jump_dist.pdf (new_values)
                 old_gv_new = new_jump_dist.pdf (current_values)
+                
+                old_prior = current_t.get_p ()
+                new_prior = new_t.get_p ()
 
-                r = (new_l / current_l) * (old_gv_new / new_gv_old)
+                r = (new_l / current_l) *  (new_prior / old_prior) * \
+                        (old_gv_new / new_gv_old)
+                        
                 if np.random.uniform () <= r:
                     current_t = new_t
                     current_l = new_l

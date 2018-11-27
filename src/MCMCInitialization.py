@@ -75,9 +75,9 @@ class MCMCInitialization:
         jump_sigma = []
         for p in params:
             param_dist = p.get_distribution ()
-            mean = param_dist.mean ()
-            sigma2 = np.log (np.sqrt (2 * mean) + 1)
-            jump_sigma.append (2 * np.sqrt (sigma2))
+            prior_variance = param_dist.variance ()
+            sigma2 = np.log (np.sqrt (prior_variance) + 1)
+            jump_sigma.append (np.sqrt (sigma2))
         return jump_sigma
 
 

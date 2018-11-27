@@ -40,6 +40,11 @@ class Gamma:
         return self.__a * self.__b
 
 
+    def variance (self):
+        """ Returns the variance of this random variable. """
+        return self.__a * self.__b * self.__b
+
+
     def rvs (self, n=None):
         """ Returns independent observations of this random variable.
         """

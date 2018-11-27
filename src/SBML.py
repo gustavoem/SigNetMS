@@ -59,7 +59,6 @@ class SBML:
         for reac in reactions:
             products = [x.species for x in reac.getListOfProducts ()]
             reactants = [x.species for x in reac.getListOfReactants ()]
-            
             if species_name in products and species_name in reactants:
                 continue
 
@@ -152,6 +151,8 @@ class SBML:
         
         for i in range (len (params)):
             param_name = params[i].getName ()
+            if param_name is '':
+                param_name = params[i].getId ()
             internal_param_name = internal_params[i]
             formula = formula.replace (param_name, internal_param_name)
         return formula
@@ -164,7 +165,7 @@ class SBML:
         for param in params:
             param_value = param.getValue ()
             param_name = param.getName ()
-            if (param_name is ''):
+            if param_name is '':
                 param_name = param.getId ()
             global_params.append (param_name)
             self.__parameter_values[param_name] = param_value

@@ -20,7 +20,6 @@ class Gamma:
     def copy (self):
         """ Return a copy of this object. """
         cpy = Gamma (self.__a, self.__b)
-        cpy.__pdf_const = self.__pdf_const
         return cpy
 
 

@@ -45,22 +45,30 @@ class AdaptiveMCMC:
             theta_values = theta.get_values ()
             sample_values.append (theta_values)
         return calc_covariance (sample_values)
-
-
-    def __propose_jump (self, current_t):
-        """ Proposes a jump on current_t. This jump is log multivariate
-            normal with covariance matrix self.__covar_matrix. """
-        n = current_t.get_size ()
-        cov = self.__covar_matrix
+    
+    
+    def __get_proposal_dist (self, theta):
+        """ Returns the proposal distribution given a current point. 
+            This distribution is MultivariateLognormal and its 
+            parameters are set in such manner that the mean of this 
+            distribution is exactly theta. """
+        values = theta.get_values ()
+        var_covar = self.__covar_matrix
+        variances = var_covar.diagonal ()
         # The mean of the normal distribution should be 
-        #      log (current_t) - 1/2 diagonal (S)
-        # to guarantee that the jump has current_t as its mean value
-        current_t_values = np.array (current_t.get_values ())
-        variances = cov.diagonal ()
-        mean = np.log (current_t_values) - variances / 2
-        jump_dist = MultivariateLognormal (mean, cov)
+        #      log (theta) - 1/2 diagonal (S)
+        # to guarantee that the jump has theta as its mean value
+        mean = np.log (values) - variances / 2
+        jump_dist = MultivariateLognormal (mean, var_covar)
+        return jump_dist
+
+
+    def __propose_jump (self, theta, jump_dist):
+        """ Proposes a jump from theta. This jump is log multivariate
+            normal with covariance matrix self.__covar_matrix. """
+        n = theta.get_size ()
         new_values = jump_dist.rvs ()
-        new_t = current_t.get_copy ()
+        new_t = theta.get_copy ()
 
         print ("\n\n\n------------------------------")
         print ("The probability of jumping to: " + str (new_values) + \
@@ -81,12 +89,10 @@ class AdaptiveMCMC:
             print (r.value, end=' ')
         current_l = likeli_f.get_experiments_likelihood (experiments, 
                 current_t)
-        covar = self.__covar_matrix
-        mean = np.log (current_t.get_values ()) - covar.diagonal () / 2
-        current_jump_dist = MultivariateLognormal (mean, covar)
+        current_proposal = self.__get_proposal_dist (current_t)
 
         for i in range (N1):
-            new_t = self.__propose_jump (current_t)
+            new_t = self.__propose_jump (current_t, current_proposal)
             new_l = likeli_f.get_experiments_likelihood (experiments, 
                     new_t)
             
@@ -103,18 +109,15 @@ class AdaptiveMCMC:
             # Debugging #
 
             if new_l > 0:
-                covar = self.__covar_matrix
-                mean = np.log (new_t.get_values ()) - covar.diagonal () / 2
-                new_jump_dist = MultivariateLognormal (mean, covar)
-                
+                new_proposal = self.__get_proposal_dist (new_t)
+               
                 new_values = new_t.get_values ()
                 current_values = current_t.get_values ()
                 print ("\t\tNew given old")
-                new_gv_old = current_jump_dist.pdf (new_values)
+                new_gv_old = current_proposal.pdf (new_values)
                 print ("\tResult:" + str (new_gv_old))
-
                 print ("\n\t\tOld given new")
-                old_gv_new = new_jump_dist.pdf (current_values)
+                old_gv_new = new_proposal.pdf (current_values)
                 print ("\tResult:" + str (old_gv_new))
                 
                 old_prior = current_t.get_p ()
@@ -127,13 +130,11 @@ class AdaptiveMCMC:
                         (old_gv_new / new_gv_old)
                         
                 if np.random.uniform () <= r:
+                    self.__sampled_params.append (new_t)
+                    self.__covar_matrix = self.__estimate_cov_matrix ()
                     current_t = new_t
                     current_l = new_l
-                    self.__sampled_params.append (current_t)
-                    self.__covar_matrix = self.__estimate_cov_matrix ()
-                    covar = self.__covar_matrix
-                    mean = np.log (current_t.get_values ()) - covar.diagonal () / 2
-                    current_jump_dist = MultivariateLognormal (mean, covar)
+                    current_proposal = self.__get_proposal_dist (new_t)
 
 
     @staticmethod

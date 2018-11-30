@@ -11,9 +11,9 @@ class DiscreteLaplacian:
         """ Default constructor. """
         self.__N = N
         self.__i = i
-        self.__constant = (np.exp (-.5) - 1) \
-                / (1 - .5 * (np.exp (-(N - 1) / 2) \
-                             + (np.exp (-(i - 1) / 2))))
+        self.__constant = (np.exp (.5) - 1) \
+                / (2 - (np.exp (-(N - i) / 2)  \
+                + (np.exp (-(i - 1) / 2))))
 
     def copy (self):
         """ Return a copy of this object. """
@@ -34,8 +34,9 @@ class DiscreteLaplacian:
     def __randomly_variate (self):
         """ Returns one observation of the random variable. """
         N = self.__N
+        i = self.__i
         signal = np.random.choice ([1, -1])
-        j = numpy.random.geometric (np.exp (- 1 / 2))
+        j = np.random.geometric (np.exp (- 1 / 2))
         if signal > 0: 
             if i + j > N:
                 return N
@@ -60,5 +61,14 @@ class DiscreteLaplacian:
 
     def pdf (self, j):
         """ Returns p_i (j). """
+        i = self.__i
+        N = self.__N
+        if i == j:
+            return 0
+        elif j > N:
+            return 0
+        elif j <= 0:
+            return 0 
+
         abs_diff = abs (i - j)
-        return self.__constant * np.exp (.5 * abs_diff)
+        return self.__constant * np.exp (-.5 * abs_diff)

@@ -62,6 +62,9 @@ class MultivariateLognormal:
             this random variable on point x. """
         if any (xi <= 0 for xi in x):        
             return 0
+            
+        print ("\t\tLognorm of mean: " + str (self.__mu))
+        print ("\t\tAnd variance of: " + str (self.__S.diagonal ()))
 
         mu = self.__mu
         S = self.__S
@@ -77,8 +80,15 @@ class MultivariateLognormal:
         for xi in x:
             term2 *= xi
         term2 = 1 / term2
+
+
         term3 = float (np.exp (-.5 * np.dot (np.dot (logx_minus_mu_t, 
             inv_S), logx_minus_mu)))
+
+        #print ("\t\tlogx - mu = " + str(logx_minus_mu))
+        #print ("\t\tinv_S = " + str(inv_S))
+        #print ("\t\tS = " + str(S))
+        #print ("\t\tterm3: " + str(term3))
         
         return term1 * term2 * term3
 

@@ -53,7 +53,7 @@ class AdaptiveMCMC:
         n = current_t.get_size ()
         cov = self.__covar_matrix
         # The mean of the normal distribution should be 
-        #      log (current_t) + 1/2 diagonal (S)
+        #      log (current_t) - 1/2 diagonal (S)
         # to guarantee that the jump has current_t as its mean value
         current_t_values = np.array (current_t.get_values ())
         variances = cov.diagonal ()
@@ -61,6 +61,10 @@ class AdaptiveMCMC:
         jump_dist = MultivariateLognormal (mean, cov)
         new_values = jump_dist.rvs ()
         new_t = current_t.get_copy ()
+
+        print ("\n\n\n------------------------------")
+        print ("The probability of jumping to: " + str (new_values) + \
+                 ": " + str (jump_dist.pdf (new_values)))
         for i in range (n):
             new_t[i].value = new_values[i]
         return new_t
@@ -72,10 +76,13 @@ class AdaptiveMCMC:
         likeli_f = LikelihoodFunction (self.__model)
 
         current_t = self.__sampled_params[-1].get_copy ()
+        print ("\nFirst current theta: ", end='')
+        for r in current_t:
+            print (r.value, end=' ')
         current_l = likeli_f.get_experiments_likelihood (experiments, 
                 current_t)
-        mean = current_t.get_values ()
         covar = self.__covar_matrix
+        mean = np.log (current_t.get_values ()) - covar.diagonal () / 2
         current_jump_dist = MultivariateLognormal (mean, covar)
 
         for i in range (N1):
@@ -96,19 +103,27 @@ class AdaptiveMCMC:
             # Debugging #
 
             if new_l > 0:
-                mean = new_t.get_values ()
                 covar = self.__covar_matrix
+                mean = np.log (new_t.get_values ()) - covar.diagonal () / 2
                 new_jump_dist = MultivariateLognormal (mean, covar)
                 
                 new_values = new_t.get_values ()
                 current_values = current_t.get_values ()
+                print ("\t\tNew given old")
                 new_gv_old = current_jump_dist.pdf (new_values)
+                print ("\tResult:" + str (new_gv_old))
+
+                print ("\n\t\tOld given new")
                 old_gv_new = new_jump_dist.pdf (current_values)
+                print ("\tResult:" + str (old_gv_new))
                 
                 old_prior = current_t.get_p ()
                 new_prior = new_t.get_p ()
 
-                r = (new_l / current_l) *  (new_prior / old_prior) * \
+                print ("\t\nOld prior" + str (old_prior))
+                print ("\tNew prior" + str (new_prior))
+
+                r = (new_l / current_l) * (new_prior / old_prior) * \
                         (old_gv_new / new_gv_old)
                         
                 if np.random.uniform () <= r:
@@ -116,6 +131,9 @@ class AdaptiveMCMC:
                     current_l = new_l
                     self.__sampled_params.append (current_t)
                     self.__covar_matrix = self.__estimate_cov_matrix ()
+                    covar = self.__covar_matrix
+                    mean = np.log (current_t.get_values ()) - covar.diagonal () / 2
+                    current_jump_dist = MultivariateLognormal (mean, covar)
 
 
     @staticmethod
@@ -204,7 +222,8 @@ class AdaptiveMCMC:
             
             if theta1_l == 0 or theta2_l == 0:
                 continue
-
+            
+            # TODO: fix r
             t1ot2 = theta1_l / theta2_l
             t2ot1 = theta2_l / theta1_l
             r = safe_power (t2ot1, betas[j]) * \

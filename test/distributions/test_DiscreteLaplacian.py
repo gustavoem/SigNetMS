@@ -41,3 +41,18 @@ class TestDiscreteLaplacian (unittest.TestCase):
         for j in range (1, n + 1):
             p_sum += discrete_laplacian.pdf (j)
         assert (abs (p_sum - 1) < 1e-4)
+
+
+    def test_random_variates_works (self):
+        """ Tests the random values produced by this random variable.  
+        """
+        n = 4
+        for m in range (100):
+            i = np.random.choice (range (n)) + 1
+            discrete_laplacian = DiscreteLaplacian (n, i)
+            for l in range (100):
+                j = discrete_laplacian.rvs ()
+                assert (j > 0)
+                assert (j != i)
+                assert (j <= n)
+

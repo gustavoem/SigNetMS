@@ -35,9 +35,14 @@ class DiscreteLaplacian:
         """ Returns one observation of the random variable. """
         N = self.__N
         i = self.__i
-        signal = np.random.choice ([1, -1])
+        if i == 1:
+            signal = 1
+        elif i == N:
+            signal = -1
+        else:
+            signal = np.random.choice ([1, -1])
         j = np.random.geometric (np.exp (- 1 / 2))
-        if signal > 0: 
+        if signal > 0:
             if i + j > N:
                 return N
             else:
@@ -53,7 +58,6 @@ class DiscreteLaplacian:
         """ Returns independend observations of this random variable.
         """
         N = self.__N
-        
         if n is None:
             return self.__randomly_variate ()
         else:

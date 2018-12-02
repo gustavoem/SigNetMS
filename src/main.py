@@ -40,10 +40,14 @@ def get_theta (sbml, model, which_experiment):
 
 
 which_experiment = int (argv[1])
+sbml_file = argv[2]
+
+print  ("Performing marginal likelihood calculations of model: " + \
+        sbml_file)
 
 if which_experiment == 0:
     sbml = SBML ()
-    sbml.load_file ('../input/simple_enzymatic/simple_enzymatic.xml')
+    sbml.load_file (sbml_file)
     odes = sbml_to_odes (sbml)
     
     ex0 = read_data_experiment_file ('../input/simple_enzymatic/' + \
@@ -65,7 +69,7 @@ if which_experiment == 0:
 
 elif which_experiment == 1:
     sbml = SBML ()
-    sbml.load_file ('../input/goodwin3.xml')
+    sbml.load_file (sbml_file)
     odes = sbml_to_odes (sbml)
     experiments = read_data_experiment_file ('../input/goodwin3.data', 
             'x1')
@@ -78,7 +82,7 @@ elif which_experiment == 1:
 
 elif which_experiment == 2:
     sbml = SBML ()
-    sbml.load_file ('../input/Kolch/model2.xml')
+    sbml.load_file (sbml_file)
     odes = sbml_to_odes (sbml)
     t = np.linspace (0, 120, 200)
     odes.overtime_plot (['EGF', 'ERK', 'ERKPP'], t)
@@ -98,7 +102,7 @@ elif which_experiment == 2:
 
 else:
     sbml = SBML ()
-    sbml.load_file ('../input/bioinformatics/model1.xml')
+    sbml.load_file (sbml_file)
     odes = sbml_to_odes (sbml)
     
     # t = [0, 2, 5, 10, 20, 40, 60, 100]

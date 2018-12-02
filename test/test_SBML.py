@@ -41,6 +41,16 @@ class TestSBMLMethods (unittest.TestCase):
         self.assertEqual (p2, 687.15641)
 
 
+    def test_lambdas_on_laws (self):
+        """ Tests if it is possible to use functions on the kinetic 
+            laws. """
+        self.model = SBML ()
+        self.model.load_file ("input/lambda_model.xml")
+        law = self.model.get_species_kinetic_law ("R")
+        if "EXPLE" in law:
+            assert (False)
+
+
     def test_species_initial_concentration (self):
         """ Tests if SBML can return the initial concentration of a
             species """

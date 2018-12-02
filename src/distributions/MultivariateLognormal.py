@@ -82,10 +82,5 @@ class MultivariateLognormal:
         term3 = float (np.exp (-.5 * np.dot (np.dot (logx_minus_mu_t, 
             inv_S), logx_minus_mu)))
 
-        #print ("\t\tlogx - mu = " + str(logx_minus_mu))
-        #print ("\t\tinv_S = " + str(inv_S))
-        #print ("\t\tS = " + str(S))
-        #print ("\t\tterm3: " + str(term3))
-        
         return term1 * term2 * term3
 

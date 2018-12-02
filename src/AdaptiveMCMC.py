@@ -72,8 +72,6 @@ class AdaptiveMCMC:
         new_t = theta.get_copy ()
 
         print ("\n\n\n------------------------------")
-        print ("The probability of jumping to: " + str (new_values) + \
-                 ": " + str (jump_dist.pdf (new_values)))
         for i in range (n):
             new_t[i].value = new_values[i]
         return new_t
@@ -138,9 +136,9 @@ class AdaptiveMCMC:
         likeli_f = LikelihoodFunction (self.__model)
 
         current_t = self.__sampled_params[-1].get_copy ()
-        print ("\nFirst current theta: ", end='')
-        for r in current_t:
-            print (r.value, end=' ')
+        # print ("\nFirst current theta: ", end='')
+        # for r in current_t:
+            # print (r.value, end=' ')
         current_l = likeli_f.get_experiments_likelihood (experiments, 
                 current_t)
         current_proposal = self.__get_proposal_dist (current_t)

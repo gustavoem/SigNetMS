@@ -63,9 +63,6 @@ class MultivariateLognormal:
         if any (xi <= 0 for xi in x):        
             return 0
             
-        print ("\t\tLognorm of mean: " + str (self.__mu))
-        print ("\t\tAnd variance of: " + str (self.__S.diagonal ()))
-
         mu = self.__mu
         S = self.__S
         n = len (mu)

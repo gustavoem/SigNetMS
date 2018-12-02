@@ -64,15 +64,15 @@ class MarginalLikelihood:
 
         amcmc = AdaptiveMCMC (model, experiments, start_sample, 
                 n_strata, strata_size)
-        betas, thetas = amcmc.get_sample (n_adap, n_fixed)
+        betas, thetas, likelihoods = amcmc.get_sample (n_adap, n_fixed)
 
-        ml = self.__calculate_marginal_likelihood (model, experiments,
-                betas, thetas)
+        ml = self.__calculate_marginal_likelihood (betas, thetas, \
+                likelihoods)
         return ml
 
 
-    def __calculate_marginal_likelihood (self, model, experiments, 
-            betas, thetas):
+    def __calculate_marginal_likelihood (self, betas, thetas, \
+            likelihoods):
         """ Given a list with samples, calculates the marginal 
             likelihood. """
         ml = 0
@@ -80,27 +80,30 @@ class MarginalLikelihood:
         n_strata = self.__n_strata
         strata_size = self.__strata_size
         sched_power = AdaptiveMCMC.get_sched_power ()
-        likeli_f = LikelihoodFunction (model)
     
         print ("Estimating marginal likelihood")
-        
         for i in range (n_strata):
-            strata_start = (n_strata) ** sched_power
+            strata_start = (i / n_strata) ** sched_power
             strata_end = ((i + 1) / n_strata) ** sched_power
             del_strata = strata_end - strata_start
+
+            print ("strata_start = " + str (strata_start))
+            print ("strata_end = " + str (strata_end))
+            print ("del_strata = " + str (del_strata))
                 
             strat_sum = 0
             while j < len (betas) and betas[j] < strata_end:
-                p_y_given_theta = likeli_f.get_experiments_likelihood (
-                    experiments, thetas[j])
-                # print ("\tTheta: ", end='')
-                # for r in thetas[j]:
-                    # print (r.value, end=' ')
-                # print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
+                p_y_given_theta = likelihoods[j]
+                print ("\tTheta: ", end='')
+                for r in thetas[j]:
+                    print (r.value, end=' ')
+                print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
                 if p_y_given_theta > 0:
                     strat_sum += np.log (p_y_given_theta)
+                print ("Strat_sum = " + str (strat_sum))
                 j += 1
 
             strat_sum *= (del_strata / strata_size)
             ml += strat_sum
+        print ("Calculated marginal likelihood: " + str (ml))
         return ml

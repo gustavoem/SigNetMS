@@ -2,6 +2,7 @@ import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from CovarianceMatrix import calc_covariance
 from MultivariateLognormal import MultivariateLognormal
+from DiscreteLaplacian import DiscreteLaplacian
 from utils import safe_power
 from utils import plot_theta_var_sample
 
@@ -77,6 +78,59 @@ class AdaptiveMCMC:
             new_t[i].value = new_values[i]
         return new_t
 
+
+    def __perform_jump (self, old_t, new_t, old_l, new_l, \
+            old_proposal, power=None):
+        """ Given a current theta, decides to jump or not to new_t 
+            according to Metropolis-Hastings. If the jump is accepted
+            this function returns a tuple (new_t likelihood, 
+            new_t jumping distribution); otherwise the method returns 
+            False. """
+        # Debugging #
+        print ("\nCurrent theta: ", end='')
+        for r in old_t:
+            print (r.value, end=' ')
+        print ("\nNew theta:     ", end='')
+        for r in new_t:
+            print (r.value, end=' ')
+        print ("")
+        print ("Current likelihood: " + str (old_l))
+        print ("New likelihood: " + str (new_l), end='\n\n\n')
+        # Debugging #
+
+        if not new_l > 0:
+            return False
+        
+        # Jumping probabilities
+        new_proposal = self.__get_proposal_dist (new_t)
+        new_values = new_t.get_values ()
+        old_values = old_t.get_values ()
+        #print ("\t\tNew given old")
+        new_gv_old = old_proposal.pdf (new_values)
+        #print ("\tResult:" + str (new_gv_old))
+        #print ("\n\t\tOld given new")
+        old_gv_new = new_proposal.pdf (old_values)
+        #print ("\tResult:" + str (old_gv_new))
+
+        # p (old_t) and p (new_t)
+        old_prior = old_t.get_p ()
+        new_prior = new_t.get_p ()
+        #print ("\t\nOld prior" + str (old_prior))
+        #print ("\tNew prior" + str (new_prior))
+        
+        # ratio calculation
+        l_ratio = new_l / old_l
+        if power is not None:
+            l_ratio = safe_power (l_ratio, power)
+        theta_prior_ratio = new_prior / old_prior
+        jump_ratio = old_gv_new / new_gv_old
+        r = l_ratio * theta_prior_ratio  * jump_ratio
+        
+        if np.random.uniform () <= r:
+            return (new_l, new_proposal)
+        else:
+            return False
+
     
     def __adapting_phase (self, N1):
         """ Performs the adaptive phase of the algorithm. """
@@ -93,48 +147,17 @@ class AdaptiveMCMC:
 
         for i in range (N1):
             new_t = self.__propose_jump (current_t, current_proposal)
-            new_l = likeli_f.get_experiments_likelihood (experiments, 
+            new_l = likeli_f.get_experiments_likelihood (experiments, \
                     new_t)
-            
-            # Debugging #
-            print ("\nCurrent theta: ", end='')
-            for r in current_t:
-                print (r.value, end=' ')
-            print ("\nNew theta:     ", end='')
-            for r in new_t:
-                print (r.value, end=' ')
-            print ("")
-            print ("Current likelihood: " + str (current_l))
-            print ("New likelihood: " + str (new_l), end='\n\n\n')
-            # Debugging #
-
-            if new_l > 0:
-                new_proposal = self.__get_proposal_dist (new_t)
-               
-                new_values = new_t.get_values ()
-                current_values = current_t.get_values ()
-                print ("\t\tNew given old")
-                new_gv_old = current_proposal.pdf (new_values)
-                print ("\tResult:" + str (new_gv_old))
-                print ("\n\t\tOld given new")
-                old_gv_new = new_proposal.pdf (current_values)
-                print ("\tResult:" + str (old_gv_new))
-                
-                old_prior = current_t.get_p ()
-                new_prior = new_t.get_p ()
-
-                print ("\t\nOld prior" + str (old_prior))
-                print ("\tNew prior" + str (new_prior))
-
-                r = (new_l / current_l) * (new_prior / old_prior) * \
-                        (old_gv_new / new_gv_old)
-                        
-                if np.random.uniform () <= r:
-                    self.__sampled_params.append (new_t)
-                    self.__covar_matrix = self.__estimate_cov_matrix ()
-                    current_t = new_t
-                    current_l = new_l
-                    current_proposal = self.__get_proposal_dist (new_t)
+            result = self.__perform_jump (current_t, new_t, current_l, \
+                    new_l, current_proposal)
+            if result:
+                (new_likelihood, new_proposal) = result
+                self.__sampled_params.append (new_t)
+                self.__covar_matrix = self.__estimate_cov_matrix ()
+                current_t = new_t
+                current_l = new_l
+                current_proposal = new_proposal
 
 
     @staticmethod
@@ -161,21 +184,11 @@ class AdaptiveMCMC:
     def __init_population (self, betas):
         """ Sample from the identified posterior. """
         n = self.__sampled_params[-1].get_size ()
-        theta_mean = self.__sampled_params[-1].get_copy ()
-        for p in theta_mean:
-            p.value = 0
-        for t in self.__sampled_params:
-            for i in range (t.get_size ()):
-                theta_mean[i].value += t[i].value
-        for p in theta_mean:
-            p.value /= len (self.__sampled_params)
-        
         theta_pop = []
         for b in betas:
-            theta = self.__propose_jump (theta_mean)
+            theta = self.__sampled_params[-1].get_copy ()
             theta_pop.append (theta)
         return theta_pop
-
 
     
     def __fixed_phase (self, N2):
@@ -186,60 +199,72 @@ class AdaptiveMCMC:
         betas = AdaptiveMCMC.__sample_betas (n_strata, strata_size)
         theta_chains = self.__init_population (betas)
         likeli_f = LikelihoodFunction (self.__model)
+
+        pop_likelihoods = []
+        for i in range (len (theta_chains)):
+            theta = theta_chains[i]
+            l = likeli_f.get_experiments_likelihood (experiments, theta)
+            pop_likelihoods.append (l)
         
         for i in range (N2):
             # Local move
-            j = np.random.choice (range (len (theta_chains)))
-            new_t = self.__propose_jump (theta_chains[j])
-            old_l = likeli_f.get_experiments_likelihood (experiments, 
-                    theta_chains[j])
-            new_l = likeli_f.get_experiments_likelihood (experiments, 
-                    new_t)
-            
-            print ("\nCurrent theta: ", end='')
-            for r in theta_chains[j]:
-                print (r.value, end=' ')
-            print ("\nNew theta:     ", end='')
-            for r in new_t:
-                print (r.value, end=' ')
-            print ("")
-            print ("Current likelihood: " + str (old_l))
-            print ("New likelihood: " + str (new_l), end='\n\n\n')
-            
-            if old_l != 0:
-                r = (new_l / old_l) ** betas[j]
-
-            if old_l == 0 or np.random.uniform () <= r:
-                theta_chains[j] = new_t
+            for j in range (len (theta_chains)):
+                old_t = theta_chains[j]
+                old_proposal = self.__get_proposal_dist (old_t)
+                new_t = self.__propose_jump (old_t, old_proposal)
+                old_l = likeli_f.get_experiments_likelihood \
+                        (experiments, theta_chains[j])
+                new_l = likeli_f.get_experiments_likelihood \
+                        (experiments, new_t)
+                result = self.__perform_jump (old_t, new_t, old_l, \
+                        new_l, old_proposal)
+                if result:
+                    new_l = result[0]
+                    theta_chains[j] = new_t
+                    pop_likelihoods[j] = new_l
             
             # Global move
             j = np.random.choice (range (len (theta_chains) - 1))
-            theta1 = theta_chains[j]
-            theta2 = theta_chains[j + 1]
-            theta1_l = likeli_f.get_experiments_likelihood (experiments, 
-                    theta1)
-            theta2_l = likeli_f.get_experiments_likelihood (experiments, 
-                    theta2)
+            jump_distr = DiscreteLaplacian (len (betas), j + 1)
+            k = jump_distr.rvs () - 1 
+            thetaj = theta_chains[j]
+            thetak = theta_chains[k]
+            thetaj_l = likeli_f.get_experiments_likelihood (experiments, 
+                    thetaj)
+            thetak_l = likeli_f.get_experiments_likelihood (experiments, 
+                    thetak)
             
-            if theta1_l == 0 or theta2_l == 0:
+            if thetaj_l == 0 or thetak_l == 0:
                 continue
+
+            inv_jump_dist = DiscreteLaplacian (len (betas), k + 1)
+            j_gv_k = inv_jump_dist.pdf (j + 1)
+            k_gv_j = jump_distr.pdf (k + 1)
+            #print ("j is " + str (j))
+            #print ("k is " + str (k))
+            #print ("j given k is " + str (j_gv_k))
+            #print ("k given j is " + str (k_gv_j))
+            tjotk = thetaj_l / thetak_l
+            tkotj = thetak_l / thetaj_l
+            r = safe_power (tkotj, betas[j]) * \
+                    safe_power (tjotk, betas[k]) * \
+                    (j_gv_k / k_gv_j)
             
-            # TODO: fix r
-            t1ot2 = theta1_l / theta2_l
-            t2ot1 = theta2_l / theta1_l
-            r = safe_power (t2ot1, betas[j]) * \
-                    safe_power (t1ot2, betas[j + 1])
-            if (np.random.uniform () <= r):
+            if np.random.uniform () <= r:
                 aux = theta_chains[j]
-                theta_chains[j] = theta_chains[j + 1]
-                theta_chains[j + 1] = aux
+                theta_chains[j] = theta_chains[k]
+                theta_chains[k] = aux
+                aux = pop_likelihoods[j]
+                pop_likelihoods[j] = pop_likelihoods[k]
+                pop_likelihoods[k] = aux
+
         
         # print posterior
         figname = "posterior_after_third_phase_" + \
                 theta_chains[0][0].name + ".png"
         plot_theta_var_sample (theta_chains, 0, figname)
         
-        return (betas, theta_chains)
+        return (betas, theta_chains, pop_likelihoods)
 
 
     def get_sample (self, N1, N2):
@@ -256,6 +281,5 @@ class AdaptiveMCMC:
                 self.__sampled_params[0][0].name + ".png"
         plot_theta_var_sample (self.__sampled_params, 0, figname)
 
-        
         print ("FIXED PHASE")
         return self.__fixed_phase (N2)

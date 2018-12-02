@@ -113,6 +113,6 @@ else:
     theta_priors = read_priors_file ('../input/bioinformatics/' + \
             'model.priors')
 
-    ml = MarginalLikelihood (50000, 1000, 2000, 1000, 40, 100)
+    ml = MarginalLikelihood (5000, 1000, 2000, 1000, 20, 2)
     log_l = ml.estimate_marginal_likelihood (experiments, odes,
             theta_priors)

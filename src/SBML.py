@@ -34,6 +34,12 @@ class SBML:
         sbmldoc = reader.readSBML (file_name)
         if SBML.__check_sbml_parsing_err (sbmldoc):
             return False
+
+        # Converting function definitions
+        converter = libsbml.SBMLFunctionDefinitionConverter ()
+        converter.setDocument (sbmldoc)
+        converter.convert ()
+
         self.sbml_obj = sbmldoc
         self.__global_param = self.__get_global_params ()
         self.__local_param = self.__get_local_params ()

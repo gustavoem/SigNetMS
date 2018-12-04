@@ -47,8 +47,7 @@ class TestSBMLMethods (unittest.TestCase):
         self.model = SBML ()
         self.model.load_file ("input/lambda_model.xml")
         law = self.model.get_species_kinetic_law ("R")
-        if "EXPLE" in law:
-            assert (False)
+        assert ("EXPLE" not in law)
 
 
     def test_species_initial_concentration (self):

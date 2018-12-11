@@ -58,7 +58,14 @@ class MarginalLikelihood:
         # print posterior
         figname = "posterior_after_first_phase_" + \
                 start_sample[0][0].name + ".png"
-        plot_theta_var_sample (start_sample, 0, figname)
+        plot_theta_var_sample (start_sample, 0, figname, "k1")
+        figname = "posterior_after_first_phase_" + \
+                start_sample[0][1].name + ".png"
+        plot_theta_var_sample (start_sample, 1, figname, "d1")
+        figname = "posterior_after_first_phase_" + \
+                start_sample[0][2].name + ".png"
+        plot_theta_var_sample (start_sample, 2, figname, "kcat")
+
 
         
 

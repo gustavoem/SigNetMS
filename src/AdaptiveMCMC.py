@@ -260,7 +260,14 @@ class AdaptiveMCMC:
         # print posterior
         figname = "posterior_after_third_phase_" + \
                 theta_chains[0][0].name + ".png"
-        plot_theta_var_sample (theta_chains, 0, figname)
+        plot_theta_var_sample (theta_chains, 0, figname, "k1")
+        figname = "posterior_after_third_phase_" + \
+                theta_chains[0][1].name + ".png"
+        plot_theta_var_sample (theta_chains, 1, figname, "d1")
+        figname = "posterior_after_third_phase_" + \
+                theta_chains[0][2].name + ".png"
+        plot_theta_var_sample (theta_chains, 2, figname, "kcat")
+
         
         return (betas, theta_chains, pop_likelihoods)
 
@@ -277,7 +284,14 @@ class AdaptiveMCMC:
         # print posterior
         figname = "posterior_after_second_phase_" + \
                 self.__sampled_params[0][0].name + ".png"
-        plot_theta_var_sample (self.__sampled_params, 0, figname)
+        plot_theta_var_sample (self.__sampled_params, 0, figname, "k1")
+        figname = "posterior_after_second_phase_" + \
+                self.__sampled_params[0][1].name + ".png"
+        plot_theta_var_sample (self.__sampled_params, 1, figname, "d1")
+        figname = "posterior_after_second_phase_" + \
+                self.__sampled_params[0][2].name + ".png"
+        plot_theta_var_sample (self.__sampled_params, 2, figname, "kcat")
+
 
         print ("FIXED PHASE")
         return self.__fixed_phase (N2)

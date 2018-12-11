@@ -10,8 +10,23 @@ from MarginalLikelihood import MarginalLikelihood
 from PriorsReader import read_priors_file
 import numpy as np
 import re
-from sys import argv
 
+import argparse
+
+parser = argparse.ArgumentParser ()
+parser.add_argument ("model", help="SBLM file with model definition.")
+parser.add_argument ("priors", help="An XML file with the priors for " \
+        + "the model parameters.")
+parser.add_argument ("experiment", help="An XML file with the" \
+        + "experiments observations.")
+parser.add_argument ("which_experiment", help="we're going to remove this.")
+args = parser.parse_args ()
+sbml_file = args.model
+priors = args.priors
+experiment = args.experiment
+which_experiment = int (args.which_experiment)
+
+# TODO: remove this and get priors from arguments
 def get_theta (sbml, model, which_experiment):
     """ Given a model, construct a list containing all parameters of 
         the model as random variables. """
@@ -37,10 +52,6 @@ def get_theta (sbml, model, which_experiment):
 
     theta_prior.set_experimental_error (sigma)
     return theta_prior
-
-
-which_experiment = int (argv[1])
-sbml_file = argv[2]
 
 print  ("Performing marginal likelihood calculations of model: " + \
         sbml_file)
@@ -71,26 +82,13 @@ elif which_experiment == 1:
     sbml = SBML ()
     sbml.load_file (sbml_file)
     odes = sbml_to_odes (sbml)
-    experiments = read_data_experiment_file ('../input/goodwin3.data', 
-            'x1')
-    theta_priors = get_theta (sbml, odes, which_experiment)
-    ml = MarginalLikelihood (20000, 1000, 500, 500, 10, 10)
-    log_l = ml.estimate_marginal_likelihood (experiments, odes, 
-            theta_priors)
-    print ("log_l = " + str (log_l))
-
-
-elif which_experiment == 2:
-    sbml = SBML ()
-    sbml.load_file (sbml_file)
-    odes = sbml_to_odes (sbml)
     t = np.linspace (0, 120, 200)
     odes.overtime_plot (['EGF', 'ERK', 'ERKPP'], t)
 
     experiments = []
     for i in range (1, 25):
         ex = read_data_experiment_file ('../input/Kolch/ex_' + str (i) +
-            '.data', 'ERKPP')[0]
+            '.data')[0]
         experiments.append (ex)
 
     theta_priors = get_theta (sbml, odes, which_experiment)

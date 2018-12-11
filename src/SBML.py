@@ -121,7 +121,10 @@ class SBML:
                 if reac_internal_params[i] == param:
                     kin_law = reac.getKineticLaw ()
                     reac_params = kin_law.getListOfParameters ()
-                    return reac_params[i].getName ()
+                    original_name = reac_params[i].getName ()
+                    if original_name == "":
+                        original_name = reac_params[i].getId ()
+                    return original_name
 
         return ""
 

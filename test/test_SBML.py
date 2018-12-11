@@ -114,10 +114,29 @@ class TestSBMLMethods (unittest.TestCase):
     def test_unnamed_parameters (self):
         """ If there's a parameter without a name, we should use its id
             as a name instead. """
-        self.model = SBML ()
-        self.model.load_file ("input/goodwin3.xml")
-        params = self.model.get_all_param ()
+        model = SBML ()
+        model.load_file ("input/goodwin3.xml")
+        params = model.get_all_param ()
         self.assertEqual (len (params), 4)
+
+
+    def test_get_original_name_with_id (self):
+        """ If there's a parameter without a name, when you call
+            get_original_param_name you should get the parameter's 
+            id. """
+        model = SBML ()
+        model.load_file ("input/goodwin3.xml")
+        params = model.get_all_param ()
+        names = []
+        for p in params:
+            original_name = model.get_original_param_name (p)
+            names.append (original_name)
+        
+        assert ("m" in names)
+        assert ("k1" in names)
+        assert ("k2" in names)
+        assert ("k3" in names)
+
 
 if __name__ == '__main__':
     unittest.main ()

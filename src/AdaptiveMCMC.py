@@ -103,18 +103,12 @@ class AdaptiveMCMC:
         new_proposal = self.__get_proposal_dist (new_t)
         new_values = new_t.get_values ()
         old_values = old_t.get_values ()
-        #print ("\t\tNew given old")
         new_gv_old = old_proposal.pdf (new_values)
-        #print ("\tResult:" + str (new_gv_old))
-        #print ("\n\t\tOld given new")
         old_gv_new = new_proposal.pdf (old_values)
-        #print ("\tResult:" + str (old_gv_new))
 
         # p (old_t) and p (new_t)
         old_prior = old_t.get_p ()
         new_prior = new_t.get_p ()
-        #print ("\t\nOld prior" + str (old_prior))
-        #print ("\tNew prior" + str (new_prior))
         
         # ratio calculation
         l_ratio = new_l / old_l
@@ -136,9 +130,6 @@ class AdaptiveMCMC:
         likeli_f = LikelihoodFunction (self.__model)
 
         current_t = self.__sampled_params[-1].get_copy ()
-        # print ("\nFirst current theta: ", end='')
-        # for r in current_t:
-            # print (r.value, end=' ')
         current_l = likeli_f.get_experiments_likelihood (experiments, 
                 current_t)
         current_proposal = self.__get_proposal_dist (current_t)
@@ -238,10 +229,6 @@ class AdaptiveMCMC:
             inv_jump_dist = DiscreteLaplacian (len (betas), k + 1)
             j_gv_k = inv_jump_dist.pdf (j + 1)
             k_gv_j = jump_distr.pdf (k + 1)
-            #print ("j is " + str (j))
-            #print ("k is " + str (k))
-            #print ("j given k is " + str (j_gv_k))
-            #print ("k given j is " + str (k_gv_j))
             tjotk = thetaj_l / thetak_l
             tkotj = thetak_l / thetaj_l
             r = safe_power (tkotj, betas[j]) * \
@@ -256,19 +243,6 @@ class AdaptiveMCMC:
                 pop_likelihoods[j] = pop_likelihoods[k]
                 pop_likelihoods[k] = aux
 
-        
-        # print posterior
-        figname = "posterior_after_third_phase_" + \
-                theta_chains[0][0].name + ".png"
-        plot_theta_var_sample (theta_chains, 0, figname, "k1")
-        figname = "posterior_after_third_phase_" + \
-                theta_chains[0][1].name + ".png"
-        plot_theta_var_sample (theta_chains, 1, figname, "d1")
-        figname = "posterior_after_third_phase_" + \
-                theta_chains[0][2].name + ".png"
-        plot_theta_var_sample (theta_chains, 2, figname, "kcat")
-
-        
         return (betas, theta_chains, pop_likelihoods)
 
 
@@ -279,19 +253,7 @@ class AdaptiveMCMC:
             generated on the first phase, is a simple MCMC with N2 
             iterations. """
         print ("ADAPTING PHASE")
-        self.__adapting_phase (N1)
+        self.__adapting_phase (N1) 
         
-        # print posterior
-        figname = "posterior_after_second_phase_" + \
-                self.__sampled_params[0][0].name + ".png"
-        plot_theta_var_sample (self.__sampled_params, 0, figname, "k1")
-        figname = "posterior_after_second_phase_" + \
-                self.__sampled_params[0][1].name + ".png"
-        plot_theta_var_sample (self.__sampled_params, 1, figname, "d1")
-        figname = "posterior_after_second_phase_" + \
-                self.__sampled_params[0][2].name + ".png"
-        plot_theta_var_sample (self.__sampled_params, 2, figname, "kcat")
-
-
         print ("FIXED PHASE")
         return self.__fixed_phase (N2)

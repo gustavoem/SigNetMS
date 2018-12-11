@@ -9,7 +9,6 @@ from LikelihoodFunction import LikelihoodFunction
 from MCMCInitialization import MCMCInitialization
 from AdaptiveMCMC import AdaptiveMCMC
 from ODES import ODES
-from utils import plot_theta_var_sample
 import numpy as np
 import random
 import re
@@ -50,25 +49,13 @@ class MarginalLikelihood:
         n_fixed = self.__fixed_iterations
         n_strata = self.__n_strata
         strata_size = self.__strata_size
-
+    
+        # First sampling step
         mcmc_init = MCMCInitialization (theta_prior, model, experiments,
                 self.__sigma_update_n)
         start_sample = mcmc_init.get_sample (n_init)
 
-        # print posterior
-        figname = "posterior_after_first_phase_" + \
-                start_sample[0][0].name + ".png"
-        plot_theta_var_sample (start_sample, 0, figname, "k1")
-        figname = "posterior_after_first_phase_" + \
-                start_sample[0][1].name + ".png"
-        plot_theta_var_sample (start_sample, 1, figname, "d1")
-        figname = "posterior_after_first_phase_" + \
-                start_sample[0][2].name + ".png"
-        plot_theta_var_sample (start_sample, 2, figname, "kcat")
-
-
-        
-
+        # Second sampling step
         amcmc = AdaptiveMCMC (model, experiments, start_sample, 
                 n_strata, strata_size)
         betas, thetas, likelihoods = amcmc.get_sample (n_adap, n_fixed)

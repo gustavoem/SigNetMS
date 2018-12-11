@@ -119,7 +119,7 @@ class MCMCInitialization:
                 print (r.value, end=' ')
             print ("\nCurrent sigma: " + str (jump_sigma[:10]))
             print ("Current likelihood: " + str (old_l))
-            print ("New likelihood: " + str (new_l), end='\n\n\n')
+            print ("New likelihood: " + str (new_l), end='\n')
             # Debugging #
 
             if new_l > 0:

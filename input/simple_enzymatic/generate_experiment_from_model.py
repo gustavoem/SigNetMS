@@ -15,11 +15,11 @@ def add_noise (values):
         if values[i] + eps > 0:
             values[i] += eps
 
-model_file = 'to complete'
-time_array = ['to complete']
-repetitions = 'to complete'
-variable = 'to complete'
-experiment_file = 'to complete'
+model_file = 'simple_enzymatic.xml'
+time_array = [x for x in range (0, 101, 20)]
+repetitions = 5
+variable = 'E'
+experiment_file = 'simple_enzymatic.data'
 
 sbml = SBML ()
 sbml.load_file (model_file)

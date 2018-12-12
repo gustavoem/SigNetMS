@@ -4,19 +4,18 @@ sys.path.insert (0, '../../src/')
 
 from lxml import etree
 from Experiment import Experiment
-
+from ExperimentSet import ExperimentSet
 
 if (len (argv) != 4):
     print ("Usage: " + argv[0] + " INPUT_FILE VAR " +
         " OUTPUT_FILE_PREFIX. Where, \n\n " + 
         "\tINPUT_FILE: the path to the input file;\n " +
         "\tVAR: the model variable measured on the experiments;\n " +
-        "\tOUTPUT_FILE_PREFIX: the prefix used on the output file " +
-        "names.")
+        "\tOUTPUT_FILE: the file used as output. ")
 else:
     filename = argv[1]
     var = argv[2]
-    output_prefix = argv[3]
+    output_file = argv[3]
 
     f = open (filename)
     experiment_values = []
@@ -51,6 +50,9 @@ else:
 
     f.close ()
     i = 0
+
+    exp_set = ExperimentSet ()
     for exp in experiments:
-        exp.save_to_file (output_prefix + '_' + str (i) + '.data')
-        i += 1
+        exp_set.add (exp)
+
+    exp_set.save_to_file (output_file)

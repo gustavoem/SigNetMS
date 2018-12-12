@@ -30,7 +30,7 @@ class ExperimentSet:
             self.__current = 0
             raise StopIteration
         else:
-            a = sel.__experiment_set[self.__current]
+            a = self.__experiment_set[self.__current]
             self.__current += 1
             return a
 

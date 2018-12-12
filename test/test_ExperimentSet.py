@@ -59,3 +59,21 @@ class TestExperimentSet (unittest.TestCase):
         self.assertListEqual (list (exp1.values), [.1, .2, .3, .4])
         self.assertEqual (exp1.measure_expression, 'x2')
         os.remove (out_file)
+
+
+    def test_read_experiment_set (self):
+        """ Tests if the module can read a data experiment file. """
+        exp_set = ExperimentSet ("input/goodwin3.data")
+        self.assertEqual (exp_set.get_size (), 2)
+        exp0 = exp_set[0]
+        self.assertEqual (len (exp0.times), 80)
+        self.assertEqual (exp0.measure_expression, "x1")
+        self.assertEqual (len (exp0.values), 80)
+        
+
+    def test_read_multiple_measurements (self):
+        """ Tests if the module can read a data experiment with multiple
+            measurements. """
+        exp_set = ExperimentSet ("input/goodwin3.data")
+        self.assertEqual (exp_set[0].measure_expression, "x1")
+        self.assertEqual (exp_set[1].measure_expression, "x2")

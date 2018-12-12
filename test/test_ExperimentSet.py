@@ -5,8 +5,6 @@ import os
 import unittest
 from ExperimentSet import ExperimentSet
 from Experiment import Experiment
-from ExperimentReader import read_data_experiment_file
-
 
 class TestExperimentSet (unittest.TestCase):
     
@@ -48,7 +46,7 @@ class TestExperimentSet (unittest.TestCase):
         exp_set.add (exp2)
         out_file = 'tmp_exp_set_file.xml'
         exp_set.save_to_file (out_file)
-        read_exp_set = read_data_experiment_file (out_file)
+        read_exp_set = ExperimentSet (out_file)
         self.assertEqual (read_exp_set.get_size (), 2)
         exp0 = read_exp_set[0]
         exp1 = read_exp_set[1]

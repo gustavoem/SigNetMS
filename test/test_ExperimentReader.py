@@ -3,7 +3,6 @@ sys.path.insert (0, '../src/')
 
 import unittest
 from ExperimentReader import read_txt_experiment_file
-from ExperimentReader import read_data_experiment_file
 from Experiment import Experiment
 
 class TestExperimentReader (unittest.TestCase):
@@ -16,21 +15,3 @@ class TestExperimentReader (unittest.TestCase):
         self.assertEqual (len (exp0_data.times), 6)
         self.assertEqual (exp0_data.measure_expression, "ERK")
         self.assertEqual (len (exp0_data.values), 6)
-
-
-    def test_read_data_experiment (self):
-        """ Tests if the module can read a data experiment file. """
-        exp_set = read_data_experiment_file ("input/goodwin3.data")
-        self.assertEqual (exp_set.get_size (), 2)
-        exp0 = exp_set[0]
-        self.assertEqual (len (exp0.times), 80)
-        self.assertEqual (exp0.measure_expression, "x1")
-        self.assertEqual (len (exp0.values), 80)
-        
-
-    def test_read_multiple_measurements (self):
-        """ Tests if the module can read a data experiment with multiple
-            measurements. """
-        exp_set = read_data_experiment_file ("input/goodwin3.data")
-        self.assertEqual (exp_set[0].measure_expression, "x1")
-        self.assertEqual (exp_set[1].measure_expression, "x2")

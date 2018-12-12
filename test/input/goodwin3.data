@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<dataset noise="normal" name="Data for Goodwin model with 3 variables" xmlns="http://bisb.gla.org/dataset">
-    <data cols="3">
+<ExperimentSet>
+    <Experiment>
         <row>
             <element value="40.0" index="0"/>
             <element value="0.232468" index="1"/>
@@ -401,11 +401,11 @@
             <element value="0.0594628" index="1"/>
             <element value="0.521437" index="2"/>
         </row>
-    </data>
-    <condition/>
-    <interpretation>
-        <time col="0"/>
-        <readout expression="x1" col="1"/>
-        <readout expression="x2" col="2"/>
-    </interpretation>
-</dataset>
+        <condition/>
+        <interpretation>
+            <time col="0"/>
+            <readout expression="x1" col="1"/>
+            <readout expression="x2" col="2"/>
+        </interpretation>
+    </Experiment>
+</ExperimentSet>

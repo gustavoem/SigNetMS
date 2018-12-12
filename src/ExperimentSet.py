@@ -9,6 +9,11 @@ class ExperimentSet:
         self.__experiment_set = []
     
     
+    def __getitem__ (self, key):
+        """ Defines indexed access. """
+        return self.__experiment_set[key]
+
+
     def __iter__ (self):
         """ Iterator start. """
         self.__current = 0
@@ -29,6 +34,12 @@ class ExperimentSet:
     def add (self, experiment):
         """ Adds one experiment. """
         self.__experiment_set.append (experiment)
+
+
+    def get_size (self):
+        """ Returns the number of experiments in this set. """
+        return len (self.__experiment_set)
+
 
     def save_to_file (self, file_name):
         """ Saves experiment set into an XML file. """

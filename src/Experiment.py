@@ -12,7 +12,7 @@ class Experiment:
         self.values = values
 
     
-    def save_to_file (self, filename):
+    def save_as_BioBayes_file (self, filename):
         """ Creates an xml file with the experiment data. This file
             is compatible with BioBayes software. """
         DATA_NAMESPACE = "http://bisb.gla.org/dataset"

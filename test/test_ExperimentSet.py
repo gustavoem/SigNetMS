@@ -27,8 +27,11 @@ class TestExperimentSet (unittest.TestCase):
         
         f = open (out_file, 'r')
         data = f.read ()
+        f.close ()
+        os.remove (out_file)
         measures = [measure1, measure2]
         values = values1 + values2
         assert all ([str (t) in data for t in times])
         assert all ([m in data for m in measures])
         assert all ([str (v) in data for v in values])
+

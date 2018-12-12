@@ -30,35 +30,29 @@ class ExperimentSet:
         """ Adds one experiment. """
         self.__experiment_set.append (experiment)
 
-
-    def save_to_file (self, filename):
-        """ Creates an xml file with the experiment data. """
-        DATA_NAMESPACE = "http://bisb.gla.org/dataset"
-        NSMAP = {None: DATA_NAMESPACE}
-
-        root = etree.Element ("dataset", nsmap=NSMAP)
-        root.set ("noise", "normal")
-        root.set ("name", "Automatic generated dataset.")
-
-        data = etree.SubElement (root, "data")
-        data.set ("cols", "2")
-        for i in range (len (self.times)):
-            row = etree.SubElement (data, "row")
-            element0 = etree.SubElement (row, "element")
-            element0.set ("value", str (self.times[i]))
-            element0.set ("index", "0")
-            element1 = etree.SubElement (row, "element")
-            element1.set ("value", str (self.values[i]))
-            element1.set ("index", "1")
+    def save_to_file (self, file_name):
+        """ Saves experiment set into an XML file. """
+        experiments = self.__experiment_set
+        root = etree.Element ("ExperimentSet")
         
-        condition = etree.SubElement (root, "condition")
-        interpretation = etree.SubElement (root, "interpretation")
-        time_interp = etree.SubElement (interpretation, "time")
-        time_interp.set ("col", "0")
-        var_interp = etree.SubElement (interpretation, "readout")
-        var_interp.set ("expression", self.measure_expression)
-        var_interp.set ("col", "1")
-
+        for exp in experiments:
+            exp_root = etree.SubElement (root, "Experiment")
+            for i in range (len (exp.times)):
+                row = etree.SubElement (exp_root, "row")
+                time_elm = etree.SubElement (row, "element")
+                time_elm.set ("value", str (exp.times[i]))
+                time_elm.set ("index", "0")
+                value_elm = etree.SubElement (row, "element")
+                value_elm.set ("value", str (exp.values[i]))
+                value_elm.set ("index", "1")
+            condition_elm = etree.SubElement (exp_root, "condition")
+            interp_elm = etree.SubElement (exp_root, "interpretation")
+            time_interp = etree.SubElement (interp_elm, "time")
+            time_interp.set ("col", "0")
+            var_interp = etree.SubElement (interp_elm, "readout")
+            var_interp.set ("expression", exp.measure_expression)
+            var_interp.set ("col", "1")
+            
         tree = etree.ElementTree (root)
-        tree.write(file_name, pretty_print=True, encoding='utf-8', 
-                standalone=True, xml_declaration=True) 
+        tree.write (file_name, pretty_print=True, encoding='utf-8',
+                standalone=True, xml_declaration=True)

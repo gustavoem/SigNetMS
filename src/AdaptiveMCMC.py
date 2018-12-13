@@ -26,17 +26,15 @@ class AdaptiveMCMC:
 
 
     def __init__ (self, model, experiments, start_sample, n_strata, 
-            strata_size):
+            strata_size, beta):
         self.__model = model
         self.__experiments = experiments
         self.__sampled_params = start_sample
         self.__covar_matrix = self.__estimate_cov_matrix ()
-        self.__n_strata = n_strata
-        self.__strata_size = strata_size
 
         self.__sampled_params = start_sample[len (start_sample) // 2:]
         print (self.__covar_matrix)
-    
+        self.__beta = beta
 
     def __estimate_cov_matrix (self):
         """ Given the current sample, estimates the covariance matrix
@@ -139,7 +137,7 @@ class AdaptiveMCMC:
             new_l = likeli_f.get_experiments_likelihood (experiments, \
                     new_t)
             result = self.__perform_jump (current_t, new_t, current_l, \
-                    new_l, current_proposal)
+                    new_l, current_proposal, self.__beta)
             if result:
                 (new_likelihood, new_proposal) = result
                 self.__sampled_params.append (new_t)
@@ -206,7 +204,7 @@ class AdaptiveMCMC:
                 new_l = likeli_f.get_experiments_likelihood \
                         (experiments, new_t)
                 result = self.__perform_jump (old_t, new_t, old_l, \
-                        new_l, old_proposal)
+                        new_l, old_proposal, betas[i])
                 if result:
                     new_l = result[0]
                     theta_chains[j] = new_t
@@ -254,6 +252,6 @@ class AdaptiveMCMC:
             iterations. """
         print ("ADAPTING PHASE")
         self.__adapting_phase (N1) 
-        
-        print ("FIXED PHASE")
-        return self.__fixed_phase (N2)
+        return self.__sampled_params[-1], self.__covar_matrix
+        #print ("FIXED PHASE")
+        #return self.__fixed_phase (N2)

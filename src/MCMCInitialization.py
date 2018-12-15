@@ -4,6 +4,7 @@ sys.path.insert (0, './distributions/')
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from Lognormal import Lognormal
+from utils import safe_power
 
 
 class MCMCInitialization:
@@ -15,7 +16,7 @@ class MCMCInitialization:
         Multiple Perturbation Measurements of Specific Biochemical 
         Species", Tian-Rui Xu et. al. """
 
-    def __init__ (self, param_list, model, experiments, sigma_update_n):
+    def __init__ (self, param_list, model, experiments, sigma_update_n, beta):
         """ Default constructor. """
         self.__params = param_list
         self.__model = model
@@ -23,6 +24,7 @@ class MCMCInitialization:
         self.__start_params ()
         self.__sampled_params = []
         self.__sigma_update_n = sigma_update_n
+        self.__beta = beta
 
 
     def __start_params (self):
@@ -130,7 +132,9 @@ class MCMCInitialization:
                             current_t, jump_sigma)
                     new_prior = new_t.get_p ()
                     old_prior = current_t.get_p ()
-                    r = (new_l / old_l) * (new_prior / old_prior)* \
+
+                    l_ratio = safe_power (new_l / old_l, self.__beta)
+                    r = l_ratio * (new_prior / old_prior)* \
                             (old_gv_new / new_gv_old)
                 
                 if old_l == 0 or np.random.uniform () <= r:

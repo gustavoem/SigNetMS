@@ -10,6 +10,9 @@ from MCMCInitialization import MCMCInitialization
 from DiscreteLaplacian import DiscreteLaplacian
 from AdaptiveMCMC import AdaptiveMCMC
 from ODES import ODES
+from MultivariateLognormal import MultivariateLognormal
+from DiscreteLaplacian import DiscreteLaplacian
+from utils import safe_power
 import numpy as np
 import random
 import re
@@ -19,6 +22,8 @@ class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
     
+    __SCHEDULE_POWER = 5
+
     def __init__ (self, init_iterations, sigma_update_n, 
             adaptive_iterations, fixed_iterations, n_strata, 
             strata_size):
@@ -39,6 +44,22 @@ class MarginalLikelihood:
         self.__fixed_iterations = fixed_iterations
         self.__n_strata = n_strata
         self.__strata_size = strata_size
+    
+    
+    @staticmethod
+    def __sample_betas (n_strata, strata_size):
+        """ Samples strata_size beta from each of the n_strata 
+            strata."""
+        betas = []
+        sched_power = MarginalLikelihood.__SCHEDULE_POWER
+        for i in range (n_strata):
+            strata_start = (i /  n_strata) ** sched_power
+            strata_end = ((i + 1) / n_strata) ** sched_power
+            for j in range (strata_size):
+                x = np.random.uniform (strata_start, strata_end)
+                betas.append (x)
+            betas.sort ()
+        return betas
 
 
     def estimate_marginal_likelihood (self, experiments, model, 
@@ -52,15 +73,15 @@ class MarginalLikelihood:
         strata_size = self.__strata_size
     
         # Choose betas:
-        betas = AdaptiveMCMC.__sample_betas (n_strata, strata_size)
+        betas = self.__sample_betas (n_strata, strata_size)
         thetas = []
         cov_matrices = []
 
         
         for beta in betas:
             # First sampling step
-            mcmc_init = MCMCInitialization (theta_prior, model, experiments,
-                    self.__sigma_update_n, beta)
+            print ("\nFIRST STEP | T = " + str (beta) + "\n")
+            mcmc_init = MCMCInitialization (theta_prior, model, experiments, self.__sigma_update_n, beta)
             start_sample = mcmc_init.get_sample (n_init)
 
             # Second sampling step
@@ -73,7 +94,7 @@ class MarginalLikelihood:
         
         # Third step 
         betas, thetas, likelihoods = self.__fixed_phase (self.__fixed_iterations, 
-                betas, thetas, model, cov_matrices)
+                betas, thetas, model, cov_matrices, experiments)
 
         ml = self.__calculate_marginal_likelihood (betas, thetas, \
                 likelihoods)
@@ -86,6 +107,7 @@ class MarginalLikelihood:
             parameters are set in such manner that the mean of this 
             distribution is exactly theta. """
         values = theta.get_values ()
+        var_covar = np.array (var_covar)
         variances = var_covar.diagonal ()
         # The mean of the normal distribution should be 
         #      log (theta) - 1/2 diagonal (S)
@@ -101,7 +123,6 @@ class MarginalLikelihood:
         new_values = jump_dist.rvs ()
         new_t = theta.get_copy ()
 
-        print ("\n\n\n------------------------------")
         for i in range (n):
             new_t[i].value = new_values[i]
         return new_t
@@ -154,9 +175,9 @@ class MarginalLikelihood:
             return False
 
 
-    def __fixed_phase (self, N2, betas, theta_chains, model, var_covars):
+    def __fixed_phase (self, N2, betas, theta_chains, model, var_covars,
+            experiments):
         """ Performs the fixed phase of the algorithm. """
-        experiments = self.__experiments
         n_strata = self.__n_strata
         strata_size = self.__strata_size
         likeli_f = LikelihoodFunction (model)
@@ -169,9 +190,15 @@ class MarginalLikelihood:
         
         for i in range (N2):
             # Local move
+            print ("\n\n\n------------------------------")
+            print ("Iteration: " + str (i))
             for j in range (len (theta_chains)):
+                print (str (j)  + "-th temperature")
                 var_covar_j = var_covars[j]
+                print ("Var covar = ")
+                print (var_covar_j)
                 old_t = theta_chains[j]
+                
                 old_proposal = self.__get_proposal_dist (old_t, var_covar_j)
                 new_t = self.__propose_jump (old_t, old_proposal)
                 old_l = likeli_f.get_experiments_likelihood \
@@ -179,7 +206,7 @@ class MarginalLikelihood:
                 new_l = likeli_f.get_experiments_likelihood \
                         (experiments, new_t)
                 result = self.__perform_jump (old_t, new_t, old_l, \
-                        new_l, var_covar_j, betas[i])
+                        new_l, old_proposal, var_covar_j, betas[j])
                 if result:
                     new_l = result[0]
                     theta_chains[j] = new_t

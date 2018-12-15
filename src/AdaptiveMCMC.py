@@ -206,7 +206,7 @@ class AdaptiveMCMC:
                 new_l = likeli_f.get_experiments_likelihood \
                         (experiments, new_t)
                 result = self.__perform_jump (old_t, new_t, old_l, \
-                        new_l, old_proposal)
+                        new_l, old_proposal, betas[j])
                 if result:
                     new_l = result[0]
                     theta_chains[j] = new_t

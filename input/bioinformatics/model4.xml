@@ -13,9 +13,6 @@
       <species id="PhA" name="PhA" compartment="compartment" initialConcentration="1"/>
       <species id="RppPhA" name="RppPhA" compartment="compartment" initialConcentration="0"/>
     </listOfSpecies>
-    <listOfParameters>
-      <parameter id="Noise" value="0.06"/>
-    </listOfParameters>
     <listOfReactions>
       <reaction id="reaction_0" name="R1" reversible="false">
         <listOfReactants>

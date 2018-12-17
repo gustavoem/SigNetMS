@@ -71,9 +71,6 @@
       <species id="Rpp" name="Rpp" compartment="compartment" initialConcentration="0"/>
       <species id="S" name="S" compartment="compartment" initialConcentration="1"/>
     </listOfSpecies>
-    <listOfParameters>
-      <parameter id="Noise" value="0.4"/>
-    </listOfParameters>
     <listOfReactions>
       <reaction id="reaction_0" name="R1" reversible="false">
         <listOfReactants>

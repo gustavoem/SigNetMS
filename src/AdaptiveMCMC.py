@@ -22,7 +22,7 @@ class AdaptiveMCMC:
 
     # This is a good scheduling power according to "Estimating Bayes 
     # Factors via Thermodynamic Integration and Population MCMC"
-    __SCHEDULE_POWER = 5
+    __SCHEDULE_POWER = 4
 
 
     def __init__ (self, model, experiments, start_sample, n_strata, 
@@ -207,6 +207,7 @@ class AdaptiveMCMC:
                 new_log_l = l_f.get_log_likelihood (experiments, new_t)
                 result = self.__perform_jump (old_t, new_t, old_log_l, \
                         new_log_l, old_proposal, betas[j])
+
                 if result:
                     new_log_l = result[0]
                     theta_chains[j] = new_t

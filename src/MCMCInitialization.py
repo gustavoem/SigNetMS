@@ -34,12 +34,12 @@ class MCMCInitialization:
             param.set_rand_value ()
 
 
-    def __propose_independent_t (self, current_t, jump_sigma):
+    def __propose_independent_t (self, old_t, jump_sigma):
         """ Given theta, propose a new theta, jumping each parameter
             indepenntly accorind to a lognormal distribution with
             mean zero and sqrt (variance) = sigma. Returns a tuple 
             containing a new list of parameter and its likelihood."""
-        new_t = current_t.get_copy ()
+        new_t = old_t.get_copy ()
         for i in range (new_t.get_size ()):
             p = new_t[i]
             jump_s = jump_sigma[i]
@@ -97,51 +97,51 @@ class MCMCInitialization:
     def __sample_theta (self, N):
         jump_sigma = self.__init_jump_sigma ()
         experiments = self.__experiments
-        likeli_f = LikelihoodFunction (self.__model)
+        l_f = LikelihoodFunction (self.__model)
         accepted_jumps = 0
 
-        current_t = self.__params
-        old_l = likeli_f.get_experiments_likelihood (experiments, 
-                current_t)
+        old_t = self.__params
+        old_log_l = l_f.get_log_likelihood (experiments, old_t)
 
         for i in range (N):
-            new_t = self.__propose_independent_t (current_t, jump_sigma)
-            new_l = likeli_f.get_experiments_likelihood (experiments, 
-                    new_t)
+            new_t = self.__propose_independent_t (old_t, jump_sigma)
+            new_log_l = l_f.get_log_likelihood (experiments, new_t)
             
             # Debugging #
             if i + 1 % 1000 == 0:
                 print ("Iteration " + str (i + 1) + \
                         " on MCMCInitialization.")
             print ("\nCurrent theta: ", end='')
-            for r in current_t[:10]:
+            for r in old_t[:10]:
                 print (r.value, end=' ')
             print ("\nNew theta:     ", end='')
             for r in new_t[:10]:
                 print (r.value, end=' ')
             print ("\nCurrent sigma: " + str (jump_sigma[:10]))
-            print ("Current likelihood: " + str (old_l))
-            print ("New likelihood: " + str (new_l), end='\n')
+            print ("Current likelihood: " + str (old_log_l))
+            print ("New likelihood: " + str (new_log_l), end='\n')
             # Debugging #
 
-            if new_l > 0:
-                if old_l != 0:
-                    new_gv_old = self.__calc_jump_prob (current_t,
-                            new_t, jump_sigma)
-                    old_gv_new = self.__calc_jump_prob (new_t, 
-                            current_t, jump_sigma)
-                    new_prior = new_t.get_p ()
-                    old_prior = current_t.get_p ()
-
-                    l_ratio = safe_power (new_l / old_l, self.__beta)
-                    r = l_ratio * (new_prior / old_prior)* \
-                            (old_gv_new / new_gv_old)
+            minus_inf = float ("-inf")
+            if new_log_l > minus_inf:
+                new_gv_old = self.__calc_jump_prob (old_t, new_t, 
+                        jump_sigma)
+                old_gv_new = self.__calc_jump_prob (new_t, old_t, 
+                        jump_sigma)
+                new_prior = new_t.get_p ()
+                old_prior = old_t.get_p ()
+                l_ratio = safe_power (np.exp (new_log_l - old_log_l), self.__beta )
+                print ("Likelihood ratio: " + str (l_ratio))
+                prior_ratio = new_prior / old_prior
+                jump_ratio = old_gv_new / new_gv_old
+                r = l_ratio * prior_ratio * jump_ratio
                 
-                if old_l == 0 or np.random.uniform () <= r:
+                if not old_log_l > minus_inf \
+                        or np.random.uniform () <= r:
                     accepted_jumps += 1
-                    current_t = new_t
-                    old_l = new_l
-                    self.__sampled_params.append (current_t)
+                    old_t = new_t
+                    old_log_l = new_log_l
+                    self.__sampled_params.append (old_t)
 
             if (i + 1) % self.__sigma_update_n == 0 : 
                 jump_sigma = self.__update_sigma (jump_sigma, 

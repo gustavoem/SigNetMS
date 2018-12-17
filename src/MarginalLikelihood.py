@@ -78,7 +78,6 @@ class MarginalLikelihood:
         thetas = []
         cov_matrices = []
 
-        
         for beta in betas:
             # First sampling step
             print ("\nFIRST STEP | T = " + str (beta) + "\n")
@@ -95,11 +94,11 @@ class MarginalLikelihood:
             cov_matrices.append (cov_matrix)
         
         # Third step 
-        betas, thetas, likelihoods = self.__fixed_phase (self.__fixed_iterations, 
+        betas, thetas, log_ls = self.__fixed_phase (self.__fixed_iterations, 
                 betas, thetas, model, cov_matrices, experiments)
 
-        ml = self.__calculate_marginal_likelihood (betas, thetas, \
-                likelihoods)
+        ml = self.__calculate_marginal_likelihood (betas, thetas, 
+                log_ls)
         return ml
 
 
@@ -130,7 +129,7 @@ class MarginalLikelihood:
         return new_t
 
 
-    def __perform_jump (self, old_t, new_t, old_l, new_l, \
+    def __perform_jump (self, old_t, new_t, old_log_l, new_log_l, \
             old_proposal, var_covar, power=None):
         """ Given a current theta, decides to jump or not to new_t 
             according to Metropolis-Hastings. If the jump is accepted
@@ -145,11 +144,11 @@ class MarginalLikelihood:
         for r in new_t:
             print (r.value, end=' ')
         print ("")
-        print ("Current likelihood: " + str (old_l))
-        print ("New likelihood: " + str (new_l), end='\n\n\n')
+        print ("Current likelihood: " + str (old_log_l))
+        print ("New likelihood: " + str (new_log_l), end='\n\n\n')
         # Debugging #
 
-        if not new_l > 0:
+        if not new_log_l > float ("-inf"):
             return False
         
         # Jumping probabilities
@@ -164,7 +163,7 @@ class MarginalLikelihood:
         new_prior = new_t.get_p ()
         
         # ratio calculation
-        l_ratio = new_l / old_l
+        l_ratio = np.exp (new_log_l - old_log_l)
         if power is not None:
             l_ratio = safe_power (l_ratio, power)
         theta_prior_ratio = new_prior / old_prior
@@ -172,7 +171,7 @@ class MarginalLikelihood:
         r = l_ratio * theta_prior_ratio  * jump_ratio
         
         if np.random.uniform () <= r:
-            return (new_l, new_proposal)
+            return (new_log_l, new_proposal)
         else:
             return False
 
@@ -182,13 +181,13 @@ class MarginalLikelihood:
         """ Performs the fixed phase of the algorithm. """
         n_strata = self.__n_strata
         strata_size = self.__strata_size
-        likeli_f = LikelihoodFunction (model)
+        l_f = LikelihoodFunction (model)
 
-        pop_likelihoods = []
+        pop_log_likelds = []
         for i in range (len (theta_chains)):
             theta = theta_chains[i]
-            l = likeli_f.get_experiments_likelihood (experiments, theta)
-            pop_likelihoods.append (l)
+            l = l_f.get_log_likelihood (experiments, theta)
+            pop_log_likelds.append (l)
         
         for i in range (N2):
             # Local move
@@ -200,19 +199,18 @@ class MarginalLikelihood:
                 print ("Var covar = ")
                 print (var_covar_j)
                 old_t = theta_chains[j]
-                
                 old_proposal = self.__get_proposal_dist (old_t, var_covar_j)
                 new_t = self.__propose_jump (old_t, old_proposal)
-                old_l = likeli_f.get_experiments_likelihood \
-                        (experiments, theta_chains[j])
-                new_l = likeli_f.get_experiments_likelihood \
-                        (experiments, new_t)
-                result = self.__perform_jump (old_t, new_t, old_l, \
-                        new_l, old_proposal, var_covar_j, betas[j])
+                old_log_l = l_f.get_log_likelihood (experiments, \
+                        theta_chains[j])
+                new_log_l = l_f.get_log_likelihood (experiments, \
+                        new_t)
+                result = self.__perform_jump (old_t, new_t, old_log_l, \
+                        new_log_l, old_proposal, var_covar_j, betas[j])
                 if result:
-                    new_l = result[0]
+                    new_log_l = result[0]
                     theta_chains[j] = new_t
-                    pop_likelihoods[j] = new_l
+                    pop_log_likelds[j] = new_log_l
             
             # Global move
             j = np.random.choice (range (len (theta_chains) - 1))
@@ -220,19 +218,19 @@ class MarginalLikelihood:
             k = jump_distr.rvs () - 1 
             thetaj = theta_chains[j]
             thetak = theta_chains[k]
-            thetaj_l = likeli_f.get_experiments_likelihood (experiments, 
-                    thetaj)
-            thetak_l = likeli_f.get_experiments_likelihood (experiments, 
-                    thetak)
+            thetaj_log_l = l_f.get_log_likelihood (experiments, thetaj)
+            thetak_log_l = l_f.get_log_likelihood (experiments, thetak)
             
-            if thetaj_l == 0 or thetak_l == 0:
+            if not thetaj_log_l > float ("-inf") \
+                    or not thetak_log_l > float ("-inf"):
                 continue
 
             inv_jump_dist = DiscreteLaplacian (len (betas), k + 1)
             j_gv_k = inv_jump_dist.pdf (j + 1)
             k_gv_j = jump_distr.pdf (k + 1)
-            tjotk = thetaj_l / thetak_l
-            tkotj = thetak_l / thetaj_l
+            tjotk = np.exp (thetaj_log_l - thetak_log_l)
+            tkotj = np.exp (thetak_log_l - thetaj_log_l)
+
             r = safe_power (tkotj, betas[j]) * \
                     safe_power (tjotk, betas[k]) * \
                     (j_gv_k / k_gv_j)
@@ -241,10 +239,11 @@ class MarginalLikelihood:
                 aux = theta_chains[j]
                 theta_chains[j] = theta_chains[k]
                 theta_chains[k] = aux
-                aux = pop_likelihoods[j]
-                pop_likelihoods[j] = pop_likelihoods[k]
-                pop_likelihoods[k] = aux
-        return (betas, theta_chains, pop_likelihoods)
+                aux = pop_log_likelds[j]
+                pop_log_likelihoods[j] = pop_log_likelds[k]
+                pop_log_likelihoods[k] = aux
+
+        return (betas, theta_chains, pop_log_likelihoods)
 
     def __calculate_marginal_likelihood (self, betas, thetas, \
             likelihoods):
@@ -268,13 +267,13 @@ class MarginalLikelihood:
                 
             strat_sum = 0
             while j < len (betas) and betas[j] <= strata_end:
-                p_y_given_theta = likelihoods[j]
+                log_p_y_given_theta = likelihoods[j]
                 print ("\tTheta: ", end='')
                 for r in thetas[j]:
                     print (r.value, end=' ')
-                print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
-                if p_y_given_theta > 0:
-                    strat_sum += np.log (p_y_given_theta)
+                print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
+                        + "\n")
+                strat_sum += log_p_y_given_theta
                 print ("Strat_sum = " + str (strat_sum))
                 j += 1
 

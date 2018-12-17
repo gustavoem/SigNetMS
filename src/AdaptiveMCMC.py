@@ -22,7 +22,7 @@ class AdaptiveMCMC:
 
     # This is a good scheduling power according to "Estimating Bayes 
     # Factors via Thermodynamic Integration and Population MCMC"
-    __SCHEDULE_POWER = 5
+    __SCHEDULE_POWER = 4
 
 
     def __init__ (self, model, experiments, start_sample, n_strata, 
@@ -69,13 +69,12 @@ class AdaptiveMCMC:
         new_values = jump_dist.rvs ()
         new_t = theta.get_copy ()
 
-        print ("\n\n\n------------------------------")
         for i in range (n):
             new_t[i].value = new_values[i]
         return new_t
 
 
-    def __perform_jump (self, old_t, new_t, old_l, new_l, \
+    def __perform_jump (self, old_t, new_t, old_log_l, new_log_l, \
             old_proposal, power=None):
         """ Given a current theta, decides to jump or not to new_t 
             according to Metropolis-Hastings. If the jump is accepted
@@ -90,11 +89,11 @@ class AdaptiveMCMC:
         for r in new_t:
             print (r.value, end=' ')
         print ("")
-        print ("Current likelihood: " + str (old_l))
-        print ("New likelihood: " + str (new_l), end='\n\n\n')
+        print ("Current log-likelihood: " + str (old_log_l))
+        print ("New log-likelihood: " + str (new_log_l), end='\n\n\n')
         # Debugging #
 
-        if not new_l > 0:
+        if not new_log_l > float ("-inf"):
             return False
         
         # Jumping probabilities
@@ -109,15 +108,17 @@ class AdaptiveMCMC:
         new_prior = new_t.get_p ()
         
         # ratio calculation
-        l_ratio = new_l / old_l
+        l_ratio = np.exp (new_log_l - old_log_l)
         if power is not None:
             l_ratio = safe_power (l_ratio, power)
+            print ("Powering to: "+ str (power))
+        print ("Likelihood ratio: " + str (l_ratio))
         theta_prior_ratio = new_prior / old_prior
         jump_ratio = old_gv_new / new_gv_old
-        r = l_ratio * theta_prior_ratio  * jump_ratio
+        r = l_ratio * theta_prior_ratio * jump_ratio
         
         if np.random.uniform () <= r:
-            return (new_l, new_proposal)
+            return (new_log_l, new_proposal)
         else:
             return False
 
@@ -125,26 +126,24 @@ class AdaptiveMCMC:
     def __adapting_phase (self, N1):
         """ Performs the adaptive phase of the algorithm. """
         experiments = self.__experiments
-        likeli_f = LikelihoodFunction (self.__model)
+        l_f = LikelihoodFunction (self.__model)
 
-        current_t = self.__sampled_params[-1].get_copy ()
-        current_l = likeli_f.get_experiments_likelihood (experiments, 
-                current_t)
-        current_proposal = self.__get_proposal_dist (current_t)
+        old_t = self.__sampled_params[-1].get_copy ()
+        old_log_l = l_f.get_log_likelihood (experiments, old_t)
+        old_proposal = self.__get_proposal_dist (old_t)
 
         for i in range (N1):
-            new_t = self.__propose_jump (current_t, current_proposal)
-            new_l = likeli_f.get_experiments_likelihood (experiments, \
-                    new_t)
-            result = self.__perform_jump (current_t, new_t, current_l, \
-                    new_l, current_proposal, self.__beta)
+            new_t = self.__propose_jump (old_t, old_proposal)
+            new_log_l = l_f.get_log_likelihood (experiments, new_t)
+            result = self.__perform_jump (old_t, new_t, old_log_l, \
+                    new_log_l, old_proposal, self.__beta)
             if result:
-                (new_likelihood, new_proposal) = result
+                (new_log_l, new_proposal) = result
                 self.__sampled_params.append (new_t)
                 self.__covar_matrix = self.__estimate_cov_matrix ()
-                current_t = new_t
-                current_l = new_l
-                current_proposal = new_proposal
+                old_t = new_t
+                old_log_l = new_log_l
+                old_proposal = new_proposal
 
 
     @staticmethod
@@ -156,7 +155,7 @@ class AdaptiveMCMC:
     def __sample_betas (n_strata, strata_size):
         """ Samples strata_size beta from each of the n_strata 
             strata."""
-        betas = []
+        betas = [0]
         sched_power = AdaptiveMCMC.__SCHEDULE_POWER
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
@@ -165,6 +164,7 @@ class AdaptiveMCMC:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
+        betas.append (1)
         return betas
 
 
@@ -185,30 +185,31 @@ class AdaptiveMCMC:
         strata_size = self.__strata_size
         betas = AdaptiveMCMC.__sample_betas (n_strata, strata_size)
         theta_chains = self.__init_population (betas)
-        likeli_f = LikelihoodFunction (self.__model)
+        l_f = LikelihoodFunction (self.__model)
 
-        pop_likelihoods = []
+        pop_log_likelds = []
         for i in range (len (theta_chains)):
             theta = theta_chains[i]
-            l = likeli_f.get_experiments_likelihood (experiments, theta)
-            pop_likelihoods.append (l)
+            log_l = l_f.get_log_likelihood (experiments, theta)
+            pop_log_likelds.append (log_l)
         
         for i in range (N2):
             # Local move
             for j in range (len (theta_chains)):
+                print ("\n\n\n------------------------------")
+                print ("Temperature: " + str (betas[j]))
                 old_t = theta_chains[j]
                 old_proposal = self.__get_proposal_dist (old_t)
                 new_t = self.__propose_jump (old_t, old_proposal)
-                old_l = likeli_f.get_experiments_likelihood \
-                        (experiments, theta_chains[j])
-                new_l = likeli_f.get_experiments_likelihood \
-                        (experiments, new_t)
-                result = self.__perform_jump (old_t, new_t, old_l, \
-                        new_l, old_proposal, betas[i])
+                old_log_l = l_f.get_log_likelihood (experiments, old_t)
+                new_log_l = l_f.get_log_likelihood (experiments, new_t)
+                result = self.__perform_jump (old_t, new_t, old_log_l, \
+                        new_log_l, old_proposal, betas[j])
+
                 if result:
-                    new_l = result[0]
+                    new_log_l = result[0]
                     theta_chains[j] = new_t
-                    pop_likelihoods[j] = new_l
+                    pop_log_likelds[j] = new_log_l
             
             # Global move
             j = np.random.choice (range (len (theta_chains) - 1))
@@ -216,19 +217,19 @@ class AdaptiveMCMC:
             k = jump_distr.rvs () - 1 
             thetaj = theta_chains[j]
             thetak = theta_chains[k]
-            thetaj_l = likeli_f.get_experiments_likelihood (experiments, 
-                    thetaj)
-            thetak_l = likeli_f.get_experiments_likelihood (experiments, 
-                    thetak)
+            thetaj_log_l = l_f.get_log_likelihood (experiments, thetaj)
+            thetak_log_l = l_f.get_log_likelihood (experiments, thetak)
             
-            if thetaj_l == 0 or thetak_l == 0:
+            if not thetaj_log_l > float ("-inf") \
+                    or not thetak_log_l > float ("-inf"):
                 continue
 
             inv_jump_dist = DiscreteLaplacian (len (betas), k + 1)
             j_gv_k = inv_jump_dist.pdf (j + 1)
             k_gv_j = jump_distr.pdf (k + 1)
-            tjotk = thetaj_l / thetak_l
-            tkotj = thetak_l / thetaj_l
+            tjotk = np.exp (thetaj_log_l - thetak_log_l)
+            tkotj = np.exp (thetak_log_l - thetaj_log_l)
+            
             r = safe_power (tkotj, betas[j]) * \
                     safe_power (tjotk, betas[k]) * \
                     (j_gv_k / k_gv_j)
@@ -237,11 +238,11 @@ class AdaptiveMCMC:
                 aux = theta_chains[j]
                 theta_chains[j] = theta_chains[k]
                 theta_chains[k] = aux
-                aux = pop_likelihoods[j]
-                pop_likelihoods[j] = pop_likelihoods[k]
-                pop_likelihoods[k] = aux
+                aux = pop_log_likelds[j]
+                pop_log_likelds[j] = pop_log_likelds[k]
+                pop_log_likelds[k] = aux
 
-        return (betas, theta_chains, pop_likelihoods)
+        return (betas, theta_chains, pop_log_likelds)
 
 
     def get_sample (self, N1, N2):

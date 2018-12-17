@@ -22,7 +22,7 @@ class AdaptiveMCMC:
 
     # This is a good scheduling power according to "Estimating Bayes 
     # Factors via Thermodynamic Integration and Population MCMC"
-    __SCHEDULE_POWER = 5
+    __SCHEDULE_POWER = 4
 
 
     def __init__ (self, model, experiments, start_sample, n_strata, 
@@ -158,7 +158,7 @@ class AdaptiveMCMC:
     def __sample_betas (n_strata, strata_size):
         """ Samples strata_size beta from each of the n_strata 
             strata."""
-        betas = []
+        betas = [0]
         sched_power = AdaptiveMCMC.__SCHEDULE_POWER
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
@@ -167,6 +167,7 @@ class AdaptiveMCMC:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
+        betas.append (1)
         return betas
 
 

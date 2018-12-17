@@ -86,7 +86,7 @@ class MarginalLikelihood:
             print ("del_strata = " + str (del_strata))
                 
             strat_sum = 0
-            while j < len (betas) and betas[j] < strata_end:
+            while j < len (betas) and betas[j] <= strata_end:
                 p_y_given_theta = likelihoods[j]
                 print ("\tTheta: ", end='')
                 for r in thetas[j]:

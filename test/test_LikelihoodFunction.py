@@ -47,10 +47,9 @@ class TestLikelihoodFunction (unittest.TestCase):
         t = [0]
         values = [1.0]
         var = "x1"
-        experiment = Experiment (t, values, var)
+        experiments = [Experiment (t, values, var)]
         likelihood_f = LikelihoodFunction (self.odes)
-        l = likelihood_f.get_experiment_likelihood (experiment, \
-                self.theta)
+        l = likelihood_f.get_log_likelihood (experiments, self.theta)
         assert (abs (analytic - l) < 1e-8)
 
 
@@ -59,15 +58,14 @@ class TestLikelihoodFunction (unittest.TestCase):
             the observation occurs in multiple time points. """
         t = [0, .25, .5, .75, 1]
         D = [np.exp (x) for x in t]
-        experiment = Experiment (t, D, "x1")
+        experiments = [Experiment (t, D, "x1")]
         f_D = 1
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
-        analytic = np.log (y)
+        analytic = np.log (f_D)
         
         likelihood_f = LikelihoodFunction (self.odes) 
-        l = likelihood_f.get_experiment_likelihood (experiment, \
-                self.theta)
+        l = likelihood_f.get_log_likelihood (experiments, self.theta)
         assert (abs (analytic - l) < 1e-8)
 
     
@@ -85,7 +83,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         analytic = np.log (f_D)
         
         likelihood_f = LikelihoodFunction (self.odes)
-        l = likelihood_f.get_experiments_likelihood (experiments, self.theta)
+        l = likelihood_f.get_log_likelihood (experiments, self.theta)
         assert (abs (analytic - l) < 1e-8)
 
 

@@ -26,16 +26,15 @@ class LikelihoodFunction:
 
 
     def __calculate_likelihood (self, X_sys, X_obs, sigma):
-        """ Calculates the likelihood of X_obs given that the real 
-            solution i s X_sys. """
-        likeli = 1
+        """ Calculates the log-likelihood of observing X_obs given that 
+            the real value is X_sys. """
+        log_l = 0
         for i in range (len (X_obs)):
             observed_x = X_obs[i]
             system_x = X_sys[i]
-            likeli *= self.__point_likelihood (system_x, observed_x, 
-                    sigma)
-
-        return likeli
+            log_l += np.log (self.__point_likelihood (system_x, 
+                observed_x, sigma))
+        return log_l
 
 
     def __get_sys_measure (self, measure_expression, t, theta):
@@ -57,20 +56,8 @@ class LikelihoodFunction:
             
         return sys_measures 
 
-    def get_experiment_likelihood (self, experiment, theta):
-        """ Given an experiment, what is the probability that the values
-            of this experiment were observed given that the system 
-            random parameters are theta. Initial variable values are
-            stored in the ode object. """
-        t = experiment.times
-        measure_expression = experiment.measure_expression
-        X_sys = self.__get_sys_measure (measure_expression, t, theta)
-        X_obs = experiment.values
-        sigma = theta.get_experimental_error ()
-        return self.__calculate_likelihood (X_sys, X_obs, sigma)
-        
 
-    def get_experiments_likelihood (self, experiments, theta):
+    def get_log_likelihood (self, experiments, theta):
         """ Given a list of independent experiments that happens all 
             with the same time intervals and with respect to the same 
             measure, calculates the likelihood of all expeirments. """
@@ -79,10 +66,10 @@ class LikelihoodFunction:
         X_sys = self.__get_sys_measure (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
         # print ("\nX_sys: " + str (X_sys))
-        l = 1
+        log_l = 0
         for exp in experiments:
             X_obs = exp.values
             # print ("\tX_obs: " + str (X_obs))
-            l *= self.__calculate_likelihood (X_sys, X_obs, sigma)
-            # print ("\tpartial likelihood: " + str (l))
-        return l
+            log_l += self.__calculate_likelihood (X_sys, X_obs, sigma)
+            # print ("\tpartial log-likelihood: " + str (log_l))
+        return log_l

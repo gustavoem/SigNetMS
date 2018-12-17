@@ -42,15 +42,16 @@ class TestLikelihoodFunction (unittest.TestCase):
         # D ~ Gaussian (x1(0), 1) ~ Gaussian (1, 1)
         # f_D (1) = e ^ -{[(0) ^ 2] / [2 * 1]} * {1 * sqrt (2pi)} ^ -1
         f_D = self.__gaussian (1, 1, 1)
+        analytic = np.log (f_D)
+        
         t = [0]
         values = [1.0]
         var = "x1"
         experiment = Experiment (t, values, var)
-
         likelihood_f = LikelihoodFunction (self.odes)
         l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
-        assert (abs (f_D - l) < 1e-8)
+        assert (abs (analytic - l) < 1e-8)
 
 
     def test_get_likelihood_over_time (self):
@@ -62,11 +63,12 @@ class TestLikelihoodFunction (unittest.TestCase):
         f_D = 1
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
+        analytic = np.log (y)
         
         likelihood_f = LikelihoodFunction (self.odes) 
         l = likelihood_f.get_experiment_likelihood (experiment, \
                 self.theta)
-        assert (abs (f_D - l) < 1e-8)
+        assert (abs (analytic - l) < 1e-8)
 
     
     def test_get_likelihood_experiment_set (self):
@@ -80,10 +82,11 @@ class TestLikelihoodFunction (unittest.TestCase):
         for y in D:
             f_D *= self.__gaussian (y, 1, y)
         f_D **= 2
+        analytic = np.log (f_D)
         
         likelihood_f = LikelihoodFunction (self.odes)
         l = likelihood_f.get_experiments_likelihood (experiments, self.theta)
-        assert (abs (f_D - l) < 1e-8)
+        assert (abs (analytic - l) < 1e-8)
 
 
 

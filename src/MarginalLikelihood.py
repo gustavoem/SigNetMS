@@ -22,7 +22,7 @@ class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
     
-    __SCHEDULE_POWER = 5
+    __SCHEDULE_POWER = 4
 
     def __init__ (self, init_iterations, sigma_update_n, 
             adaptive_iterations, fixed_iterations, n_strata, 
@@ -50,7 +50,7 @@ class MarginalLikelihood:
     def __sample_betas (n_strata, strata_size):
         """ Samples strata_size beta from each of the n_strata 
             strata."""
-        betas = []
+        betas = [0]
         sched_power = MarginalLikelihood.__SCHEDULE_POWER
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
@@ -59,6 +59,7 @@ class MarginalLikelihood:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
+        betas.append (1)
         return betas
 
 
@@ -81,7 +82,8 @@ class MarginalLikelihood:
         for beta in betas:
             # First sampling step
             print ("\nFIRST STEP | T = " + str (beta) + "\n")
-            mcmc_init = MCMCInitialization (theta_prior, model, experiments, self.__sigma_update_n, beta)
+            mcmc_init = MCMCInitialization (theta_prior, model, 
+                    experiments, self.__sigma_update_n, beta)
             start_sample = mcmc_init.get_sample (n_init)
 
             # Second sampling step
@@ -265,7 +267,7 @@ class MarginalLikelihood:
             print ("del_strata = " + str (del_strata))
                 
             strat_sum = 0
-            while j < len (betas) and betas[j] < strata_end:
+            while j < len (betas) and betas[j] <= strata_end:
                 p_y_given_theta = likelihoods[j]
                 print ("\tTheta: ", end='')
                 for r in thetas[j]:

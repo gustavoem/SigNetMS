@@ -55,13 +55,17 @@ class MarginalLikelihood:
                 self.__sigma_update_n)
         start_sample = mcmc_init.get_sample (n_init)
 
+
+        print ("First step sample: ")
+        print (start_sample)
+
         # Second sampling step
         amcmc = AdaptiveMCMC (model, experiments, start_sample, 
                 n_strata, strata_size)
-        betas, thetas, likelihoods = amcmc.get_sample (n_adap, n_fixed)
+        betas, thetas, log_ls = amcmc.get_sample (n_adap, n_fixed)
 
-        ml = self.__calculate_marginal_likelihood (betas, thetas, \
-                likelihoods)
+        ml = self.__calculate_marginal_likelihood (betas, thetas, 
+                log_ls)
         return ml
 
 
@@ -86,14 +90,14 @@ class MarginalLikelihood:
             print ("del_strata = " + str (del_strata))
                 
             strat_sum = 0
-            while j < len (betas) and betas[j] < strata_end:
-                p_y_given_theta = likelihoods[j]
+            while j < len (betas) and betas[j] <= strata_end:
+                log_p_y_given_theta = likelihoods[j]
                 print ("\tTheta: ", end='')
                 for r in thetas[j]:
                     print (r.value, end=' ')
-                print ("\n\tLikelihood: " + str (p_y_given_theta) + "\n")
-                if p_y_given_theta > 0:
-                    strat_sum += np.log (p_y_given_theta)
+                print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
+                        + "\n")
+                strat_sum += log_p_y_given_theta
                 print ("Strat_sum = " + str (strat_sum))
                 j += 1
 

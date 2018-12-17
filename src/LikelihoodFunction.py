@@ -32,8 +32,12 @@ class LikelihoodFunction:
         for i in range (len (X_obs)):
             observed_x = X_obs[i]
             system_x = X_sys[i]
-            log_l += np.log (self.__point_likelihood (system_x, 
-                observed_x, sigma))
+            x_l = self.__point_likelihood (system_x, observed_x, sigma)
+            if x_l <= 0:
+                log_l = float ("-inf")
+                break
+            else:
+                log_l += np.log (x_l)
         return log_l
 
 

@@ -194,10 +194,7 @@ class MarginalLikelihood:
             print ("\n\n\n------------------------------")
             print ("Iteration: " + str (i))
             for j in range (len (theta_chains)):
-                print (str (j)  + "-th temperature")
                 var_covar_j = var_covars[j]
-                print ("Var covar = ")
-                print (var_covar_j)
                 old_t = theta_chains[j]
                 old_proposal = self.__get_proposal_dist (old_t, var_covar_j)
                 new_t = self.__propose_jump (old_t, old_proposal)
@@ -240,10 +237,10 @@ class MarginalLikelihood:
                 theta_chains[j] = theta_chains[k]
                 theta_chains[k] = aux
                 aux = pop_log_likelds[j]
-                pop_log_likelihoods[j] = pop_log_likelds[k]
-                pop_log_likelihoods[k] = aux
+                pop_log_likelds[j] = pop_log_likelds[k]
+                pop_log_likelds[k] = aux
 
-        return (betas, theta_chains, pop_log_likelihoods)
+        return (betas, theta_chains, pop_log_likelds)
 
     def __calculate_marginal_likelihood (self, betas, thetas, \
             likelihoods):

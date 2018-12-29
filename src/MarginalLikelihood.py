@@ -50,19 +50,13 @@ class MarginalLikelihood:
     def __sample_betas (n_strata, strata_size):
         """ Samples strata_size beta from each of the n_strata 
             strata."""
-        betas = [0]
+        betas = []
         sched_power = MarginalLikelihood.__SCHEDULE_POWER
-        for i in range (n_strata):
-            strata_start = (i /  n_strata) ** sched_power
-            strata_end = ((i + 1) / n_strata) ** sched_power
-            for j in range (strata_size):
-                x = np.random.uniform (strata_start, strata_end)
-                betas.append (x)
-            betas.sort ()
-        betas.append (1)
+        for i in range (n_strata + 1):
+            betas.append ((i / n_strata) ** sched_power)
         return betas
 
-
+       
     def estimate_marginal_likelihood (self, experiments, model, 
             theta_prior):
         """ This function estimates the marginal likelihood of a  model.
@@ -184,10 +178,15 @@ class MarginalLikelihood:
         l_f = LikelihoodFunction (model)
 
         pop_log_likelds = []
+        sample_log_likelds = [[] for i in range (len (betas))]
+        thetas_samples = [[] for i in range (len (betas))]
         for i in range (len (theta_chains)):
             theta = theta_chains[i]
             l = l_f.get_log_likelihood (experiments, theta)
             pop_log_likelds.append (l)
+            sample_log_likelds[i].append(l)
+            thetas_samples[i].append (theta)
+
         
         for i in range (N2):
             # Local move
@@ -195,11 +194,10 @@ class MarginalLikelihood:
             print ("Iteration: " + str (i))
             for j in range (len (theta_chains)):
                 var_covar_j = var_covars[j]
-                old_t = theta_chains[j]
+                old_t = thetas_samples[j][-1]
+                old_log_l = sample_log_likelds[j][-1]
                 old_proposal = self.__get_proposal_dist (old_t, var_covar_j)
                 new_t = self.__propose_jump (old_t, old_proposal)
-                old_log_l = l_f.get_log_likelihood (experiments, \
-                        theta_chains[j])
                 new_log_l = l_f.get_log_likelihood (experiments, \
                         new_t)
                 result = self.__perform_jump (old_t, new_t, old_log_l, \
@@ -208,15 +206,21 @@ class MarginalLikelihood:
                     new_log_l = result[0]
                     theta_chains[j] = new_t
                     pop_log_likelds[j] = new_log_l
+                    sample_log_likelds[j].append (new_log_l)
+                    thetas_samples[j].append (new_t)
+                else:
+                    sample_log_likelds[j].append (old_log_l)
+                    thetas_samples[j].append (old_t)
+
             
             # Global move
             j = np.random.choice (range (len (theta_chains) - 1))
             jump_distr = DiscreteLaplacian (len (betas), j + 1)
             k = jump_distr.rvs () - 1 
-            thetaj = theta_chains[j]
-            thetak = theta_chains[k]
-            thetaj_log_l = l_f.get_log_likelihood (experiments, thetaj)
-            thetak_log_l = l_f.get_log_likelihood (experiments, thetak)
+            thetaj = thetas_samples[j][-1]
+            thetak = thetas_samples[k][-1]
+            thetaj_log_l = sample_log_likelds[j][-1]
+            thetak_log_l = sample_log_likelds[k][-1]
             
             if not thetaj_log_l > float ("-inf") \
                     or not thetak_log_l > float ("-inf"):
@@ -239,8 +243,13 @@ class MarginalLikelihood:
                 aux = pop_log_likelds[j]
                 pop_log_likelds[j] = pop_log_likelds[k]
                 pop_log_likelds[k] = aux
+                sample_log_likelds[j].append (pop_log_likelds[j])
+                sample_log_likelds[k].append (pop_log_likelds[k])
+                thetas_samples[j].append (theta_chains[j])
+                thetas_samples[k].append (theta_chains[k])
 
-        return (betas, theta_chains, pop_log_likelds)
+        return (betas, thetas_samples, sample_log_likelds)
+
 
     def __calculate_marginal_likelihood (self, betas, thetas, \
             likelihoods):
@@ -253,28 +262,20 @@ class MarginalLikelihood:
         sched_power = AdaptiveMCMC.get_sched_power ()
     
         print ("Estimating marginal likelihood")
-        for i in range (n_strata):
-            strata_start = (i / n_strata) ** sched_power
-            strata_end = ((i + 1) / n_strata) ** sched_power
-            del_strata = strata_end - strata_start
-
-            print ("strata_start = " + str (strata_start))
-            print ("strata_end = " + str (strata_end))
-            print ("del_strata = " + str (del_strata))
+        for i in range (len (thetas) - 1):
+            t_i = betas[i] 
+            t_ip1 = betas[i + 1] 
                 
-            strat_sum = 0
-            while j < len (betas) and betas[j] <= strata_end:
-                log_p_y_given_theta = likelihoods[j]
-                print ("\tTheta: ", end='')
-                for r in thetas[j]:
-                    print (r.value, end=' ')
-                print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
-                        + "\n")
-                strat_sum += log_p_y_given_theta
-                print ("Strat_sum = " + str (strat_sum))
-                j += 1
-
-            strat_sum *= (del_strata / strata_size)
-            ml += strat_sum
+            exp_t_i = 0
+            for log_l in likelihoods[i]:
+                exp_t_i += log_l
+            exp_t_i /= len (likelihoods[i])
+            
+            exp_t_ip1 = 0
+            for log_l in likelihoods[i + 1]:
+                exp_t_ip1 += log_l
+            exp_t_ip1 /= len (likelihoods[i + 1])
+            
+            ml += (t_ip1 - t_i) * (exp_t_ip1 + exp_t_i) / 2
         print ("Calculated marginal likelihood: " + str (ml))
         return ml

@@ -43,6 +43,22 @@ class TestDiscreteLaplacian (unittest.TestCase):
         assert (abs (p_sum - 1) < 1e-4)
 
 
+    def test_convergence_to_mean (self):
+        """ Tests if random values has mean as DiscreteLaplacian should 
+            have. 
+            WARNING: this test can fail with some small probability. """
+        n = 20
+        i = 4
+        discrete_laplacian = DiscreteLaplacian (n, i)
+        N = 10000
+        mean = 0
+        for j in range (N):
+            mean += discrete_laplacian.rvs ()
+        mean /= N
+        print (mean)
+        assert (abs (mean - 4) < 1e-1)
+
+
     def test_random_variates_works (self):
         """ Tests the random values produced by this random variable.  
         """

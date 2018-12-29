@@ -23,6 +23,20 @@ class TestGamma (unittest.TestCase):
         X = Gamma (a, b)
         assert all (np.array (X.rvs (100)) > 0)
 
+    def test_convergence_to_mean (self):
+        """ Tests if random values has mean as Gamma should have. 
+            WARNING: this test can fail with some small probability. """
+        a = 2
+        b = 3
+        X = Gamma (a, b)
+        N = 10000
+        mean = 0
+        for i in range (N):
+            mean += X.rvs ()
+        mean /= N
+        assert (abs (mean - 6) < 1e-1)
+
+
 
     def test_get_pdf (self):
         """ Tests if we can get a point of the probability density

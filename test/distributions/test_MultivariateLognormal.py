@@ -28,6 +28,31 @@ class TestMultivariateLognormal (unittest.TestCase):
         X_0 = X.rvs ()
         assert all (X_0 > 0)
 
+    
+    def test_convergence_to_mean (self):
+        """ Tests if the randomly generated values has a sample mean
+            that converges to the correct mean. """
+        mu = [2, 1]
+        s = [[.01, 0], [0, .01]]
+        X = MultivariateLognormal (mu, s)
+        N = 1000
+        mean = np.array ([.0, .0])
+        for i in range (N):
+            mean += X.rvs ()
+        mean /= N
+        assert all (abs (X.mean () - mean) < 1e-1)
+        
+        mu = [2, 1]
+        s = [[.01, -.005], [-.005, .01]]
+        X = MultivariateLognormal (mu, s)
+        N = 1000
+        mean = np.array ([.0, .0])
+        for i in range (N):
+            mean += X.rvs ()
+        mean /= N
+        assert all (abs (X.mean () - mean) < 1e-1)
+
+
 
     def test_get_pdf (self):
         """ Tests if we can get a point of the probability density

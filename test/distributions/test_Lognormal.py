@@ -23,6 +23,24 @@ class TestLognormal (unittest.TestCase):
         X = Lognormal (mu, s)
         assert (X.rvs () > 0)
 
+    
+    def test_convergence_to_mean (self):
+        """ Tests if random values has mean as Lognormal should have. 
+            WARNING: this test can fail with some small probability. """
+        normal_mu = 3
+        normal_s2 = .001
+        # convergence to mean is very slow if the normal distribution
+        # has large variance (which means even larger variance of the
+        # lognormal)
+        X = Lognormal (normal_mu, normal_s2)
+        N = 100000
+        mean = 0
+        for i in range (N):
+            mean += X.rvs ()
+        mean /= N
+        analytical_mean = np.exp (normal_mu + normal_s2 / 2)
+        assert (abs (analytical_mean - mean) < 1e-1)
+
 
     def test_get_pdf (self):
         """ Tests if we can get a point of the probability density

@@ -55,7 +55,6 @@ class TestDiscreteLaplacian (unittest.TestCase):
         for j in range (N):
             mean += discrete_laplacian.rvs ()
         mean /= N
-        print (mean)
         assert (abs (mean - 4) < 1e-1)
 
 

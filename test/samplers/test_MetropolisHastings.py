@@ -41,38 +41,6 @@ class MHFullMock (MetropolisHastings):
         mu = np.log (theta_values) - variances / 2
         return MultivariateLognormal (mu, s2)
 
-
-class MHMultivariateLognormalTargetMock (MetropolisHastings):
-     
-    def __init__ (self, theta):
-        super ().__init__ (theta)
-        n = theta.get_size ()
-        mu = np.ones (n)
-        Sigma = np.eye (n) / 100
-        self.target_distribution = MultivariateLognormal (mu, Sigma)
-
-    def _calc_log_likelihood (self, t):
-        t_values = t.get_values ()
-        l = self.target_distribution.pdf (t_values)
-        return np.log (l)
-
-    def _create_jump_dist (self, theta_t):
-        n = theta_t.get_size ()
-        S = np.eye (n) / 80
-        variances = S.diagonal ()
-        theta_values = np.array (theta_t.get_values ())
-        mu = np.log (theta_values) - variances / 2
-        return MultivariateLognormal (mu, s2)
-
-    def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
-        J_gv_new = self._create_jump_dist (new_t)
-        J_gv_old = self._create_jump_dist (old_t)
-        p_old_gv_new = J_gv_new.pdf (old_t.get_values ())
-        p_new_gv_old = J_gv_old.pdf (new_t.get_values ())
-        r = (new_l / new_t) * (p_old_gv_new / p_new_gv_old)
-        return r
-
-
 class TestMetropolisHastings (unittest.TestCase):
 
     def test_jumps_centered_on_current_theta (self):
@@ -173,3 +141,63 @@ class TestMetropolisHastings (unittest.TestCase):
         mocked_mh.get_sample (2 * N)
         sample = mocked_mh.get_last_sampled (N)[0]
         self.assertEqual (len (sample), N)
+
+
+    def test_samples_target (self):
+        """ With a controlled target distribution, tests if the MH
+            successfully generates a sample from the target. """
+        n = 10
+        N = 10000
+        theta = RandomParameterList ()
+        for i in range (n):
+            gamma = Gamma (1, 1)
+            p = RandomParameter ('p', gamma)
+            theta.append (p)
+
+        class MHMultivariateLognormalTargetMock (MetropolisHastings):
+     
+            def __init__ (self, theta):
+                super ().__init__ (theta)
+                n = theta.get_size ()
+                mu = np.ones (n)
+                Sigma = np.eye (n) / 10
+                self.target_distribution = MultivariateLognormal (mu, 
+                        Sigma)
+
+            def _calc_log_likelihood (self, t):
+                t_values = t.get_values ()
+                l = self.target_distribution.pdf (t_values)
+                return np.log (l)
+
+            def _create_jump_dist (self, theta_t):
+                n = theta_t.get_size ()
+                S = np.eye (n) / 100
+                variances = S.diagonal ()
+                theta_values = np.array (theta_t.get_values ())
+                mu = np.log (theta_values) - variances / 2
+                return MultivariateLognormal (mu, S)
+
+            def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+                J_gv_new = self._create_jump_dist (new_t)
+                J_gv_old = self._create_jump_dist (old_t)
+                p_old_gv_new = J_gv_new.pdf (old_t.get_values ())
+                p_new_gv_old = J_gv_old.pdf (new_t.get_values ())
+                r = (new_l / old_l) * (p_old_gv_new / p_new_gv_old)
+                return r
+
+        mocked_mh = MHMultivariateLognormalTargetMock (theta)
+        mocked_mh.start_sample_from_prior ()
+        sample = mocked_mh.get_sample (N)[0]
+
+        mu = np.ones (n)
+        S  = np.eye (n) / 10
+        analytic_mean = np.exp (mu - S.diagonal () / 2)
+        sample_mean = np.zeros (n) 
+        for t in sample:
+            sample_mean += t.get_values ()
+        sample_mean /= len (sample)
+
+        print (analytic_mean)
+        print (sample_mean)
+
+

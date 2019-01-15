@@ -14,7 +14,7 @@ class MetropolisHastings:
         self.__sample_log_likelds = []
         self.__n_accepted = 0
         self.__n_jumps = 0
-        self.__is_verbose = True
+        self._is_verbose = True
         
     
     def _create_jump_dist (self, theta_t):

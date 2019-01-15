@@ -76,24 +76,27 @@ class MetropolisHastings:
 
     def get_sample (self, N):
         """ Get a sample of size N. """
-        if len (self.__sample[-1]) == 0:
-            raise ValueError ("The sample can't be empty. Try using " \
-                    + "the start_sample_from_prior () method.")
+        if len (self.__sample) == 0:
+            raise ValueError ("The current sample can't be empty. " \
+                    + "Try using the start_sample_from_prior () " \
+                    + "method.")
 
         for i in range (N):
             old_t = self.__sample[-1]
             old_l = self.__sample_log_likelds[-1]
-            new_t = self.__propose_jump (old_t)
+            new_t = self.propose_jump (old_t)
             new_l = self._calc_log_likelihood (new_t)
 
             r = self._calc_mh_ratio (old_t, old_l, new_t, new_l)
             if np.random.uniform () <= r:
                 old_t = new_t
                 old_l = new_l
+                self.__n_accepted += 1
             self.__sample.append (old_t)
             self.__sample_log_likelds.append (old_l)
+            self.__n_jumps += 1
         
-        return get_last_sampled (N)
+        return self.get_last_sampled (N)
     
 
     def get_last_sampled (self, N):

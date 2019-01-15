@@ -77,7 +77,7 @@ class TestMetropolisHastings (unittest.TestCase):
         """ Tests if the acceptance ratio converges to 0.5 when the 
             mh ratio in a jump proposal is always 0.5. """
         n = 10
-        N = 1000
+        N = 3000
         theta = RandomParameterList ()
         for i in range (n):
             gamma = Gamma (2, 2)
@@ -90,8 +90,17 @@ class TestMetropolisHastings (unittest.TestCase):
 
             def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
                 return 0.5
+            
+            def _create_jump_dist (self, theta_t):
+                n = theta_t.get_size ()
+                s2 = np.eye (n) / 100
+                variances = s2.diagonal ()
+                theta_values = np.array (theta_t.get_values ())
+                mu = np.log (theta_values) - variances / 2
+                return MultivariateLognormal (mu, s2)
 
         mocked_mh = MockMH (theta)
+        mocked_mh.start_sample_from_prior ()
         mocked_mh.get_sample (N)
         acceptance_ratio = mocked_mh.get_acceptance_ratio ()
-        assert (abs (acceptance_ratio - .5) < 1e-4)
+        assert (abs (acceptance_ratio - .5) < 1e-1)

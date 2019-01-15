@@ -11,6 +11,36 @@ from Gamma import Gamma
 from MultivariateLognormal import MultivariateLognormal
 
 
+class MHJumpMock (MetropolisHastings):
+    def _create_jump_dist (self, theta_t):
+        n = theta_t.get_size ()
+        s2 = np.eye (n) / 100
+        variances = s2.diagonal ()
+        theta_values = np.array (theta_t.get_values ())
+        mu = np.log (theta_values) - variances / 2
+        return MultivariateLognormal (mu, s2)
+
+
+class MHLikelihoodMock (MetropolisHastings):
+    def _calc_log_likelihood (self, t):
+        return 1
+    
+
+class MHFullMock (MetropolisHastings):
+    def _calc_log_likelihood (self, t):
+        return 1
+
+    def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+        return 0.5
+            
+    def _create_jump_dist (self, theta_t):
+        n = theta_t.get_size ()
+        s2 = np.eye (n) / 100
+        variances = s2.diagonal ()
+        theta_values = np.array (theta_t.get_values ())
+        mu = np.log (theta_values) - variances / 2
+        return MultivariateLognormal (mu, s2)
+
 
 class TestMetropolisHastings (unittest.TestCase):
 
@@ -27,17 +57,7 @@ class TestMetropolisHastings (unittest.TestCase):
             rand_par.value = p_val
             theta.append (rand_par)
         
-        class MockMH (MetropolisHastings):
-
-            def _create_jump_dist (self, theta_t):
-                n = theta_t.get_size ()
-                s2 = np.eye (n) / 100
-                variances = s2.diagonal ()
-                theta_values = np.array (theta_t.get_values ())
-                mu = np.log (theta_values) - variances / 2
-                return MultivariateLognormal (mu, s2)
-
-        mocked_mh = MockMH (theta)
+        mocked_mh = MHJumpMock (theta)
         mean_jump = np.zeros (n)
         for i in range (N):
             jump = mocked_mh.propose_jump (theta)
@@ -57,14 +77,11 @@ class TestMetropolisHastings (unittest.TestCase):
             rand_par = RandomParameter ('p', gamma)
             theta.append (rand_par)
 
-        class MockMH (MetropolisHastings):
-            def _calc_log_likelihood (self, t):
-                return 1
-        
+                
         start_mean = np.zeros (n)
         analytical_mean = np.ones (n) * 0.3
         for i in range (N):
-            mocked_mh = MockMH (theta)
+            mocked_mh = MHLikelihoodMock (theta)
             mocked_mh.start_sample_from_prior ()
             sample = mocked_mh.get_last_sampled (1)[0]
             t = sample[0]
@@ -84,22 +101,7 @@ class TestMetropolisHastings (unittest.TestCase):
             rand_par = RandomParameter ('p', gamma)
             theta.append (rand_par)
 
-        class MockMH (MetropolisHastings):
-            def _calc_log_likelihood (self, t):
-                return 1
-
-            def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
-                return 0.5
-            
-            def _create_jump_dist (self, theta_t):
-                n = theta_t.get_size ()
-                s2 = np.eye (n) / 100
-                variances = s2.diagonal ()
-                theta_values = np.array (theta_t.get_values ())
-                mu = np.log (theta_values) - variances / 2
-                return MultivariateLognormal (mu, s2)
-
-        mocked_mh = MockMH (theta)
+        mocked_mh = MHFullMock (theta)
         mocked_mh.start_sample_from_prior ()
         mocked_mh.get_sample (N)
         acceptance_ratio = mocked_mh.get_acceptance_ratio ()
@@ -114,11 +116,7 @@ class TestMetropolisHastings (unittest.TestCase):
             rand_par = RandomParameter ('p', gamma)
             theta.append (rand_par)
         
-        class MockMH (MetropolisHastings):
-            def _calc_log_likelihood (self, t):
-                return 1
-        
-        mocked_mh = MockMH (theta)
+        mocked_mh = MHLikelihoodMock (theta)
         mocked_mh.start_sample_from_prior ()
         mocked_mh.manual_jump (theta, 1)
 
@@ -131,4 +129,5 @@ class TestMetropolisHastings (unittest.TestCase):
     
     def test_get_last_sampled (self):
         """ Tests if one can get the last N sampled parameters. """
-        
+        n = 10
+        theta = RandomParameterList ()

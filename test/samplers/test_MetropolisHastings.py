@@ -104,3 +104,31 @@ class TestMetropolisHastings (unittest.TestCase):
         mocked_mh.get_sample (N)
         acceptance_ratio = mocked_mh.get_acceptance_ratio ()
         assert (abs (acceptance_ratio - .5) < 1e-1)
+
+    def test_manual_jump (self):
+        """ Tests if one can perform a manual jump. """
+        n = 10
+        theta = RandomParameterList ()
+        for i in range (n):
+            gamma = Gamma (2, 2)
+            rand_par = RandomParameter ('p', gamma)
+            theta.append (rand_par)
+        
+        class MockMH (MetropolisHastings):
+            def _calc_log_likelihood (self, t):
+                return 1
+        
+        mocked_mh = MockMH (theta)
+        mocked_mh.start_sample_from_prior ()
+        mocked_mh.manual_jump (theta, 1)
+
+        sample = mocked_mh.get_last_sampled (2)[0]
+        last_theta = sample[-1]
+        theta_vals = np.array (theta.get_values ())
+        last_theta_vals = np.array (last_theta.get_values ())
+        assert all (theta_vals == last_theta_vals)
+
+    
+    def test_get_last_sampled (self):
+        """ Tests if one can get the last N sampled parameters. """
+        

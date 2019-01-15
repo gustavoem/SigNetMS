@@ -105,7 +105,7 @@ class MetropolisHastings:
         sample = []
         log_likelds = []
         i = -1
-        for t in self.__sample[-1:-(N + 1):-1]:
+        for t in self.__sample[-N:]:
             sample.append (t.get_copy ())
             log_likelds.append (self.__sample_log_likelds[i])
             i -= 1

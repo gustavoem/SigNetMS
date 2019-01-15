@@ -15,6 +15,8 @@ from MultivariateLognormal import MultivariateLognormal
 class TestMetropolisHastings (unittest.TestCase):
 
     def test_jumps_centered_on_current_theta (self):
+        """ Tests if, when using suitable jump distribution, the 
+            proposed values are centered on the current theta. """
         n = 10
         N = 1000
         theta_values = np.ones (n) / 3.2
@@ -45,6 +47,8 @@ class TestMetropolisHastings (unittest.TestCase):
 
 
     def test_sample_start (self):
+        """ Tests if the start sample is centered on the mean of the 
+            prior distribution. """
         n = 10
         N = 1000
         theta = RandomParameterList ()
@@ -68,3 +72,26 @@ class TestMetropolisHastings (unittest.TestCase):
         start_mean /= N
         assert all (abs (start_mean - analytical_mean) < 1e-1)
 
+
+    def test_acceptance_ratio (self):
+        """ Tests if the acceptance ratio converges to 0.5 when the 
+            mh ratio in a jump proposal is always 0.5. """
+        n = 10
+        N = 1000
+        theta = RandomParameterList ()
+        for i in range (n):
+            gamma = Gamma (2, 2)
+            rand_par = RandomParameter ('p', gamma)
+            theta.append (rand_par)
+
+        class MockMH (MetropolisHastings):
+            def _calc_log_likelihood (self, t):
+                return 1
+
+            def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+                return 0.5
+
+        mocked_mh = MockMH (theta)
+        mocked_mh.get_sample (N)
+        acceptance_ratio = mocked_mh.get_acceptance_ratio ()
+        assert (abs (acceptance_ratio - .5) < 1e-4)

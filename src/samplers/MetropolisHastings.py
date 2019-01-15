@@ -9,7 +9,7 @@ class MetropolisHastings:
     
     def __init__ (self, theta):
         """ Default constructor. """
-        self.__theta = theta
+        self.__theta = theta.get_copy ()
         self.__sample = []
         self.__sample_log_likelds = []
         self.__n_accepted = 0
@@ -17,7 +17,7 @@ class MetropolisHastings:
         self.__is_verbose = True
         
     
-    def __create_jump_dist (self, theta_t):
+    def _create_jump_dist (self, theta_t):
         """ This method should return a distribution object (such as
             MultivariateLognormal) that is the distribution of the 
             random jump theta* that will be proposed given that the 
@@ -28,8 +28,12 @@ class MetropolisHastings:
     def propose_jump (self, c_theta):
         """ Propose a new parameter theta* given that the current theta
             is c_theta. """
-        proposal_distribution = self.__create_jump_dist (c_theta)
-        new_theta = proposal_distribution.rvs ()
+        proposal_distribution = self._create_jump_dist (c_theta)
+        new_theta_values = proposal_distribution.rvs ()
+        new_theta = c_theta.get_copy ()
+        for i in range (len (new_theta_values)):
+            p = new_theta[i] 
+            p.value = new_theta_values[i]
         return new_theta
 
 
@@ -98,7 +102,6 @@ class MetropolisHastings:
         sample = []
         log_likelds = []
         i = -1
-        while i < len (self.__)
         for t in self.__sample[-1:-(N + 1):-1]:
             sample.append (t.get_copy ())
             log_likelds.append (self.__sample_log_likelds[i])
@@ -106,7 +109,7 @@ class MetropolisHastings:
         return (sample, log_likelds)
 
 
-    def __calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+    def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
         """ Returns the ratio that is going to be used on the 
             Metropolis-Hastings algorithm as the probability of 
             accepting the proposed jump new_t, given that the current
@@ -114,13 +117,13 @@ class MetropolisHastings:
         raise NotImplementedError
 
 
-    def __calc_log_likelihood (self, theta):
+    def _calc_log_likelihood (self, theta):
         """ Should calculate the log-likelihood of a parameter theta. 
         """
         raise NotImplementedError
 
 
-    def __iteration_update (self):
+    def _iteration_update (self):
         """ Method called at the end of each iteration on get_sample.
         """
-        continue
+        pass

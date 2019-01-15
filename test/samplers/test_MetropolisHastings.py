@@ -26,7 +26,7 @@ class TestMetropolisHastings (unittest.TestCase):
     def test_jumps_centered_on_current_theta (self):
         n = 10
         N = 1000
-        theta_values = np.ones (n) / 2
+        theta_values = np.ones (n) / 3.2
         theta = RandomParameterList ()
         for p_val in theta_values:
             gamma = Gamma (2, 1)
@@ -40,5 +40,4 @@ class TestMetropolisHastings (unittest.TestCase):
             jump = mocked_mh.propose_jump (theta)
             mean_jump += jump.get_values ()
         mean_jump /= N
-        print (mean_jump)
-        assert (False)
+        assert all (abs (mean_jump - theta_values) < 1e-1)

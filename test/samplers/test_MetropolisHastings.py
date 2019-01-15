@@ -11,15 +11,6 @@ from Gamma import Gamma
 from MultivariateLognormal import MultivariateLognormal
 
 
-class MockMH (MetropolisHastings):
-
-    def _create_jump_dist (self, theta_t):
-        n = theta_t.get_size ()
-        s2 = np.eye (n) / 100
-        variances = s2.diagonal ()
-        theta_values = np.array (theta_t.get_values ())
-        mu = np.log (theta_values) - variances / 2
-        return MultivariateLognormal (mu, s2)
 
 class TestMetropolisHastings (unittest.TestCase):
 
@@ -33,6 +24,16 @@ class TestMetropolisHastings (unittest.TestCase):
             rand_par = RandomParameter ('p', gamma)
             rand_par.value = p_val
             theta.append (rand_par)
+        
+        class MockMH (MetropolisHastings):
+
+            def _create_jump_dist (self, theta_t):
+                n = theta_t.get_size ()
+                s2 = np.eye (n) / 100
+                variances = s2.diagonal ()
+                theta_values = np.array (theta_t.get_values ())
+                mu = np.log (theta_values) - variances / 2
+                return MultivariateLognormal (mu, s2)
 
         mocked_mh = MockMH (theta)
         mean_jump = np.zeros (n)
@@ -41,3 +42,28 @@ class TestMetropolisHastings (unittest.TestCase):
             mean_jump += jump.get_values ()
         mean_jump /= N
         assert all (abs (mean_jump - theta_values) < 1e-1)
+
+
+    def test_sample_start (self):
+        n = 10
+        N = 1000
+        theta = RandomParameterList ()
+        for i in range (n):
+            gamma = Gamma (2, 1.1)
+            rand_par = RandomParameter ('p', gamma)
+            theta.append (rand_par)
+
+        class MockMH (MetropolisHastings):
+            def _calc_log_likelihood (self, t):
+                return 1
+        
+        mean_start = np.zeros (n)
+        analytical_mean = np.ones (n) * 2.2
+        for i in range (N):
+            mocked_mh = MockMH (theta)
+            mocked_mh.start_sample_from_prior ()
+            t = mocked_mh.get_last_sampled (1)
+            mean_start += t.get_values ()
+        mean_start /= N
+        assert all (abs (mean_start - analytical_mean) < 1e-1)
+

@@ -49,7 +49,7 @@ class TestMetropolisHastings (unittest.TestCase):
         N = 1000
         theta = RandomParameterList ()
         for i in range (n):
-            gamma = Gamma (2, 1.1)
+            gamma = Gamma (2, 0.15)
             rand_par = RandomParameter ('p', gamma)
             theta.append (rand_par)
 
@@ -57,13 +57,14 @@ class TestMetropolisHastings (unittest.TestCase):
             def _calc_log_likelihood (self, t):
                 return 1
         
-        mean_start = np.zeros (n)
-        analytical_mean = np.ones (n) * 2.2
+        start_mean = np.zeros (n)
+        analytical_mean = np.ones (n) * 0.3
         for i in range (N):
             mocked_mh = MockMH (theta)
             mocked_mh.start_sample_from_prior ()
-            t = mocked_mh.get_last_sampled (1)
-            mean_start += t.get_values ()
-        mean_start /= N
-        assert all (abs (mean_start - analytical_mean) < 1e-1)
+            sample = mocked_mh.get_last_sampled (1)[0]
+            t = sample[0]
+            start_mean += t.get_values ()
+        start_mean /= N
+        assert all (abs (start_mean - analytical_mean) < 1e-1)
 

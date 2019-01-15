@@ -60,7 +60,7 @@ class MetropolisHastings:
         new_t = self.__theta.get_copy ()
         for p in new_t:
             val = p.set_rand_value ()
-        new_l = self.__calc_log_likelihood (new_t)
+        new_l = self._calc_log_likelihood (new_t)
         self.__sample.append (new_t)
         self.__sample_log_likelds.append (new_l)
 
@@ -84,9 +84,9 @@ class MetropolisHastings:
             old_t = self.__sample[-1]
             old_l = self.__sample_log_likelds[-1]
             new_t = self.__propose_jump (old_t)
-            new_l = self.__calc_log_likelihood (new_t)
+            new_l = self._calc_log_likelihood (new_t)
 
-            r = self.__calc_mh_ratio (old_t, old_l, new_t, new_l)
+            r = self._calc_mh_ratio (old_t, old_l, new_t, new_l)
             if np.random.uniform () <= r:
                 old_t = new_t
                 old_l = new_l

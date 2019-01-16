@@ -30,7 +30,7 @@ class MHFullMock (MetropolisHastings):
     def _calc_log_likelihood (self, t):
         return 1
 
-    def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+    def _calc_mh_ratio (self, old_t, old_l, new_t, new_l):
         return 0.5
             
     def _create_jump_dist (self, theta_t):
@@ -157,7 +157,7 @@ class TestMetropolisHastings (unittest.TestCase):
         class MHMultivariateLognormalTargetMock (MetropolisHastings):
      
             def __init__ (self, theta):
-                super ().__init__ (theta)
+                super ().__init__ (theta, verbose=False)
                 n = theta.get_size ()
                 mu = np.ones (n)
                 Sigma = np.eye (n) / 10
@@ -177,27 +177,30 @@ class TestMetropolisHastings (unittest.TestCase):
                 mu = np.log (theta_values) - variances / 2
                 return MultivariateLognormal (mu, S)
 
-            def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
+            def _calc_mh_ratio (self, old_t, old_l, new_t, new_l):
                 J_gv_new = self._create_jump_dist (new_t)
                 J_gv_old = self._create_jump_dist (old_t)
                 p_old_gv_new = J_gv_new.pdf (old_t.get_values ())
                 p_new_gv_old = J_gv_old.pdf (new_t.get_values ())
-                r = (new_l / old_l) * (p_old_gv_new / p_new_gv_old)
+                l_ratio = np.exp (new_l - old_l)
+                r = (l_ratio) * (p_old_gv_new / p_new_gv_old)
                 return r
 
         mocked_mh = MHMultivariateLognormalTargetMock (theta)
         mocked_mh.start_sample_from_prior ()
-        sample = mocked_mh.get_sample (N)[0]
+        mocked_mh.get_sample (N)[0]
+        
+        # let's throw away the first 10% of samples
+        sample = mocked_mh.get_last_sampled (int (N * .9))[0]
 
         mu = np.ones (n)
         S  = np.eye (n) / 10
-        analytic_mean = np.exp (mu - S.diagonal () / 2)
+        analytic_mean = np.exp (mu + S.diagonal () / 2)
         sample_mean = np.zeros (n) 
         for t in sample:
             sample_mean += t.get_values ()
         sample_mean /= len (sample)
-
-        print (analytic_mean)
-        print (sample_mean)
-
-
+        
+        diff = analytic_mean - sample_mean
+        diff_norm2 = np.sqrt (diff.dot (diff))
+        assert (diff_norm2 < 1)

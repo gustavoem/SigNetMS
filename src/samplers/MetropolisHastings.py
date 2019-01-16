@@ -7,14 +7,14 @@ class MetropolisHastings:
         that there is some distribution that involves theta that is
         the target distribution. """
     
-    def __init__ (self, theta):
+    def __init__ (self, theta, verbose=False):
         """ Default constructor. """
         self.__theta = theta.get_copy ()
         self.__sample = []
         self.__sample_log_likelds = []
         self.__n_accepted = 0
         self.__n_jumps = 0
-        self._is_verbose = True
+        self._is_verbose = verbose
         
     
     def _create_jump_dist (self, theta_t):
@@ -86,6 +86,21 @@ class MetropolisHastings:
             old_l = self.__sample_log_likelds[-1]
             new_t = self.propose_jump (old_t)
             new_l = self._calc_log_likelihood (new_t)
+
+            if self._is_verbose:
+                print ("old_t: ")
+                print ("[")
+                for p in old_t:
+                    print (p.value, end=' ')
+                print ("]")
+                print ("new_t")
+                print ("[")
+                for p in new_t:
+                    print (p.value, end=' ')
+                print ("]")
+                print ("old_l: " + str (old_l))
+                print ("new_l: " + str (new_l))
+
 
             r = self._calc_mh_ratio (old_t, old_l, new_t, new_l)
             if np.random.uniform () <= r:

@@ -30,7 +30,7 @@ class MHFullMock (MetropolisHastings):
     def _calc_log_likelihood (self, t):
         return 1
 
-    def _calc_mh_ratio (self, old_t, old_l, new_t, new_l):
+    def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
         return 0.5
             
     def _create_jump_dist (self, theta_t):
@@ -147,7 +147,7 @@ class TestMetropolisHastings (unittest.TestCase):
         """ With a controlled target distribution, tests if the MH
             successfully generates a sample from the target. """
         n = 10
-        N = 10000
+        N = 5000
         theta = RandomParameterList ()
         for i in range (n):
             gamma = Gamma (1, 1)
@@ -177,7 +177,7 @@ class TestMetropolisHastings (unittest.TestCase):
                 mu = np.log (theta_values) - variances / 2
                 return MultivariateLognormal (mu, S)
 
-            def _calc_mh_ratio (self, old_t, old_l, new_t, new_l):
+            def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
                 J_gv_new = self._create_jump_dist (new_t)
                 J_gv_old = self._create_jump_dist (old_t)
                 p_old_gv_new = J_gv_new.pdf (old_t.get_values ())

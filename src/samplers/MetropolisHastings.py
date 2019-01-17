@@ -9,11 +9,11 @@ class MetropolisHastings:
     
     def __init__ (self, theta, verbose=False):
         """ Default constructor. """
-        self.__theta = theta.get_copy ()
+        self._theta = theta.get_copy ()
         self.__sample = []
         self.__sample_log_likelds = []
-        self.__n_accepted = 0
-        self.__n_jumps = 0
+        self._n_accepted = 0
+        self._n_jumps = 0
         self._is_verbose = verbose
         
     
@@ -39,7 +39,7 @@ class MetropolisHastings:
 
     def get_acceptance_ratio (self):
         """ Returns the ratio  # accepted jumps / # jumps. """
-        return self.__n_accepted / self.__n_jumps 
+        return self._n_accepted / self._n_jumps 
 
 
     def define_start_sample (self, sample, log_likelds):
@@ -57,7 +57,7 @@ class MetropolisHastings:
     def start_sample_from_prior (self):
         """ Create a first sample based on the prior distribution of
             the parameter. """
-        new_t = self.__theta.get_copy ()
+        new_t = self._theta.get_copy ()
         for p in new_t:
             val = p.set_rand_value ()
         new_l = self._calc_log_likelihood (new_t)
@@ -70,8 +70,8 @@ class MetropolisHastings:
             current parameter, then theta becomes the first sample. """
         self.__sample.append (theta)
         self.__sample_log_likelds.append (log_likeli)
-        self.__n_jumps += 1
-        self.__n_accepted += 1
+        self._n_jumps += 1
+        self._n_accepted += 1
 
 
     def get_sample (self, N):
@@ -102,14 +102,15 @@ class MetropolisHastings:
                 print ("new_l: " + str (new_l))
 
 
-            r = self._calc_mh_ratio (old_t, old_l, new_t, new_l)
+            r = self._calc_mh_ratio (new_t, new_l, old_t, old_l)
             if np.random.uniform () <= r:
                 old_t = new_t
                 old_l = new_l
-                self.__n_accepted += 1
+                self._n_accepted += 1
             self.__sample.append (old_t)
             self.__sample_log_likelds.append (old_l)
-            self.__n_jumps += 1
+            self._n_jumps += 1
+            self._iteration_update ()
         
         return self.get_last_sampled (N)
     
@@ -131,7 +132,8 @@ class MetropolisHastings:
         """ Returns the ratio that is going to be used on the 
             Metropolis-Hastings algorithm as the probability of 
             accepting the proposed jump new_t, given that the current
-            parameter is old_t. """
+            parameter is old_t. new_l and old_l should be the log
+            likelihood of new_t and old_t, respectively. """
         raise NotImplementedError
 
 

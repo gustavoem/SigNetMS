@@ -13,9 +13,10 @@ class AcceptingRateAMCMC (MetropolisHastings):
         Topologies from Multiple Perturbation Measurements of Specific 
         Biochemical Species", Tian-Rui Xu et. al. """
 
-    def __init__ (self, theta, model, experiments, sigma_update_n):
+    def __init__ (self, theta, model, experiments, sigma_update_n, 
+            verbose=False):
         """ Default constructor. """
-        super ().__init__ (theta, verbose=False)
+        super ().__init__ (theta, verbose=verbose)
         self.__model = model
         self.__experiments = experiments
         self.__sigma_update_n = sigma_update_n
@@ -59,8 +60,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
         """
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
-        new_gv_old = j_gv_old.pdf (new_t)
-        old_gv_new = j_gv_new.pdf (old_t)
+        new_gv_old = j_gv_old.pdf (new_t.get_values ())
+        old_gv_new = j_gv_new.pdf (old_t.get_values ())
 
         l_ratio = np.exp (new_l - old_l)
         prior_ratio = new_t.get_p () / old_t.get_p ()
@@ -85,7 +86,6 @@ class AcceptingRateAMCMC (MetropolisHastings):
             """
         acceptance_rate = self.get_acceptance_ratio ()
         jump_S = self._jump_S
-        print ("alo")
         for i in range (len (jump_S)):
             if acceptance_rate > .4 and jump_S[i] < 10:
                 jump_S[i] += jump_S[i] * .5

@@ -89,12 +89,12 @@ class MetropolisHastings:
 
             if self._is_verbose:
                 print ("old_t: ")
-                print ("[")
+                print ("[", end='')
                 for p in old_t:
                     print (p.value, end=' ')
                 print ("]")
                 print ("new_t")
-                print ("[")
+                print ("[", end='')
                 for p in new_t:
                     print (p.value, end=' ')
                 print ("]")

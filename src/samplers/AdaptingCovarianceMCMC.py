@@ -6,12 +6,13 @@ from CovarianceMatrix import calc_covariance
 from utils import safe_power
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
-    """ This class is able to return a sample of theta using an adaptive
-        metropolis-hastings algorithm. The proposal distribution of this
-        algorithm is adaptive and has as covariance matrix an estimate
-        of the covariance according to the current sample. To get a 
-        sample with an instance of this class, you will need a starting 
-        sample to have a first estimate of the covariance matrix. """
+    """ Objects of this class are able to return a sample of theta using 
+        an adaptive metropolis-hastings algorithm. The proposal 
+        distribution of the algorithm is adaptive and has as covariance 
+        matrix an estimate of the covariance according to the current 
+        sample. To get a sample with an instance of this class, you will 
+        need a starting sample to provide a first estimate of the 
+        covariance matrix. """
 
     def __init__ (self, theta, model, experiments, t=1, verbose=False):
         """ Default constructor. """
@@ -20,7 +21,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         self.__experiments = experiments
         self._jump_S = None
         self.__l_f = LikelihoodFunction (model)
-        self._t = 1
+        self._t = t
 
 
     def __calc_jump_S (self):

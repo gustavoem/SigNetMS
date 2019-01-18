@@ -10,8 +10,8 @@ class MetropolisHastings:
     def __init__ (self, theta, verbose=False):
         """ Default constructor. """
         self._theta = theta.get_copy ()
-        self.__sample = []
-        self.__sample_log_likelds = []
+        self._sample = []
+        self._sample_log_likelds = []
         self._n_accepted = 0
         self._n_jumps = 0
         self._is_verbose = verbose
@@ -44,14 +44,14 @@ class MetropolisHastings:
 
     def define_start_sample (self, sample, log_likelds):
         """ Inserts sampled parameters and its log-likelihoods at the 
-            beginning of the self.__sample array. """
+            beginning of the self._sample array. """
         if len (sample) != len (log_likelds):
             raise ValueError ("sample and log_likelds should have " \
                     + "same dimensions.")
 
-        self.__sample = sample + self.__sample
-        self.__sample_log_likelds = log_likelds + \
-                self.__sample_log_likelds
+        self._sample = sample + self._sample
+        self._sample_log_likelds = log_likelds + \
+                self._sample_log_likelds
     
     
     def start_sample_from_prior (self):
@@ -61,29 +61,29 @@ class MetropolisHastings:
         for p in new_t:
             val = p.set_rand_value ()
         new_l = self._calc_log_likelihood (new_t)
-        self.__sample.append (new_t)
-        self.__sample_log_likelds.append (new_l)
+        self._sample.append (new_t)
+        self._sample_log_likelds.append (new_l)
 
 
     def manual_jump (self, theta, log_likeli):
         """ Manually jump from current theta to theta. If there's no
             current parameter, then theta becomes the first sample. """
-        self.__sample.append (theta)
-        self.__sample_log_likelds.append (log_likeli)
+        self._sample.append (theta)
+        self._sample_log_likelds.append (log_likeli)
         self._n_jumps += 1
         self._n_accepted += 1
 
 
     def get_sample (self, N):
         """ Get a sample of size N. """
-        if len (self.__sample) == 0:
+        if len (self._sample) == 0:
             raise ValueError ("The current sample can't be empty. " \
                     + "Try using the start_sample_from_prior () " \
                     + "method.")
 
         for i in range (N):
-            old_t = self.__sample[-1]
-            old_l = self.__sample_log_likelds[-1]
+            old_t = self._sample[-1]
+            old_l = self._sample_log_likelds[-1]
             new_t = self.propose_jump (old_t)
             new_l = self._calc_log_likelihood (new_t)
 
@@ -107,8 +107,8 @@ class MetropolisHastings:
                 old_t = new_t
                 old_l = new_l
                 self._n_accepted += 1
-            self.__sample.append (old_t)
-            self.__sample_log_likelds.append (old_l)
+            self._sample.append (old_t)
+            self._sample_log_likelds.append (old_l)
             self._n_jumps += 1
             self._iteration_update ()
         
@@ -121,9 +121,9 @@ class MetropolisHastings:
         sample = []
         log_likelds = []
         i = -1
-        for t in self.__sample[-N:]:
+        for t in self._sample[-N:]:
             sample.append (t.get_copy ())
-            log_likelds.append (self.__sample_log_likelds[i])
+            log_likelds.append (self._sample_log_likelds[i])
             i -= 1
         return (sample, log_likelds)
 

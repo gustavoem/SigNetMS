@@ -24,6 +24,11 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         self._t = t
 
 
+    def set_temperature (self, t):
+        """ Defines a temperature parameter. """
+        selt._t = t
+
+
     def __calc_jump_S (self):
         """ Calculates jump_S, an estimate of the covariance of 
             parameters. """

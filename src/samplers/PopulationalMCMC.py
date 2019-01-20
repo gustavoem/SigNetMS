@@ -1,6 +1,7 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
 from DiscreteLaplacian import DiscreteLaplacian
+from utils import safe_power
 
 
 class PopulationalMCMC:
@@ -16,8 +17,7 @@ class PopulationalMCMC:
 
     def __init__ (self, n_strata, strata_size, fc_mcmcs):
         """ Default constructor. """
-        if n_strata * strata_size != len (covariances) or \
-                n_strata * strata_size != len (starts):
+        if n_strata * strata_size != len (fc_mcmcs):
             raise ValueError ("The list of covariances and starts " \
                     + "should have the same size as n_strata * " \
                     + "strata_size")
@@ -29,9 +29,9 @@ class PopulationalMCMC:
         self.__define_samplers_temp (self.__betas, self.__fc_mcmcs)
 
     
-    def __sample_betas (n_strata, strata_size):
+    def __sample_betas (self, n_strata, strata_size):
         """ Samples the temperatures array. """
-        betas = [0]
+        betas = []
         sched_power = PopulationalMCMC.__SCHEDULE_POWER
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
@@ -40,11 +40,10 @@ class PopulationalMCMC:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
-        betas.append (1)
         self.__betas = betas
 
 
-    def __define_samplers_temp (betas, fc_mcmcs):
+    def __define_samplers_temp (self, betas, fc_mcmcs):
         for i in range (len (betas)):
             fc_mcmcs[i].set_temperature (betas[i])
 
@@ -52,17 +51,20 @@ class PopulationalMCMC:
     def get_sample (self, N):
         """ Get a sample of size N. """
         betas = self.__betas
+        fc_mcmcs = self.__fc_mcmcs
         for i in range (N):
             for j in range (len (self.__betas)):
                 fc_mcmcs[j].get_sample (1)
 
             j = np.random.choice (range (len (betas)))
-            temp_jump_distr = DiscreteLaplacian (len (betas), j + 1)
-            k = temp_jump_distr.rvs () - 1
+            temp_jump_dist = DiscreteLaplacian (len (betas), j + 1)
+            k = temp_jump_dist.rvs () - 1
             inv_temp_jump_dist = DiscreteLaplacian (len (betas), k + 1)
-
-            thetaj, thetaj_l = fc_mcmcs[j].get_last_sampled (1)[0]
-            thetak, thetak_l = fc_mcmcs[k].get_last_sampled (1)[0]
+            
+            sample, likelihoods = fc_mcmcs[j].get_last_sampled (1)
+            thetaj, thetaj_l = sample[0], likelihoods[0]
+            sample, likelihoods = fc_mcmcs[k].get_last_sampled (1)
+            thetak, thetak_l = sample[0], likelihoods[0]
             tjotk = np.exp (thetaj_l - thetak_l)
             tkotj = np.exp (thetak_l - thetaj_l)
             j_gv_k = inv_temp_jump_dist.pdf (j + 1)
@@ -79,7 +81,7 @@ class PopulationalMCMC:
         sample = []
         likls  = []
         for i in range (len (betas)):
-            t, l = fc_mcmcs[i].get_last_sampled (1)[0]
-            sample.append (t)
-            likls.append (l)
+            sub_sample, likeli = fc_mcmcs[i].get_last_sampled (1)
+            sample.append (sub_sample[0])
+            likls.append (likeli[0])
         return (sample, likls)

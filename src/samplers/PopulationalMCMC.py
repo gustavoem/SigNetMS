@@ -1,6 +1,6 @@
 import numpy as np
 from LikelihoodFunction import LikelihoodFunction
-from DiscreteLaplacian import DiscreteLaplacian
+from distributions.DiscreteLaplacian import DiscreteLaplacian
 from utils import safe_power
 
 
@@ -15,7 +15,7 @@ class PopulationalMCMC:
     __SCHEDULE_POWER = 4
 
 
-    def __init__ (self, n_strata, strata_size, fc_mcmcs):
+    def __init__ (self, n_strata, strata_size, fc_mcmcs, verbose=False):
         """ Default constructor. """
         if n_strata * strata_size != len (fc_mcmcs):
             raise ValueError ("The list of covariances and starts " \
@@ -27,6 +27,12 @@ class PopulationalMCMC:
         self.__sample_betas (n_strata, strata_size)
         self.__fc_mcmcs = fc_mcmcs
         self.__define_samplers_temp (self.__betas, self.__fc_mcmcs)
+
+
+    @staticmethod
+    def get_sched_power ():
+        """ Returns the beta schedule power. """
+        return PopulationalMCMC.__SCHEDULE_POWER
 
     
     def __sample_betas (self, n_strata, strata_size):
@@ -46,13 +52,14 @@ class PopulationalMCMC:
     def __define_samplers_temp (self, betas, fc_mcmcs):
         for i in range (len (betas)):
             fc_mcmcs[i].set_temperature (betas[i])
-
+    
 
     def get_sample (self, N):
         """ Get a sample of size N. """
         betas = self.__betas
         fc_mcmcs = self.__fc_mcmcs
         for i in range (N):
+            print (str (i) + "-th iteration of PopulationalMCMC.")
             for j in range (len (self.__betas)):
                 fc_mcmcs[j].get_sample (1)
 
@@ -84,4 +91,4 @@ class PopulationalMCMC:
             sub_sample, likeli = fc_mcmcs[i].get_last_sampled (1)
             sample.append (sub_sample[0])
             likls.append (likeli[0])
-        return (sample, likls)
+        return (betas, sample, likls)

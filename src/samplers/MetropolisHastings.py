@@ -88,18 +88,19 @@ class MetropolisHastings:
             new_l = self._calc_log_likelihood (new_t)
 
             if self._is_verbose:
-                print ("old_t: ")
+                print ("old_t:", end=' ')
                 print ("[", end='')
                 for p in old_t:
                     print (p.value, end=' ')
                 print ("]")
-                print ("new_t")
+                print ("new_t", end=' ')
                 print ("[", end='')
                 for p in new_t:
                     print (p.value, end=' ')
                 print ("]")
                 print ("old_l: " + str (old_l))
                 print ("new_l: " + str (new_l))
+                print ("")
 
 
             r = self._calc_mh_ratio (new_t, new_l, old_t, old_l)

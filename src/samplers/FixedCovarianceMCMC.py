@@ -1,8 +1,8 @@
 import numpy as np
-from MetropolisHastings import MetropolisHastings
-from AdaptingCovarianceMCMC import AdaptingCovarianceMCMC
+from samplers.MetropolisHastings import MetropolisHastings
+from samplers.AdaptingCovarianceMCMC import AdaptingCovarianceMCMC
 from LikelihoodFunction import LikelihoodFunction
-from MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 from CovarianceMatrix import calc_covariance
 from utils import safe_power
 

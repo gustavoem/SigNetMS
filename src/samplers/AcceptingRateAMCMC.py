@@ -1,7 +1,7 @@
 import numpy as np
-from MetropolisHastings import MetropolisHastings
+from samplers.MetropolisHastings import MetropolisHastings
 from LikelihoodFunction import LikelihoodFunction
-from MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive

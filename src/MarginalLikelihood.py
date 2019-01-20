@@ -6,8 +6,10 @@
 from RandomParameter import RandomParameter
 from RandomParameterList import RandomParameterList
 from LikelihoodFunction import LikelihoodFunction
-from MCMCInitialization import MCMCInitialization
-from AdaptiveMCMC import AdaptiveMCMC
+from samplers.AcceptingRateAMCMC import AcceptingRateAMCMC
+from samplers.AdaptingCovarianceMCMC import AdaptingCovarianceMCMC
+from samplers.FixedCovarianceMCMC import FixedCovarianceMCMC
+from samplers.PopulationalMCMC import PopulationalMCMC
 from ODES import ODES
 import numpy as np
 import random
@@ -18,9 +20,10 @@ class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
     
-    def __init__ (self, init_iterations, sigma_update_n, 
-            adaptive_iterations, fixed_iterations, n_strata, 
+    def __init__ (self, phase1_iterations, sigma_update_n, 
+            phase2_iterations, phase3_iterations, n_strata, 
             strata_size):
+        #TODO: rewrite doc
         """ Default constructor. init_iterations is the number of 
             iterations performed by the MCMCInitialize sampler, which is
             an adaptive sampler that performs independent MCMC on each
@@ -32,10 +35,10 @@ class MarginalLikelihood:
             is the number of strata used in the populational phase of 
             AdaptiveMCMC (fixed phase), and strata_size is the number of 
             individuals per strata."""
-        self.__init_iterations = init_iterations
+        self.__phase1_iterations = phase1_iterations
+        self.__phase2_iterations = phase2_iterations
+        self.__phase3_iterations = phase3_iterations
         self.__sigma_update_n = sigma_update_n
-        self.__adaptive_iterations = adaptive_iterations
-        self.__fixed_iterations = fixed_iterations
         self.__n_strata = n_strata
         self.__strata_size = strata_size
 
@@ -44,29 +47,48 @@ class MarginalLikelihood:
             theta_prior):
         """ This function estimates the marginal likelihood of a  model.
         """
-        n_init = self.__init_iterations
-        n_adap = self.__adaptive_iterations
-        n_fixed = self.__fixed_iterations
+        n_acc = self.__phase1_iterations
+        n_adap_cov = self.__phase2_iterations
+        n_pop = self.__phase3_iterations
         n_strata = self.__n_strata
         strata_size = self.__strata_size
     
-        # First sampling step
-        mcmc_init = MCMCInitialization (theta_prior, model, experiments,
-                self.__sigma_update_n)
-        start_sample = mcmc_init.get_sample (n_init)
+        # Phase 1
+        acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments,
+                self.__sigma_update_n, verbose=True)
+        acc_mcmc.start_sample_from_prior ()
+        sample, likelis = acc_mcmc.get_sample (n_acc)
 
-
-        print ("First step sample: ")
-        print (start_sample)
-
-        # Second sampling step
-        amcmc = AdaptiveMCMC (model, experiments, start_sample, 
-                n_strata, strata_size)
-        betas, thetas, log_ls = amcmc.get_sample (n_adap, n_fixed)
+        # Phase 2
+        adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
+                experiments, verbose=True)
+        adap_cov_mcmc.define_start_sample (sample, likelis)
+        sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
+        
+        # Phase 3
+        fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
+                n_strata * strata_size, experiments, model, theta_prior)
+        pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs)
+        betas, thetas, log_ls = pop_mcmc.get_sample (n_pop)
 
         ml = self.__calculate_marginal_likelihood (betas, thetas, 
                 log_ls)
         return ml
+
+
+    def __create_fcmcmc_samplers (self, adap_cov_mcmc, m, experiments,
+            model, theta_prior):
+        """ Creates a list of FixedCovarianceMCMC objects that has the
+            same jump covariance matrix as AdaptiveCovarianceMatrix. """
+        S = adap_cov_mcmc.get_jump_covariance ()
+        start_t, start_l = adap_cov_mcmc.get_last_sampled (1)
+        fc_mcmcs = []
+        for i in range (m):
+            sampler = FixedCovarianceMCMC (theta_prior, model, 
+                    experiments, S)
+            sampler.define_start_sample (start_t, start_l)
+            fc_mcmcs.append (sampler)
+        return fc_mcmcs
 
 
     def __calculate_marginal_likelihood (self, betas, thetas, \
@@ -77,7 +99,7 @@ class MarginalLikelihood:
         j = 0 
         n_strata = self.__n_strata
         strata_size = self.__strata_size
-        sched_power = AdaptiveMCMC.get_sched_power ()
+        sched_power = PopulationalMCMC.get_sched_power ()
     
         print ("Estimating marginal likelihood")
         for i in range (n_strata):

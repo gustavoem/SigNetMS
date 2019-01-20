@@ -1,7 +1,7 @@
 import numpy as np
-from MetropolisHastings import MetropolisHastings
+from samplers.MetropolisHastings import MetropolisHastings
 from LikelihoodFunction import LikelihoodFunction
-from MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 from CovarianceMatrix import calc_covariance
 from utils import safe_power
 
@@ -36,6 +36,11 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         for t in self._sample:
             sample_values.append (t.get_values ())
         self._jump_S = calc_covariance (sample_values) 
+    
+    
+    def get_jump_covariance (self):
+        """ Returns the jump_S matrix. """
+        return np.array (self._jump_S)
 
 
     def _create_jump_dist (self, theta_t):

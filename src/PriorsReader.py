@@ -1,6 +1,6 @@
 from RandomParameter import RandomParameter
 from RandomParameterList import RandomParameterList
-from Gamma import Gamma
+from distributions.Gamma import Gamma
 from utils import clean_tag
 from lxml import etree
 import sys

@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(0, '../../src/')
+sys.path.insert(0, '..')
 
 import unittest
 import re
-from SBML import SBML
+from marginal_likelihood.SBML import SBML
 
 
 class TestSBMLMethods (unittest.TestCase):

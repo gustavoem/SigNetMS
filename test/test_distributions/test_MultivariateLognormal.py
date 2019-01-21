@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(0, '../src/distributions/')
+sys.path.insert(0, '..')
 
 import unittest
 import numpy as np
-from MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 
 class TestMultivariateLognormal (unittest.TestCase):
 

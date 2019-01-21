@@ -1,16 +1,15 @@
 import sys
-sys.path.insert(0, '../src/')
-sys.path.insert(0, '../src/distributions')
+sys.path.insert(0, '..')
 
 import unittest
 import math
 import numpy as np
-from ODES import ODES
-from LikelihoodFunction import LikelihoodFunction
-from Gamma import Gamma
-from Experiment import Experiment
-from RandomParameterList import RandomParameterList
-from RandomParameter import RandomParameter
+from marginal_likelihood.ODES import ODES
+from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
+from distributions.Gamma import Gamma
+from experiment.Experiment import Experiment
+from marginal_likelihood.RandomParameterList import RandomParameterList
+from marginal_likelihood.RandomParameter import RandomParameter
 
 class TestLikelihoodFunction (unittest.TestCase):
     

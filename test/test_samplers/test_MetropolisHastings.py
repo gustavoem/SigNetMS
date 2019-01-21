@@ -1,14 +1,14 @@
 import sys
-sys.path.insert (0, '../src/')
-sys.path.insert (0, '../src/samplers/')
+sys.path.insert (0, '..')
 
 import unittest
 import numpy as np
-from MetropolisHastings import MetropolisHastings
-from RandomParameterList import RandomParameterList
-from RandomParameter import RandomParameter
-from Gamma import Gamma
-from MultivariateLognormal import MultivariateLognormal
+from marginal_likelihood.samplers.MetropolisHastings import \
+        MetropolisHastings
+from marginal_likelihood.RandomParameterList import RandomParameterList
+from marginal_likelihood.RandomParameter import RandomParameter
+from distributions.Gamma import Gamma
+from distributions.MultivariateLognormal import MultivariateLognormal
 
 
 class MHJumpMock (MetropolisHastings):

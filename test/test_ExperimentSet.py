@@ -1,10 +1,10 @@
 import sys
-sys.path.insert (0, '../src/')
+sys.path.insert (0, '..')
 
 import os
 import unittest
-from ExperimentSet import ExperimentSet
-from Experiment import Experiment
+from experiment.ExperimentSet import ExperimentSet
+from experiment.Experiment import Experiment
 
 class TestExperimentSet (unittest.TestCase):
     

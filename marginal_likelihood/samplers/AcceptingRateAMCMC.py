@@ -1,6 +1,7 @@
 import numpy as np
-from samplers.MetropolisHastings import MetropolisHastings
-from LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.samplers.MetropolisHastings import \
+        MetropolisHastings
+from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):

@@ -1,9 +1,10 @@
 import numpy as np
-from samplers.MetropolisHastings import MetropolisHastings
-from LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.samplers.MetropolisHastings import \
+        MetropolisHastings
+from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariateLognormal import MultivariateLognormal
-from CovarianceMatrix import calc_covariance
-from utils import safe_power
+from marginal_likelihood.CovarianceMatrix import calc_covariance
+from marginal_likelihood.utils import safe_power
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
     """ Objects of this class are able to return a sample of theta using 

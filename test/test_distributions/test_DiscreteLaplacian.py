@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(0, '../src/distributions/')
+sys.path.insert(0, '..')
 
+from distributions.DiscreteLaplacian import DiscreteLaplacian
 import unittest
 import numpy as np
-from DiscreteLaplacian import DiscreteLaplacian
 
 class TestDiscreteLaplacian (unittest.TestCase):
 

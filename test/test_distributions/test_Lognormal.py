@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(0, '../src/distributions/')
+sys.path.insert(0, '..')
 
 import unittest
 import numpy as np
-from Lognormal import Lognormal
+from distributions.Lognormal import Lognormal
 
 class TestLognormal (unittest.TestCase):
 

@@ -1,8 +1,8 @@
 import sys
-sys.path.insert (0, '../src/')
+sys.path.insert (0, '..')
 
 import unittest
-from CovarianceMatrix import calc_covariance
+from marginal_likelihood.CovarianceMatrix import calc_covariance
 
 class TestCovarianceMatrix (unittest.TestCase):
 

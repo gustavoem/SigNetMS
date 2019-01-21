@@ -1,10 +1,10 @@
 import sys
-sys.path.insert(0, '../../src/')
+sys.path.insert(0, '..')
 
 import unittest
 import math
 import numpy as np
-from ODES import ODES
+from marginal_likelihood.ODES import ODES
 
 
 class TestODESMethods (unittest.TestCase):

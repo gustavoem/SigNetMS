@@ -3,14 +3,14 @@
 # Pathway Topologies from Multiple Perturbation Measurements of Specific 
 # Biochemical Species", Tian-Rui Xu, et. al.
 
-from RandomParameter import RandomParameter
-from RandomParameterList import RandomParameterList
-from LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.RandomParameter import RandomParameter
+from marginal_likelihood.RandomParameterList import RandomParameterList
+from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.ODES import ODES
 from samplers.AcceptingRateAMCMC import AcceptingRateAMCMC
 from samplers.AdaptingCovarianceMCMC import AdaptingCovarianceMCMC
 from samplers.FixedCovarianceMCMC import FixedCovarianceMCMC
 from samplers.PopulationalMCMC import PopulationalMCMC
-from ODES import ODES
 import numpy as np
 import random
 import re

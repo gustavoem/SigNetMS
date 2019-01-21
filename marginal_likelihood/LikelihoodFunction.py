@@ -6,7 +6,7 @@
 
 import numpy as np
 from scipy.stats import lognorm
-import RandomParameter
+import marginal_likelihood.RandomParameter
 from asteval import Interpreter
 
 class LikelihoodFunction:

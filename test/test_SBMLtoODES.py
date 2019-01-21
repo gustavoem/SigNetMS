@@ -1,10 +1,10 @@
 import sys
-sys.path.insert (0, '../../src/')
+sys.path.insert (0, '..')
 
 import unittest
-from SBML import SBML
-from ODES import ODES
-from SBMLtoODES import sbml_to_odes 
+from marginal_likelihood.SBML import SBML
+from marginal_likelihood.ODES import ODES
+from marginal_likelihood.SBMLtoODES import sbml_to_odes 
 
 class TestSBMLtoODES (unittest.TestCase):
     

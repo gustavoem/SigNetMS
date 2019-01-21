@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(0, '../src/distributions/')
+sys.path.insert(0, '..')
 
 import unittest
 import numpy as np
-from Gamma import Gamma
+from distributions.Gamma import Gamma
 
 class TestGamma (unittest.TestCase):
 

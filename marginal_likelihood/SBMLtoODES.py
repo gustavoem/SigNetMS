@@ -1,4 +1,4 @@
-from ODES import ODES
+from marginal_likelihood.ODES import ODES
 
 def sbml_to_odes (sbml):
     """ This function transforms an SBML model into an ODES model. """

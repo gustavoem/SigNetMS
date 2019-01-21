@@ -1,16 +1,14 @@
 import sys
-sys.path.insert (0, '../src/')
-sys.path.insert (0, '../src/samplers/')
-sys.path.insert (0, '../src/distributions/')
+sys.path.insert (0, '..')
 
 import unittest
 import numpy as np
-from SBML import SBML
-from AcceptingRateAMCMC import AcceptingRateAMCMC
-from SBMLtoODES import sbml_to_odes
-from ExperimentSet import ExperimentSet
-from PriorsReader import define_sbml_params_priors
-from Gamma import Gamma
+from marginal_likelihood.SBML import SBML
+from marginal_likelihood.SBMLtoODES import sbml_to_odes
+from marginal_likelihood.PriorsReader import define_sbml_params_priors
+from marginal_likelihood.samplers.AcceptingRateAMCMC import AcceptingRateAMCMC
+from experiment.ExperimentSet import ExperimentSet
+from distributions.Gamma import Gamma
 
 
 class AlwaysAcceptMock (AcceptingRateAMCMC):

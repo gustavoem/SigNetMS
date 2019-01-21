@@ -1,9 +1,9 @@
 import sys
-sys.path.insert (0, '../src/')
+sys.path.insert (0, '..')
 
 import unittest
-from ExperimentReader import read_txt_experiment_file
-from Experiment import Experiment
+from experiment.ExperimentReader import read_txt_experiment_file
+from experiment.Experiment import Experiment
 
 class TestExperimentReader (unittest.TestCase):
 

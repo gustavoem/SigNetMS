@@ -1,20 +1,19 @@
 import sys
-sys.path.insert (0, '../src/')
-sys.path.insert (0, '../src/samplers/')
-sys.path.insert (0, '../src/distributions/')
+sys.path.insert (0, '..')
 
 import unittest
 import numpy as np
-from SBML import SBML
-from FixedCovarianceMCMC import FixedCovarianceMCMC
-from SBMLtoODES import sbml_to_odes
-from ExperimentSet import ExperimentSet
-from PriorsReader import define_sbml_params_priors
-from MultivariateLognormal import MultivariateLognormal
-from Gamma import Gamma
-from RandomParameterList import RandomParameterList
-from RandomParameter import RandomParameter
-from CovarianceMatrix import calc_covariance
+from marginal_likelihood.SBML import SBML
+from marginal_likelihood.SBMLtoODES import sbml_to_odes
+from marginal_likelihood.PriorsReader import define_sbml_params_priors
+from experiment.ExperimentSet import ExperimentSet
+from distributions.Gamma import Gamma
+from distributions.MultivariateLognormal import MultivariateLognormal
+from marginal_likelihood.RandomParameterList import RandomParameterList
+from marginal_likelihood.RandomParameter import RandomParameter
+from marginal_likelihood.CovarianceMatrix import calc_covariance
+from marginal_likelihood.samplers.FixedCovarianceMCMC import \
+        FixedCovarianceMCMC
 
 class TestFixedCovarianceMCMC (unittest.TestCase):
     

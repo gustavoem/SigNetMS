@@ -1,10 +1,10 @@
 import sys
-sys.path.insert (0, '../../src/')
+sys.path.insert (0, '..')
 
 import unittest
-from RandomParameterList import RandomParameterList
-from RandomParameter import RandomParameter
-from Gamma import Gamma
+from marginal_likelihood.RandomParameterList import RandomParameterList
+from marginal_likelihood.RandomParameter import RandomParameter
+from distributions.Gamma import Gamma
 
 
 class TestRandomParameterList (unittest.TestCase):

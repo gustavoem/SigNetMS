@@ -1,7 +1,7 @@
 import numpy as np
-from LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.utils import safe_power
 from distributions.DiscreteLaplacian import DiscreteLaplacian
-from utils import safe_power
 
 
 class PopulationalMCMC:
@@ -27,6 +27,7 @@ class PopulationalMCMC:
         self.__sample_betas (n_strata, strata_size)
         self.__fc_mcmcs = fc_mcmcs
         self.__define_samplers_temp (self.__betas, self.__fc_mcmcs)
+        self.__verbose = verbose
 
 
     @staticmethod
@@ -59,7 +60,8 @@ class PopulationalMCMC:
         betas = self.__betas
         fc_mcmcs = self.__fc_mcmcs
         for i in range (N):
-            print (str (i) + "-th iteration of PopulationalMCMC.")
+            if self.__verbose:
+                print (str (i) + "-th iteration of PopulationalMCMC.")
             for j in range (len (self.__betas)):
                 fc_mcmcs[j].get_sample (1)
 

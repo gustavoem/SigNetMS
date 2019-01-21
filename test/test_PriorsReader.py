@@ -1,10 +1,10 @@
 import sys
-sys.path.insert (0, '../../src/')
+sys.path.insert (0, '..')
 
 import unittest
-from PriorsReader import read_priors_file
-from PriorsReader import define_sbml_params_priors 
-from SBML import SBML
+from marginal_likelihood.PriorsReader import read_priors_file
+from marginal_likelihood.PriorsReader import define_sbml_params_priors 
+from marginal_likelihood.SBML import SBML
 
 class TestPriorsReader (unittest.TestCase):
 

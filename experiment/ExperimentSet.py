@@ -1,6 +1,9 @@
+import sys
+sys.path.insert (0, '..')
+
 from lxml import etree
-from Experiment import Experiment
-from utils import clean_tag
+from experiment.Experiment import Experiment
+from marginal_likelihood.utils import clean_tag
 import numpy as np
 
 class ExperimentSet:

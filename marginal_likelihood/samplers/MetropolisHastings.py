@@ -44,15 +44,16 @@ class MetropolisHastings:
 
     def define_start_sample (self, sample, log_likelds):
         """ Inserts sampled parameters and its log-likelihoods at the 
-            beginning of the self._sample array. """
+            end of the self._sample array..
+            """
         if len (sample) != len (log_likelds):
             raise ValueError ("sample and log_likelds should have " \
                     + "same dimensions.")
-
-        self._sample = sample + self._sample
-        self._sample_log_likelds = log_likelds + \
-                self._sample_log_likelds
     
+        self._sample = self._sample + sample
+        self._sample_log_likelds = self._sample_log_likelds + \
+                log_likelds
+
     
     def start_sample_from_prior (self):
         """ Create a first sample based on the prior distribution of
@@ -100,10 +101,11 @@ class MetropolisHastings:
                 print ("]")
                 print ("old_l: " + str (old_l))
                 print ("new_l: " + str (new_l))
-                print ("")
 
 
             r = self._calc_mh_ratio (new_t, new_l, old_t, old_l)
+            if self._is_verbose:
+                print ("r = " + str (r), end="\n\n")
             if np.random.uniform () <= r:
                 old_t = new_t
                 old_l = new_l
@@ -121,11 +123,18 @@ class MetropolisHastings:
             log-likelihoods. """
         sample = []
         log_likelds = []
-        i = -1
-        for t in self._sample[-N:]:
+        
+        i = -N
+        if N > len (self._sample):
+            i = -len (self._sample)
+
+        while i < 0:
+            t = self._sample[i]
+            l = self._sample_log_likelds[i]
             sample.append (t.get_copy ())
-            log_likelds.append (self._sample_log_likelds[i])
-            i -= 1
+            log_likelds.append (l)
+            i += 1
+
         return (sample, log_likelds)
 
 

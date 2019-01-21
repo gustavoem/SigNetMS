@@ -42,7 +42,6 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         experiments = self.__experiments
         theta = self.__theta_priors
         start_sample, start_likels = self.create_starting_sample ()
-
         mh = AdaptingCovarianceMCMC (theta, model, experiments)
         mh.start_sample_from_prior ()
         mh.define_start_sample (start_sample, start_likels)
@@ -60,10 +59,12 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         for i in range (50):
             theta = RandomParameterList ()
             values = my_sample_dist.rvs ()
-            for v in values:
+            for v in values[:-1]:
                 p = RandomParameter ('p', Gamma (2, 2))
                 p.value = v
                 theta.append (p)
+            exp_error = RandomParameter ('sigma', Gamma (2, 2))
+            theta.set_experimental_error (exp_error)
             log_likelihoods.append (1)
             my_artificial_sample.append (theta)
         return (my_artificial_sample, log_likelihoods)

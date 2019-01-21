@@ -7,10 +7,14 @@ from marginal_likelihood.RandomParameter import RandomParameter
 from marginal_likelihood.RandomParameterList import RandomParameterList
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from marginal_likelihood.ODES import ODES
-from samplers.AcceptingRateAMCMC import AcceptingRateAMCMC
-from samplers.AdaptingCovarianceMCMC import AdaptingCovarianceMCMC
-from samplers.FixedCovarianceMCMC import FixedCovarianceMCMC
-from samplers.PopulationalMCMC import PopulationalMCMC
+from marginal_likelihood.samplers.AcceptingRateAMCMC import \
+        AcceptingRateAMCMC
+from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \
+        AdaptingCovarianceMCMC
+from marginal_likelihood.samplers.FixedCovarianceMCMC import \
+        FixedCovarianceMCMC
+from marginal_likelihood.samplers.PopulationalMCMC import \
+        PopulationalMCMC
 import numpy as np
 import random
 import re
@@ -59,12 +63,16 @@ class MarginalLikelihood:
         acc_mcmc.start_sample_from_prior ()
         sample, likelis = acc_mcmc.get_sample (n_acc)
 
+        print ("Last guy likelihood: " + str (likelis[-1]) )
+
+        print ("Phase 2 starts.")
         # Phase 2
         adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
                 experiments, verbose=True)
         adap_cov_mcmc.define_start_sample (sample, likelis)
         sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
         
+        print ("Phase 3 starts.")
         # Phase 3
         fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
                 n_strata * strata_size, experiments, model, theta_prior)

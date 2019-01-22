@@ -26,25 +26,29 @@ class MarginalLikelihood:
     
     def __init__ (self, phase1_iterations, sigma_update_n, 
             phase2_iterations, phase3_iterations, n_strata, 
-            strata_size):
-        #TODO: rewrite doc
-        """ Default constructor. init_iterations is the number of 
-            iterations performed by the MCMCInitialize sampler, which is
+            strata_size, verbose=False):
+        """ Default constructor. phase1_iterations is the number of 
+            iterations performed by the AcceptingRateAMCMC, which is
             an adaptive sampler that performs independent MCMC on each
-            system variable. sigma_update_n is the number of iterations
-            before updating sigma in intial phase. adaptive_iterations 
-            is the number of iterations performed in the adaptive phase 
-            of AdaptiveMCMC object and fixed_iterations is the number of 
-            iterations in the fixed phase of the same object. n_strata 
-            is the number of strata used in the populational phase of 
-            AdaptiveMCMC (fixed phase), and strata_size is the number of 
-            individuals per strata."""
+            system variable and adapts the jump covariance with the goal
+            of having acceptance rate between 0.25 and 0.75. 
+            sigma_update_n is the number of iterations before updating 
+            sigma in intial phase. phase2_iterations is the number of 
+            iterations performed in the second phase of sampling with 
+            an adaptive sampling algorithm that has jumps distributed 
+            with a probability function that has as covariance matrix
+            a matrix of covariance estimated from the current sample.
+            phase3_iterations is the number of iterations performed by
+            the PopulationalMCMC algorithm. n_strata is the number of 
+            strata used in the populational algorithm, and strata_size 
+            is the number of individuals per strata."""
         self.__phase1_iterations = phase1_iterations
         self.__phase2_iterations = phase2_iterations
         self.__phase3_iterations = phase3_iterations
         self.__sigma_update_n = sigma_update_n
         self.__n_strata = n_strata
         self.__strata_size = strata_size
+        self.__verbose = verbose
 
 
     def estimate_marginal_likelihood (self, experiments, model, 
@@ -56,27 +60,29 @@ class MarginalLikelihood:
         n_pop = self.__phase3_iterations
         n_strata = self.__n_strata
         strata_size = self.__strata_size
+        verbose = self.__verbose
     
         # Phase 1
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments,
-                self.__sigma_update_n, verbose=True)
+                self.__sigma_update_n, verbose=verbose)
         acc_mcmc.start_sample_from_prior ()
         sample, likelis = acc_mcmc.get_sample (n_acc)
-
-        print ("Last guy likelihood: " + str (likelis[-1]) )
-
-        print ("Phase 2 starts.")
+        
+        if self.__verbose:
+            print ("Phase 2 starts.")
         # Phase 2
         adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
-                experiments, verbose=True)
+                experiments, verbose=verbose)
         adap_cov_mcmc.define_start_sample (sample, likelis)
         sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
         
-        print ("Phase 3 starts.")
+        if self.__verbose:
+            print ("Phase 3 starts.")
         # Phase 3
         fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
                 n_strata * strata_size, experiments, model, theta_prior)
-        pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs)
+        pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs,
+                verbose=verbose)
         betas, thetas, log_ls = pop_mcmc.get_sample (n_pop)
 
         ml = self.__calculate_marginal_likelihood (betas, thetas, 
@@ -108,27 +114,30 @@ class MarginalLikelihood:
         n_strata = self.__n_strata
         strata_size = self.__strata_size
         sched_power = PopulationalMCMC.get_sched_power ()
-    
-        print ("Estimating marginal likelihood")
+        
+        if self.__verbose:
+            print ("Estimating marginal likelihood")
         for i in range (n_strata):
             strata_start = (i / n_strata) ** sched_power
             strata_end = ((i + 1) / n_strata) ** sched_power
             del_strata = strata_end - strata_start
-
-            print ("strata_start = " + str (strata_start))
-            print ("strata_end = " + str (strata_end))
-            print ("del_strata = " + str (del_strata))
+            
+            if self.__verbose:
+                print ("strata_start = " + str (strata_start))
+                print ("strata_end = " + str (strata_end))
+                print ("del_strata = " + str (del_strata))
                 
             strat_sum = 0
             while j < len (betas) and betas[j] <= strata_end:
                 log_p_y_given_theta = likelihoods[j]
-                print ("\tTheta: ", end='')
-                for r in thetas[j]:
-                    print (r.value, end=' ')
-                print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
-                        + "\n")
                 strat_sum += log_p_y_given_theta
-                print ("Strat_sum = " + str (strat_sum))
+                if self.__verbose:
+                    print ("\tTheta: ", end='')
+                    for r in thetas[j]:
+                        print (r.value, end=' ')
+                    print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
+                            + "\n")
+                    print ("Strat_sum = " + str (strat_sum))
                 j += 1
 
             strat_sum *= (del_strata / strata_size)

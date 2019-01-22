@@ -56,26 +56,41 @@ class MarginalLikelihood:
         n_pop = self.__phase3_iterations
         n_strata = self.__n_strata
         strata_size = self.__strata_size
-    
-        # Phase 1
-        acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments,
-                self.__sigma_update_n, verbose=True)
-        acc_mcmc.start_sample_from_prior ()
-        sample, likelis = acc_mcmc.get_sample (n_acc)
 
-        print ("Last guy likelihood: " + str (likelis[-1]) )
 
-        print ("Phase 2 starts.")
-        # Phase 2
-        adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
-                experiments, verbose=True)
-        adap_cov_mcmc.define_start_sample (sample, likelis)
-        sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
-        
+        betas = PopulationalMCMC.sample_betas (n_strata, strata_size)
+        fc_mcmcs = []
+
+        print ("Phase 1 and 2 starts.")
+        for b in betas:
+            print ("Temperature t = " + str (b))
+            # Phase 1
+            acc_mcmc = AcceptingRateAMCMC (theta_prior, model, 
+                    experiments, self.__sigma_update_n, verbose=True)
+            acc_mcmc.set_temperature (b)
+            acc_mcmc.start_sample_from_prior ()
+            sample, likelis = acc_mcmc.get_sample (n_acc)
+
+            # Phase 2
+            adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
+                    experiments, verbose=True)
+            adap_cov_mcmc.set_temperature (b)
+            adap_cov_mcmc.define_start_sample (sample, likelis)
+            sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
+
+            # Construct phase 3 local temperature sampler
+            S = adap_cov_mcmc.get_jump_covariance ()
+            fc_mcmc = FixedCovarianceMCMC (theta_prior, model, 
+                    experiments, S, t=b, verbose=True)
+            theta = sample[-1]
+            log_likeli = likelis[-1]
+            fc_mcmc.define_start_sample ([theta], [log_likeli])
+            fc_mcmcs.append (fc_mcmc)
+            
         print ("Phase 3 starts.")
         # Phase 3
-        fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
-                n_strata * strata_size, experiments, model, theta_prior)
+        # fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
+                # n_strata * strata_size, experiments, model, theta_prior)
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs)
         betas, thetas, log_ls = pop_mcmc.get_sample (n_pop)
 

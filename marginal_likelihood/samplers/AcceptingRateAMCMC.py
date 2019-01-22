@@ -2,6 +2,7 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.utils import safe_power
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
@@ -15,7 +16,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         Biochemical Species", Tian-Rui Xu et. al. """
 
     def __init__ (self, theta, model, experiments, sigma_update_n, 
-            verbose=False):
+            verbose=False, t=1):
         """ Default constructor. """
         super ().__init__ (theta, verbose=verbose)
         self.__model = model
@@ -23,6 +24,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         self.__sigma_update_n = sigma_update_n
         self._jump_S = self.__init_jump_S ()
         self.__l_f = LikelihoodFunction (model)
+        self.__t = t
 
 
     def __init_jump_S (self):
@@ -52,6 +54,11 @@ class AcceptingRateAMCMC (MetropolisHastings):
         return jump_dist
 
 
+    def set_temperature (self, t):
+        """ Defines a temperature parameter for this sampler. """
+        self.__t = t
+
+
     def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
         """ In this case, the MH ratio should be:
             [p (y | t*) / p (y | t)] * [p (t*) / p(t)] * 
@@ -64,7 +71,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         new_gv_old = j_gv_old.pdf (new_t.get_values ())
         old_gv_new = j_gv_new.pdf (old_t.get_values ())
 
-        l_ratio = np.exp (new_l - old_l)
+        l_ratio = safe_power (np.exp (new_l - old_l), self.__t)
         prior_ratio = new_t.get_p () / old_t.get_p ()
         jump_ratio = old_gv_new / new_gv_old
         return l_ratio * prior_ratio * jump_ratio

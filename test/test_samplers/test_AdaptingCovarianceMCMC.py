@@ -49,6 +49,44 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         self.assertEqual (len (sample), 20)
 
 
+    def test_sample_temperature_zero (self):
+        """ When t = 0, the sampler should take a sample from the 
+            parameter priors. """
+        model = self.__model
+        experiments = self.__experiments
+        theta = self.__theta_priors
+        n = theta.get_size ()
+
+        N = 1000
+        jump_S = np.eye (n) / 100
+        class FastLikelihoodMock (AdaptingCovarianceMCMC):
+            def _calc_log_likelihood (self, theta):
+                return 1
+            
+            def _create_jump_dist (self, theta_t):
+                """ The jump distribution is Multivariate Lognormal. """
+                t_vals = theta_t.get_values ()
+                mu = np.log (t_vals) - jump_S.diagonal () / 2
+                jump_dist = MultivariateLognormal (mu, jump_S)
+                return jump_dist
+
+        mh = FastLikelihoodMock (theta, model, experiments, t=0)
+        mh.start_sample_from_prior ()
+        mh.get_sample (N)
+        sample, likelihoods = mh.get_last_sampled (N)
+        
+        sample_mean = np.zeros (n)
+        prior_mean = np.array ([0.02, 0.2, 0.2])
+        for t in sample:
+            sample_mean += t.get_values ()
+        sample_mean /= N
+    
+        diff = sample_mean[:3] - prior_mean
+        diff_norm2 = np.sqrt (diff.dot (diff))
+        assert (diff_norm2 < 1)
+        
+
+
     def create_starting_sample (self):
         my_artificial_sample = []
         log_likelihoods = []

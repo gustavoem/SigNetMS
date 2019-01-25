@@ -7,6 +7,8 @@ from marginal_likelihood.SBML import SBML
 from marginal_likelihood.SBMLtoODES import sbml_to_odes
 from marginal_likelihood.PriorsReader import define_sbml_params_priors
 from marginal_likelihood.samplers.AcceptingRateAMCMC import AcceptingRateAMCMC
+from marginal_likelihood.RandomParameter import RandomParameter
+from marginal_likelihood.RandomParameterList import RandomParameterList
 from experiment.ExperimentSet import ExperimentSet
 from distributions.Gamma import Gamma
 
@@ -85,3 +87,32 @@ class TestAcceptingRateAMCMC (unittest.TestCase):
         acc_rate_amh.start_sample_from_prior ()
         sample = acc_rate_amh.get_sample (60)[0]
         self.assertEqual (len (sample), 60)
+
+
+    def test_jumps_centered_on_current_theta (self):
+        """ Tests if, when using suitable jump distribution, the 
+            proposed values are centered on the current theta. """
+        n = 10
+        N = 1000
+        theta_values = np.ones (n) / 3.2
+        theta = RandomParameterList ()
+        for p_val in theta_values:
+            gamma = Gamma (2, 1)
+            rand_par = RandomParameter ('p', gamma)
+            rand_par.value = p_val
+            theta.append (rand_par)
+        
+        class JumpMock (AcceptingRateAMCMC):
+            
+            def __init__ (self, theta):
+                n = theta.get_size ()
+                self._jump_S = [0.001 for x in range (n)]
+
+        mocked_mh = JumpMock (theta)
+        mean_jump = np.zeros (n)
+        for i in range (N):
+            jump = mocked_mh.propose_jump (theta)
+            mean_jump += jump.get_values ()
+        mean_jump /= N
+        assert all (abs (mean_jump - theta_values) < 1e-1)
+

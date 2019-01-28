@@ -36,6 +36,21 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         sample = mh.get_sample (20)[0]
         self.assertEqual (len (sample), 20)
 
+    def test_covariance_is_fixed (self):
+        model = self.__model
+        experiments = self.__experiments
+        theta = self.__theta_priors
+        covar = self.create_covar_matrix ()
+        mh = FixedCovarianceMCMC (theta, model, experiments, covar)
+        mh.start_sample_from_prior ()
+        mh.get_sample (2)
+        new_covar = mh.get_jump_covariance ()
+        assert np.array_equal (new_covar, covar)
+        covar = new_covar
+        mh.get_sample (1)
+        new_covar = mh.get_jump_covariance ()
+        assert np.array_equal (new_covar, covar)
+
 
     def create_covar_matrix (self):
         my_artificial_sample = []

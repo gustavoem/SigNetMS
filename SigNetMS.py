@@ -28,6 +28,7 @@ parser.add_argument ("second_sampling_iterations", help="How many" \
 parser.add_argument ("third_sampling_iterations", help="How many" \
         + " iterations should be performed on the third step of the" \
         + " parameter sampling.")
+parser.add_argument ('--verbose', type=bool, nargs='?', const=True, help="Verbose run.")
 args = parser.parse_args ()
 
 # Problem input
@@ -40,6 +41,7 @@ first_step_n = int (args.first_sampling_iterations)
 sigma_update_n = int (args.sigma_update_n)
 second_step_n = int (args.second_sampling_iterations)
 third_step_n = int (args.third_sampling_iterations)
+verbose = args.verbose
 
 print  ("Performing marginal likelihood calculations of model: " + \
         sbml_file)
@@ -53,7 +55,7 @@ theta_priors = define_sbml_params_priors (sbml, priors_file)
 ml = MarginalLikelihood (first_step_n, 
                          sigma_update_n, 
                          second_step_n, 
-                         third_step_n, 20, 2)
+                         third_step_n, 20, 2, verbose=verbose)
 log_l = ml.estimate_marginal_likelihood (experiments, odes, 
         theta_priors)
 print ("log_l = " + str (log_l))

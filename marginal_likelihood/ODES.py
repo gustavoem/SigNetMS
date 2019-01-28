@@ -6,6 +6,7 @@ from scipy.integrate import odeint
 from scipy.interpolate import spline
 from sympy import diff
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class ODES:
@@ -71,6 +72,12 @@ class ODES:
             that shoud contain a map variable -> value that is used
             to modify the initial state of a few (or even all) variables
             of the system. """
+        time_points = np.array (time_points)
+        zeroed_times = False
+        if time_points[0] != 0:
+            time_points = np.insert (time_points, 0, 0)
+            zeroed_times = True
+
         initial_state = self.initial_state.copy ()
         if initial_state_map != None:
             for var in initial_state_map:
@@ -80,12 +87,15 @@ class ODES:
         sys_function = self.__create_system_function ()
         y, infodict = odeint (sys_function, initial_state, time_points, 
                 mxstep=1000,full_output=True)
-        # print ()
-        # print (infodict)
+
         values_map = {}
         for var in self.index_map:
             idx = self.index_map[var]
-            values_map[var] = list (y[:,idx])
+            if zeroed_times:
+                # ignore first entry (initial state)
+                values_map[var] = list (y[1:, idx])
+            else:
+                values_map[var] = list (y[:, idx])
         return values_map
 
 

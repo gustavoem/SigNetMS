@@ -143,5 +143,19 @@ class TestODESMethods (unittest.TestCase):
             analytic = 10 * math.exp (t[i])
             assert (abs (y["x1"][i] - analytic) < 1e-2)
 
+    def test_when_solution_times_doesnt_start_on_zero (self):
+        """ Tests what happens when the times asked for an evaluation
+            do not start on zero. """
+        odes = ODES ()
+        # dx1 (t)/dt = x1 (t)
+        # Solution is x1 (t) = exp (t)
+        odes.add_equation ("x1", "x1")
+        odes.define_initial_value ("x1", 1.0)
+        t = np.linspace (3, 5, 12)
+        y = odes.evaluate_on (t)
+        for i in range (len (t)):
+            analytic = math.exp (t[i])
+            assert (abs (y["x1"][i] - analytic) < 1e-2)
+
 if __name__ == '__main__':
     unittest.main ()

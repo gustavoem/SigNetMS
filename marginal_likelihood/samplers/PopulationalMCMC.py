@@ -18,7 +18,7 @@ class PopulationalMCMC:
     def __init__ (self, n_strata, strata_size, fc_mcmcs, betas=None, 
             verbose=False):
         """ Default constructor. """
-        if n_strata * strata_size != len (fc_mcmcs):
+        if n_strata * strata_size + 2 != len (fc_mcmcs):
             raise ValueError ("The list of covariances and starts " \
                     + "should have the same size as n_strata * " \
                     + "strata_size")
@@ -43,7 +43,7 @@ class PopulationalMCMC:
     @staticmethod
     def sample_betas (n_strata, strata_size):
         """ Samples the temperatures array. """
-        betas = []
+        betas = [0]
         sched_power = PopulationalMCMC.__SCHEDULE_POWER
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
@@ -52,6 +52,7 @@ class PopulationalMCMC:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
+        betas.append (1)
         return betas
 
 

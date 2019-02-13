@@ -86,10 +86,10 @@ class TestExperimentSet (unittest.TestCase):
         exps = ExperimentSet () 
         exps.add (exp1)
         exps.add (exp2)
-        out = exps.print_as_abcsysbio_syntax ()
-        expected = '<var1> 0.1 0.2 0.3 0.4 <var1>' + \
-                   '<var2> 0.2 0.4 0.6 0.8 <var2>'
+        out = exps.get_as_abcsysbio_syntax ()
+        expected = '<var1> 0.1 0.2 0.3 0.4 </var1>' + \
+                   '<var2> 0.2 0.4 0.6 0.8 </var2>'
         space_re = re.compile ('\s|\n', re.MULTILINE)
         self.assertEqual (space_re.sub ('', out), 
-                           space_re.sub ('', expected))
+                space_re.sub ('', expected))
 

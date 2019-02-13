@@ -44,3 +44,8 @@ class Experiment:
         tree = etree.ElementTree (root)
         tree.write(file_name, pretty_print=True, encoding='utf-8', 
                 standalone=True, xml_declaration=True)
+
+    def print_as_abcsysbio_syntax (self):
+        """ Prints the experiment to standard output using the 
+            ABC-SysBio syntax. """
+        

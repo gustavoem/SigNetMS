@@ -61,19 +61,22 @@ class LikelihoodFunction:
         return sys_measures 
 
 
-    def get_log_likelihood (self, experiments, theta):
+    def get_log_likelihood (self, experiments, theta, s0_amend=None):
         """ Given a list of independent experiments that happens all 
             with the same time intervals and with respect to the same 
             measure, calculates the likelihood of all expeirments. """
         t = experiments[0].times
         measure_expression = experiments[0].measure_expression
-        X_sys = self.__get_sys_measure (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
-        # print ("\nX_sys: " + str (X_sys))
+        print ("\nX_sys: " + str (X_sys))
         log_l = 0
         for exp in experiments:
+            erkpp_0 = exp.values[0]
+            ic_amend_map = {'ERKPP': erkpp_0}
+            X_sys = self.__get_sys_measure (measure_expression, t, theta, initial_state_map=ic_amend_map)
+
             X_obs = exp.values
-            # print ("\tX_obs: " + str (X_obs))
+            print ("\tX_obs: " + str (X_obs))
             log_l += self.__calculate_likelihood (X_sys, X_obs, sigma)
             # print ("\tpartial log-likelihood: " + str (log_l))
         return log_l

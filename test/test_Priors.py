@@ -23,7 +23,7 @@ class TestPriors (unittest.TestCase):
         # and there's a high (but of course not 1) probability of the
         # log of the pdf being representable in floating point (it 
         # could not be if the value is really small).
-        log_prior = theta.log_p ()
+        log_prior = theta.get_log_p ()
         assert (not self.is_nan (log_prior))
         assert (log_prior > float ('-inf'))
 

@@ -105,7 +105,7 @@ class RandomParameterList:
         return prob
 
 
-    def log_p (self):
+    def get_log_p (self):
         """ Returns the log of the prior joint probability of 
             this parameter list. """
         log_prob = 0

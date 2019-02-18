@@ -151,3 +151,13 @@ class ExperimentSet:
         tree = etree.ElementTree (root)
         tree.write (file_name, pretty_print=True, encoding='utf-8',
                 standalone=True, xml_declaration=True)
+
+    def get_as_abcsysbio_syntax (self):
+        """ Print each of the experiments to standard output using the
+            ABC-SysBio syntax. """
+        out = ''
+        i = 1
+        for exp in self.__experiment_set:
+            out += exp.get_as_abcsysbio_syntax (i=i) + '\n'
+            i += 1
+        return out

@@ -44,3 +44,16 @@ class Experiment:
         tree = etree.ElementTree (root)
         tree.write(file_name, pretty_print=True, encoding='utf-8', 
                 standalone=True, xml_declaration=True)
+
+    def get_as_abcsysbio_syntax (self, i=None):
+        """ Prints the experiment to standard output using the 
+            ABC-SysBio syntax. """
+        if i is None:
+            i = 1
+        
+        i_str = str (i)
+        out = '<var' + i_str + '> '
+        for val in self.values:
+            out += str (val) + ' '
+        out += '</var' + i_str + '>' 
+        return out

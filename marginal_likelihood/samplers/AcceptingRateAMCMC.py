@@ -72,7 +72,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         old_gv_new = j_gv_new.pdf (old_t.get_values ())
 
         l_ratio = safe_power (np.exp (new_l - old_l), self.__t)
-        prior_ratio = new_t.get_p () / old_t.get_p ()
+        prior_ratio = np.exp (new_t.get_log_p () - old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
         return l_ratio * prior_ratio * jump_ratio
         

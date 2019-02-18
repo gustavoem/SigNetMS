@@ -84,3 +84,9 @@ class MultivariateLognormal:
 
         return term1 * term2 * term3
 
+    
+    def log_pdf (self, x):
+        """ Returns the value of the probability density function of 
+            this random variable on point x. """
+        # TODO: simplify calculations
+        return np.log (self.pdf (x))

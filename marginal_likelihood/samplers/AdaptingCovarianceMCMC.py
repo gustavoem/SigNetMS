@@ -78,7 +78,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
                     + "definite. Try using a bigger starting sample.")
 
         l_ratio = self._calc_likeli_ratio (new_l, old_l)
-        prior_ratio = new_t.get_p () / old_t.get_p ()
+        prior_ratio = np.exp (new_t.get_log_p () - old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
         return l_ratio * prior_ratio * jump_ratio
 

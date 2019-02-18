@@ -2,6 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import os
+import re
 import unittest
 from experiment.ExperimentSet import ExperimentSet
 from experiment.Experiment import Experiment
@@ -75,3 +76,20 @@ class TestExperimentSet (unittest.TestCase):
         exp_set = ExperimentSet ("input/goodwin3.data")
         self.assertEqual (exp_set[0].measure_expression, "x1")
         self.assertEqual (exp_set[1].measure_expression, "x2")
+
+
+    def test_output_with_abcsysbio_syntax (self):
+        """ We should be able to echo experiments with the ABC-SysBio
+            syntax. """
+        exp1 = Experiment ([1, 2, 3, 4], [.1, .2, .3, .4], '')
+        exp2 = Experiment ([1, 2, 3, 4], [.2, .4, .6, .8], '')
+        exps = ExperimentSet () 
+        exps.add (exp1)
+        exps.add (exp2)
+        out = exps.get_as_abcsysbio_syntax ()
+        expected = '<var1> 0.1 0.2 0.3 0.4 </var1>' + \
+                   '<var2> 0.2 0.4 0.6 0.8 </var2>'
+        space_re = re.compile ('\s|\n', re.MULTILINE)
+        self.assertEqual (space_re.sub ('', out), 
+                space_re.sub ('', expected))
+

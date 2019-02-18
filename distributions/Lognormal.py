@@ -46,3 +46,10 @@ class Lognormal:
         s = self.__s
         return (1 / x) * (1 / np.sqrt (2 * np.pi * s * s)) \
                 * np.exp (- (np.log (x) - mu) ** 2 / (2 * s * s))
+    
+
+    def log_pdf (self, x):
+        """ Returns the log value of the probability density function of 
+            this random variable on point x. """
+        # TODO: simplify calculations
+        return np.log (self.pdf (x))

@@ -76,3 +76,9 @@ class DiscreteLaplacian:
 
         abs_diff = abs (i - j)
         return self.__constant * np.exp (-.5 * abs_diff)
+
+
+    def log_pdf (self, j):
+        """ Returns log p_j (j). """
+        # TODO: simplify calculations
+        return np.log (self.pdf (j))

@@ -34,3 +34,7 @@ class RandomParameter:
         """ Returns the probability of the current value, given the 
             distribution. """
         return self.__distribution.pdf (self.value)
+
+
+    def get_log_p (self):
+        return self.__distribution.log_pdf (self.value)

@@ -105,6 +105,12 @@ class RandomParameterList:
         return prob
 
 
+    def log_p (self):
+        """ Returns the log of the prior joint probability of 
+            this parameter list. """
+        return 0
+
+
     def get_size (self):
         """ Returns the number of elements. """
         return len (self.__param_list)

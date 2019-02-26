@@ -224,17 +224,27 @@ class ODES:
                     "\t" + func + "\n"
                     "Did you define system variables and " +
                     "parameters correctly?\n")
+            print (e)
         return x
 
 
     @staticmethod
-    def __plot (values_map, var_list, t, filename):
+    def __plot (values_map, exp_list, t, filename):
         """ Plots values of vars in var_list that were observed on time 
             t. """
         legend = []
-        for var in var_list:
-            legend.append (var)
-            values = values_map[var]
+        var_list = [var for var in values_map.keys ()]
+
+        for exp in exp_list:
+            legend.append (exp)
+            values = []
+            for i in range (len (t)):
+                symbol_table = {}
+                for var in var_list:
+                    symbol_table[var] = values_map[var][i]
+                e_exp = ODES.__make_evaluable (exp)
+                v = ODES.__calc_evaluable_func (e_exp, symbol_table)
+                values.append (v)
             plt.plot (t, values)
         plt.legend (legend)
         if filename:

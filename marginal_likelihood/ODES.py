@@ -3,8 +3,8 @@ import matplotlib
 matplotlib.use('Agg')
 
 from scipy.integrate import odeint
-from scipy.interpolate import spline
 from sympy import diff
+from asteval import Interpreter
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -97,6 +97,22 @@ class ODES:
             else:
                 values_map[var] = list (y[:, idx])
         return values_map
+
+
+    def evaluate_exp_on (self, exp, time_points, 
+            initial_state_map=None):
+        """ Integrates the system and returns an array containing the
+            values of exp on each time-step evaluated of the system."""
+        system_states = self.evaluate_on (time_points)
+        aeval = Interpreter ()
+        values = []
+        for i in range (len (time_points)):
+            for var in system_states:
+                aeval.symtable[var] = system_states[var][i]
+            value = aeval (exp)
+            values.append (value)
+        return values
+
 
 
     def overtime_plot (self, var_list, t, initial_state_map=None, 

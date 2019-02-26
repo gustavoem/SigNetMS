@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ExperimentSet>
+  <Experiment>
+    <row>
+      <element value="1" index="0"/>
+      <element value="2.925279489768116" index="1"/>
+    </row>
+    <row>
+      <element value="3" index="0"/>
+      <element value="2.9200408952458545" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="2.880736935320553" index="1"/>
+    </row>
+    <row>
+      <element value="15" index="0"/>
+      <element value="2.8125112644435477" index="1"/>
+    </row>
+    <row>
+      <element value="30" index="0"/>
+      <element value="2.754725344760523" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="1" index="0"/>
+      <element value="2.9249302691692747" index="1"/>
+    </row>
+    <row>
+      <element value="3" index="0"/>
+      <element value="2.910465248389624" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="2.9039455273572594" index="1"/>
+    </row>
+    <row>
+      <element value="15" index="0"/>
+      <element value="2.8256911687158124" index="1"/>
+    </row>
+    <row>
+      <element value="30" index="0"/>
+      <element value="2.767114602767519" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="1" index="0"/>
+      <element value="2.913360859251974" index="1"/>
+    </row>
+    <row>
+      <element value="3" index="0"/>
+      <element value="2.9036721847661613" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="2.904848636644036" index="1"/>
+    </row>
+    <row>
+      <element value="15" index="0"/>
+      <element value="2.819494965352658" index="1"/>
+    </row>
+    <row>
+      <element value="30" index="0"/>
+      <element value="2.7698965217294385" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP" col="1"/>
+    </interpretation>
+  </Experiment>
+</ExperimentSet>

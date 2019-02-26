@@ -16,9 +16,9 @@ def add_noise (values):
             values[i] += eps
 
 sbml = SBML ()
-sbml.load_file ('model1.xml')
+sbml.load_file ('initial_model.sbml')
 odes = sbml_to_odes (sbml)
-time = [0, 2, 5, 10, 20, 40, 60, 100]
+time = [0.5, 1, 3, 5, 15, 30]
 values = odes.evaluate_on (time)
 
 experiment_set = ExperimentSet ()
@@ -27,9 +27,9 @@ for i in range (3):
     for x in values:
         noised_values[x] = list (values[x])
 
-    add_noise (noised_values["Rpp"])
-    experiment = Experiment (time[1:], noised_values["Rpp"][1:], 
-            "Rpp")
+    add_noise (noised_values["MAPK_PP"])
+    experiment = Experiment (time[1:], noised_values["MAPK_PP"][1:], 
+            "MAPK_PP")
     experiment_set.add (experiment)
 
 experiment_set.save_to_file ('experiment.data')

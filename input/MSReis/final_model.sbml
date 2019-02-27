@@ -20,7 +20,7 @@
       <species metaid="_584575" id="MAPK" name="Erk2" compartment="uVol" initialConcentration="288.5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species metaid="_584595" id="MAPK_P" name="Erk2-P" compartment="uVol" initialConcentration="8.92" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species metaid="_584615" id="MAPK_PP" name="Erk2-PP" compartment="uVol" initialConcentration="2.93" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="ras_gtp" name="Ras-GTP" compartment="uVol" initialConcentration="40.75" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ras_gtp" name="Ras-GTP" compartment="uVol" initialConcentration="333" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="total_mapk_activated" name="Total MAPK activated" compartment="uVol" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="total_mek" name="Total MEK activated" compartment="uVol" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>

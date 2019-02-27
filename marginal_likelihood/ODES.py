@@ -33,7 +33,14 @@ class ODES:
         idx = len (self.index_map)
         self.index_map[var] = idx
 
-    
+
+    def print_equations (self):
+        """ Prints all var equations. """
+        for var in self.index_map:
+            print ('d' + var + '/dt = ', end='')
+            print (self.rate_eq[self.index_map[var]], end='\n\n')
+
+
     def add_equation (self, var, formula):
         """ Adds an equation representing the change rate of a variable.
         """
@@ -86,7 +93,9 @@ class ODES:
 
         sys_function = self.__create_system_function ()
         y, infodict = odeint (sys_function, initial_state, time_points, 
-                mxstep=1000,full_output=True)
+                mxstep=10000, full_output=True)
+
+        print (infodict)
 
         values_map = {}
         for var in self.index_map:

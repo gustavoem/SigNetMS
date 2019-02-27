@@ -16,20 +16,31 @@ def add_noise (values):
             values[i] += eps
 
 sbml = SBML ()
-sbml.load_file ('initial_model.sbml')
+sbml.load_file ('final_model.sbml')
 odes = sbml_to_odes (sbml)
-time = [0.5, 1, 3, 5, 15, 30]
-values = odes.evaluate_on (time)
 
-experiment_set = ExperimentSet ()
-for i in range (3):
-    noised_values = {}
-    for x in values:
-        noised_values[x] = list (values[x])
+odes.print_equations ()
 
-    add_noise (noised_values["MAPK_PP"])
-    experiment = Experiment (time[1:], noised_values["MAPK_PP"][1:], 
-            "MAPK_PP")
-    experiment_set.add (experiment)
+time = [30, 60, 180, 300, 900, 1800]
+time = [5, 7, 10, 15, 20]
 
-experiment_set.save_to_file ('experiment.data')
+print (odes.evaluate_on (time))
+
+values = odes.evaluate_exp_on ('(MAPK_PP + MAPK_P) / ' + \
+        '(MAPK + MAPK_PP + MAPK_P)', time)
+
+print ('(MAPK_PP + MAPK_P) / (MAPK + MAPK_PP + MAPK_P):')
+print (values)
+print ('')
+print ('MAPK_PP + MAPK_P')
+print (odes.evaluate_exp_on ('MAPK_PP + MAPK_P', time))
+
+
+# experiment_set = ExperimentSet ()
+# for i in range (3):
+    # noised_values = list (values)
+    # add_noise (noised_values)
+    # experiment = Experiment (time, noised_values, 
+            # 'MAPK_PP + MAPK_P')
+    # experiment_set.add (experiment)
+# experiment_set.save_to_file ('experiment.data')

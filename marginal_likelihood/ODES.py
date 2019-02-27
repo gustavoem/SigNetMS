@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 from scipy.integrate import odeint
+import scipy.integrate as spi
 from sympy import diff
 from asteval import Interpreter
 import matplotlib.pyplot as plt
@@ -73,6 +74,29 @@ class ODES:
         return self.param_table
 
 
+    def __integrate_with_odeint (self, sys_f, initial_state, 
+            time_points):
+        """ Integrates using scipy odeint """
+        y, infodict = odeint (sys_function, initial_state, time_points, 
+                mxstep=10000, full_output=True, tfirst=True)
+
+
+    def __integrate_with_stiff_alg (self, sys_f, initial_state, 
+            time_points):
+        """ Integrates using scipy.ode.integrate with an algorithm for
+            stiff problems. """
+        ode = spi.ode (sys_f)
+        ode.set_integrator ('vode', nsteps=500, method='bdf')
+        ode.set_initial_value (initial_state, time_points[0])
+        y = [initial_state]
+        i = 1
+        while ode.successful () and ode.t < time_points[-1]:
+            ode.integrate (time_points[i])
+            y.append (ode.y)
+            i += 1
+        return np.array (y)
+
+
     def evaluate_on (self, time_points, initial_state_map=None):
         """ Returns the state of the systems variables at the specified
             time points. initial_state_map is an optional parameter 
@@ -92,11 +116,9 @@ class ODES:
                 initial_state[idx] = initial_state_map[var]
 
         sys_function = self.__create_system_function ()
-        y, infodict = odeint (sys_function, initial_state, time_points, 
-                mxstep=10000, full_output=True)
-
-        print (infodict)
-
+        y = self.__integrate_with_stiff_alg (sys_function, 
+                initial_state, time_points)
+        
         values_map = {}
         for var in self.index_map:
             idx = self.index_map[var]
@@ -145,7 +167,7 @@ class ODES:
         # Parameters are constant over time
         symbol_table = dict (self.param_table)
 
-        def system_function (state, t):
+        def system_function (t, state):
             dstatedt = []
             current_state = {}
 

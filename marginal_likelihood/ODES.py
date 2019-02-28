@@ -77,23 +77,29 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        y, infodict = odeint (sys_function, initial_state, time_points, 
-                mxstep=10000, full_output=True, tfirst=True)
+        y, infodict = odeint (sys_f, initial_state, time_points, 
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-12,
+                rtol=1e-8)
+        return y
 
 
     def __integrate_with_stiff_alg (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy.ode.integrate with an algorithm for
             stiff problems. """
+        dt = .1
         ode = spi.ode (sys_f)
-        ode.set_integrator ('vode', nsteps=500, method='bdf')
+        ode.set_integrator ('vode', nsteps=50000, method='bdf', 
+                max_step=dt, atol=1e-12, rtol=1e-8)
         ode.set_initial_value (initial_state, time_points[0])
         y = [initial_state]
         i = 1
-        while ode.successful () and ode.t < time_points[-1]:
+        while ode.t < time_points[-1]: # and ode.succesful ():
+            next_point = min (ode.t + dt, time_points[i])
             ode.integrate (time_points[i])
-            y.append (ode.y)
-            i += 1
+            if ode.t >= time_points[i]:
+                y.append (ode.y)
+                i += 1
         return np.array (y)
 
 
@@ -116,7 +122,7 @@ class ODES:
                 initial_state[idx] = initial_state_map[var]
 
         sys_function = self.__create_system_function ()
-        y = self.__integrate_with_stiff_alg (sys_function, 
+        y = self.__integrate_with_odeint (sys_function, 
                 initial_state, time_points)
         
         values_map = {}

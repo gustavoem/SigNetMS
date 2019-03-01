@@ -34,7 +34,7 @@ changed_param = ''
 changed_param_value = 0
 for p in theta:
     original_name = sbml.get_original_param_name (p)
-    # kcat9 is ERK dephosphorylation catalytic constant
+    # kcat5 is MEK dephosphorylation catalytic constant
     if original_name == 'kcat5':
         original_value = odes.param_table[p]
         new_value = .1 * original_value

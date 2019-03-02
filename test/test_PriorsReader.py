@@ -32,13 +32,12 @@ class TestPriorsReader (unittest.TestCase):
             file. """
         priors = read_priors_file ('input/lognormal.priors')
         for x in priors:
-            print (x.name)
             distribution = x.get_distribution ()
             if x.name == 'k1':
-                expected_mean = np.exp (2)
+                expected_mean = np.exp (3)
                 self.assertEqual (distribution.mean (), expected_mean)
             elif x.name == 'd1':
-                expected_mean = np.exp (4)
+                expected_mean = np.exp (10)
                 self.assertEqual (distribution.mean (), expected_mean)
             elif x.name == "Sigma" or x.name == "Noise":
                 pass

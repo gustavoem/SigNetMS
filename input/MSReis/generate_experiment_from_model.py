@@ -31,6 +31,9 @@ for i in range (3):
             'MAPK_PP + MAPK_P')
     experiment_set.add (experiment)
 experiment_set.save_to_file ('gauss_noise.data')
+with open ('gaus_noise_abcsysbio.data', 'w') as f:
+    f.write (experiment_set.get_as_abcsysbio_syntax ())
+    f.close ()
 
 
 # More complex experiment: run final_model with perturbations on 
@@ -79,3 +82,6 @@ for i in range (3):
     perturbation_exp.add (experiment)
 
 perturbation_exp.save_to_file ('perturbations.data')
+with open ('perturbations_abcsysbio.data', 'w') as f:
+    f.write (experiment_set.get_as_abcsysbio_syntax ())
+    f.close ()

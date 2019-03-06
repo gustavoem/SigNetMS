@@ -1,9 +1,26 @@
 from marginal_likelihood.RandomParameter import RandomParameter
 from marginal_likelihood.RandomParameterList import RandomParameterList
 from distributions.Gamma import Gamma
+from distributions.Lognormal import Lognormal
 from marginal_likelihood.utils import clean_tag
 from lxml import etree
 import sys
+
+def __create_distribution (dist_type, args):
+    """ Creates a distribution dist_type with arguments args. 
+        You can choose any of those options for dist_type and args,
+        respectively: 
+        - gamma, [k, theta]
+        - lognormal, [mu, sigma] """
+    if dist_type.lower () == 'gamma':
+        dist = Gamma (args[0], args[1])
+    elif dist_type.lower () == 'lognormal':
+        dist = Lognormal (args[0], args[1])
+    else:
+        raise ValueError ("The specified prior distribution, " + 
+                dist_type + ", is not available.")
+    return dist
+
 
 def read_priors_file (filename):
     tree = etree.parse (filename)
@@ -21,8 +38,9 @@ def read_priors_file (filename):
             name = attribs["name"]
             a = float (attribs["a"])
             b = float (attribs["b"])
-            gamma = Gamma (a, b)
-            priors.append (RandomParameter (name, gamma))
+            dist_type = attribs["distribution"]
+            dist = __create_distribution (dist_type, [a, b])
+            priors.append (RandomParameter (name, dist))
         elif clean_tag (children) == "experimental_error":
             name = attribs["name"]
             a = float (attribs["a"])

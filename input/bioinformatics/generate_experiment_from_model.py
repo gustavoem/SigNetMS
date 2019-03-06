@@ -1,11 +1,11 @@
 import sys
-sys.path.insert (0, '../../src/')
+sys.path.insert (0, '../..')
 
-from SBML import SBML
-from ODES import ODES
-from SBMLtoODES import sbml_to_odes
-from ExperimentSet import ExperimentSet
-from Experiment import Experiment
+from marginal_likelihood.SBML import SBML
+from marginal_likelihood.ODES import ODES
+from marginal_likelihood.SBMLtoODES import sbml_to_odes
+from experiment.ExperimentSet import ExperimentSet
+from experiment.Experiment import Experiment
 import numpy as np
 
 

@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ExperimentSet>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="20.540163755557774" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="59.630168538864595" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="123.47598037481318" index="1"/>
+    </row>
+    <row>
+      <element value="300" index="0"/>
+      <element value="83.20535749835419" index="1"/>
+    </row>
+    <row>
+      <element value="900" index="0"/>
+      <element value="69.22950967477512" index="1"/>
+    </row>
+    <row>
+      <element value="1800" index="0"/>
+      <element value="59.747557879208664" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP + MAPK_P" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="18.385418071921986" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="55.18055586111847" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="114.59420125010101" index="1"/>
+    </row>
+    <row>
+      <element value="300" index="0"/>
+      <element value="80.44544901079148" index="1"/>
+    </row>
+    <row>
+      <element value="900" index="0"/>
+      <element value="59.20903719368796" index="1"/>
+    </row>
+    <row>
+      <element value="1800" index="0"/>
+      <element value="60.22909040971412" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP + MAPK_P" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="21.34138874411012" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="55.24068964152704" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="116.8426360501084" index="1"/>
+    </row>
+    <row>
+      <element value="300" index="0"/>
+      <element value="82.88620805577034" index="1"/>
+    </row>
+    <row>
+      <element value="900" index="0"/>
+      <element value="65.5306866792416" index="1"/>
+    </row>
+    <row>
+      <element value="1800" index="0"/>
+      <element value="62.99232893135759" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="MAPK_PP + MAPK_P" col="1"/>
+    </interpretation>
+  </Experiment>
+</ExperimentSet>

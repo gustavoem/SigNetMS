@@ -5,6 +5,7 @@ import unittest
 from marginal_likelihood.PriorsReader import read_priors_file
 from marginal_likelihood.PriorsReader import define_sbml_params_priors 
 from marginal_likelihood.SBML import SBML
+import numpy as np
 
 class TestPriorsReader (unittest.TestCase):
 
@@ -24,6 +25,25 @@ class TestPriorsReader (unittest.TestCase):
                 pass
             else:
                 self.fail ()
+    
+    
+    def test_read_lognormal (self):
+        """ Tests if the module can correctly read a prior definition 
+            file. """
+        priors = read_priors_file ('input/lognormal.priors')
+        for x in priors:
+            distribution = x.get_distribution ()
+            if x.name == 'k1':
+                expected_mean = np.exp (3)
+                self.assertEqual (distribution.mean (), expected_mean)
+            elif x.name == 'd1':
+                expected_mean = np.exp (10)
+                self.assertEqual (distribution.mean (), expected_mean)
+            elif x.name == "Sigma" or x.name == "Noise":
+                pass
+            else:
+                self.fail ()
+
 
     def test_sigma_prior (self):
         """ Tests if the module can read the experimental error 

@@ -3,8 +3,9 @@ import matplotlib
 matplotlib.use('Agg')
 
 from scipy.integrate import odeint
-from scipy.interpolate import spline
+import scipy.integrate as spi
 from sympy import diff
+from asteval import Interpreter
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -33,7 +34,14 @@ class ODES:
         idx = len (self.index_map)
         self.index_map[var] = idx
 
-    
+
+    def print_equations (self):
+        """ Prints all var equations. """
+        for var in self.index_map:
+            print ('d' + var + '/dt = ', end='')
+            print (self.rate_eq[self.index_map[var]], end='\n\n')
+
+
     def add_equation (self, var, formula):
         """ Adds an equation representing the change rate of a variable.
         """
@@ -66,6 +74,35 @@ class ODES:
         return self.param_table
 
 
+    def __integrate_with_odeint (self, sys_f, initial_state, 
+            time_points):
+        """ Integrates using scipy odeint """
+        y, infodict = odeint (sys_f, initial_state, time_points, 
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-12,
+                rtol=1e-8)
+        return y
+
+
+    def __integrate_with_stiff_alg (self, sys_f, initial_state, 
+            time_points):
+        """ Integrates using scipy.ode.integrate with an algorithm for
+            stiff problems. """
+        dt = .1
+        ode = spi.ode (sys_f)
+        ode.set_integrator ('vode', nsteps=50000, method='bdf', 
+                max_step=dt, atol=1e-12, rtol=1e-8)
+        ode.set_initial_value (initial_state, time_points[0])
+        y = [initial_state]
+        i = 1
+        while ode.t < time_points[-1]: # and ode.succesful ():
+            next_point = min (ode.t + dt, time_points[i])
+            ode.integrate (time_points[i])
+            if ode.t >= time_points[i]:
+                y.append (ode.y)
+                i += 1
+        return np.array (y)
+
+
     def evaluate_on (self, time_points, initial_state_map=None):
         """ Returns the state of the systems variables at the specified
             time points. initial_state_map is an optional parameter 
@@ -85,9 +122,9 @@ class ODES:
                 initial_state[idx] = initial_state_map[var]
 
         sys_function = self.__create_system_function ()
-        y, infodict = odeint (sys_function, initial_state, time_points, 
-                mxstep=1000,full_output=True)
-
+        y = self.__integrate_with_odeint (sys_function, 
+                initial_state, time_points)
+        
         values_map = {}
         for var in self.index_map:
             idx = self.index_map[var]
@@ -97,6 +134,22 @@ class ODES:
             else:
                 values_map[var] = list (y[:, idx])
         return values_map
+
+
+    def evaluate_exp_on (self, exp, time_points, 
+            initial_state_map=None):
+        """ Integrates the system and returns an array containing the
+            values of exp on each time-step evaluated of the system."""
+        system_states = self.evaluate_on (time_points)
+        aeval = Interpreter ()
+        values = []
+        for i in range (len (time_points)):
+            for var in system_states:
+                aeval.symtable[var] = system_states[var][i]
+            value = aeval (exp)
+            values.append (value)
+        return values
+
 
 
     def overtime_plot (self, var_list, t, initial_state_map=None, 
@@ -120,7 +173,7 @@ class ODES:
         # Parameters are constant over time
         symbol_table = dict (self.param_table)
 
-        def system_function (state, t):
+        def system_function (t, state):
             dstatedt = []
             current_state = {}
 
@@ -224,17 +277,27 @@ class ODES:
                     "\t" + func + "\n"
                     "Did you define system variables and " +
                     "parameters correctly?\n")
+            print (e)
         return x
 
 
     @staticmethod
-    def __plot (values_map, var_list, t, filename):
+    def __plot (values_map, exp_list, t, filename):
         """ Plots values of vars in var_list that were observed on time 
             t. """
         legend = []
-        for var in var_list:
-            legend.append (var)
-            values = values_map[var]
+        var_list = [var for var in values_map.keys ()]
+
+        for exp in exp_list:
+            legend.append (exp)
+            values = []
+            for i in range (len (t)):
+                symbol_table = {}
+                for var in var_list:
+                    symbol_table[var] = values_map[var][i]
+                e_exp = ODES.__make_evaluable (exp)
+                v = ODES.__calc_evaluable_func (e_exp, symbol_table)
+                values.append (v)
             plt.plot (t, values)
         plt.legend (legend)
         if filename:

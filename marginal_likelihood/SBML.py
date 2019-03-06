@@ -53,7 +53,7 @@ class SBML:
         
         species = []
         for i in range (number_of_species):
-            species.append (model.getSpecies (i).getName ())
+            species.append (model.getSpecies (i).getId ())
 
         return species
 
@@ -115,13 +115,13 @@ class SBML:
 
         model_reactions = self.sbml_obj.model.getListOfReactions ()
         for reac in model_reactions:
-            reac_name = reac.getName ()
+            reac_name = reac.getId ()
             reac_internal_params = self.__local_param[reac_name]
             for i in range (len (reac_internal_params)):
                 if reac_internal_params[i] == param:
                     kin_law = reac.getKineticLaw ()
                     reac_params = kin_law.getListOfParameters ()
-                    original_name = reac_params[i].getName ()
+                    original_name = reac_params[i].getId ()
                     if original_name == "":
                         original_name = reac_params[i].getId ()
                     return original_name
@@ -156,10 +156,10 @@ class SBML:
         kinetic = reaction.getKineticLaw ()
         formula = kinetic.getFormula ()
         params = kinetic.getListOfParameters ()
-        internal_params = self.__local_param[reaction.getName ()]
+        internal_params = self.__local_param[reaction.getId ()]
         
         for i in range (len (params)):
-            param_name = params[i].getName ()
+            param_name = params[i].getId ()
             if param_name is '':
                 param_name = params[i].getId ()
             internal_param_name = internal_params[i]
@@ -173,7 +173,7 @@ class SBML:
         global_params = []
         for param in params:
             param_value = param.getValue ()
-            param_name = param.getName ()
+            param_name = param.getId ()
             if param_name is '':
                 param_name = param.getId ()
             global_params.append (param_name)
@@ -186,7 +186,7 @@ class SBML:
         all_reactions = model.getListOfReactions ()
         local_params = {}
         for reac in all_reactions:
-            reac_name = reac.getName ()
+            reac_name = reac.getId ()
             local_params[reac_name] = []
             kinetic = reac.getKineticLaw ()
             params = kinetic.getListOfParameters ()
@@ -212,4 +212,5 @@ class SBML:
         """ See issue #6 on github. I'm not sure why some models use
             comparments. """
         new_formula = re.sub ("compartment \*", "", formula)
+        new_formula = re.sub ("uVol \*", "", formula)
         return new_formula

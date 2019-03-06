@@ -7,7 +7,6 @@
 import numpy as np
 from scipy.stats import lognorm
 import marginal_likelihood.RandomParameter
-from asteval import Interpreter
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data
@@ -47,18 +46,8 @@ class LikelihoodFunction:
         if (theta is not None):
             for param in theta.get_model_parameters ():
                 self.__ode.define_parameter (param.name, param.value)
-
-        system_states = self.__ode.evaluate_on (t)
-        aeval = Interpreter ()
-
-        sys_measures = []
-        for i in range (len (t)):
-            for var in system_states:
-                aeval.symtable[var] = system_states[var][i]
-            measure_value = aeval (measure_expression)
-            sys_measures.append (measure_value)
-            
-        return sys_measures 
+    
+        return self.__ode.evaluate_exp_on (measure_expression, t)
 
 
     def get_log_likelihood (self, experiments, theta):

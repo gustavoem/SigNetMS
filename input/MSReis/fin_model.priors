@@ -14,6 +14,6 @@
     <prior distribution="lognormal" a="3" b="1" name="km3"/>
     <prior distribution="lognormal" a="0" b="1" name="V2"/>
     <prior distribution="lognormal" a="3" b="1" name="KK2"/>
-    <experimental_error distribution="gamma" a="2.0" b="2.6" 
+    <experimental_error distribution="gamma" a="2.0" b="1" 
         name="Sigma"/>
 </priors>

@@ -13,7 +13,7 @@ class Lognormal:
     
     def copy (self):
         """ Returns a copy of this object. """
-        cpy = Lognormal (self.__mu, self.__sigma)
+        cpy = Lognormal (self.__mu, self.__s)
         return cpy
         
 

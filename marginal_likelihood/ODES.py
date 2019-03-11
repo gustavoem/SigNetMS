@@ -1,6 +1,7 @@
 import re
 import matplotlib
 matplotlib.use('Agg')
+import time
 
 from scipy.integrate import odeint
 import scipy.integrate as spi
@@ -27,6 +28,10 @@ class ODES:
     
         # A hash table with values of parameters
         self.param_table = {}
+
+        # For execution time information
+        self.__time_integrating = 0
+        self.__nof_evalutations = 0
 
 
     def __create_var (self, var):
@@ -109,6 +114,8 @@ class ODES:
             that shoud contain a map variable -> value that is used
             to modify the initial state of a few (or even all) variables
             of the system. """
+        ini_time = time.time ()
+
         time_points = np.array (time_points)
         zeroed_times = False
         if time_points[0] != 0:
@@ -133,8 +140,17 @@ class ODES:
                 values_map[var] = list (y[1:, idx])
             else:
                 values_map[var] = list (y[:, idx])
+
+        end_time = time.time ()
+        self.__time_integrating += end_time - ini_time
+        self.__nof_evalutations += 1
         return values_map
 
+    
+    def get_average_integration_time (self):
+        """ Returns the average time spent on evaluate_on () calls. """
+        return self.__time_integrating / self.__nof_evalutations
+        
 
     def evaluate_exp_on (self, exp, time_points, 
             initial_state_map=None):

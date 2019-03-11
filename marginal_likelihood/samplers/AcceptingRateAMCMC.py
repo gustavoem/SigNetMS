@@ -31,10 +31,11 @@ class AcceptingRateAMCMC (MetropolisHastings):
         theta = self._theta
         jump_S = []
         for p in theta:
-            param_dist = p.get_distribution ()
-            prior_variance = param_dist.variance ()
-            sigma2 = np.log (np.sqrt (prior_variance) + 1)
-            jump_S.append (np.sqrt (sigma2))
+            #param_dist = p.get_distribution ()
+            #prior_variance = 1
+            #sigma2 = np.log (np.sqrt (prior_variance) + 1)
+            #jump_S.append (np.sqrt (sigma2))
+            jump_S.append (1)
         return jump_S
 
     

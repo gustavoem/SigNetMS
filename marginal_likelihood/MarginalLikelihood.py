@@ -63,10 +63,14 @@ class MarginalLikelihood:
         verbose = self.__verbose
     
         # Phase 1
+        print ("Phase 1 starts.")
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments,
                 self.__sigma_update_n, verbose=verbose)
         acc_mcmc.start_sample_from_prior ()
         sample, likelis = acc_mcmc.get_sample (n_acc)
+        print ("Average time integrating: ", 
+                model.get_average_integration_time ())
+        return
         
         if self.__verbose:
             print ("Phase 2 starts.")

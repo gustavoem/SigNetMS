@@ -2,6 +2,7 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
+from marginal_likelihood.utils import safe_exp
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
@@ -65,8 +66,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
         new_gv_old = j_gv_old.pdf (new_t.get_values ())
         old_gv_new = j_gv_new.pdf (old_t.get_values ())
 
-        l_ratio = np.exp (new_l - old_l)
-        prior_ratio = np.exp (new_t.get_log_p () - old_t.get_log_p ())
+        l_ratio = safe_exp (new_l - old_l)
+        prior_ratio = safe_exp (new_t.get_log_p () - old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
         return l_ratio * prior_ratio * jump_ratio
         

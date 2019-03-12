@@ -1,6 +1,7 @@
 import numpy as np
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from marginal_likelihood.utils import safe_power
+from marginal_likelihood.utils import safe_exp
 from distributions.DiscreteLaplacian import DiscreteLaplacian
 
 
@@ -74,16 +75,23 @@ class PopulationalMCMC:
             thetaj, thetaj_l = sample[0], likelihoods[0]
             sample, likelihoods = fc_mcmcs[k].get_last_sampled (1)
             thetak, thetak_l = sample[0], likelihoods[0]
-            tjotk = np.exp (thetaj_l - thetak_l)
-            tkotj = np.exp (thetak_l - thetaj_l)
+            tjotk = safe_exp (thetaj_l - thetak_l)
+            tkotj = safe_exp (thetak_l - thetaj_l)
             j_gv_k = inv_temp_jump_dist.pdf (j + 1)
             k_gv_j = temp_jump_dist.pdf (k + 1)
             
             r = safe_power (tkotj, betas[j]) * \
                 safe_power (tjotk, betas[k]) * \
                 (j_gv_k / k_gv_j)
+            
+            if self.__verbose:
+                print ("\ttheta_j over theta_k: " + str (tjotk))
+                print ("\ttheta_k over theta_j: " + str (tkotj))
+                print ("\tr: " + str (r))
 
             if np.random.uniform () <= r:
+                if self.__verbose:
+                    print ("Inverted j and k.")
                 fc_mcmcs[j].manual_jump (thetak.get_copy (), thetak_l)
                 fc_mcmcs[k].manual_jump (thetaj.get_copy (), thetaj_l)
         

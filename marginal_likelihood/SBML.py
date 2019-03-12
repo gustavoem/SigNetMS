@@ -76,6 +76,7 @@ class SBML:
             formula += " "
         if formula == "":
             formula = "0"
+        
         return SBML.__remove_compartments (formula)
             
     
@@ -212,5 +213,5 @@ class SBML:
         """ See issue #6 on github. I'm not sure why some models use
             comparments. """
         new_formula = re.sub ("compartment \*", "", formula)
-        new_formula = re.sub ("uVol \*", "", formula)
+        new_formula = re.sub ("uVol \*", "", new_formula)
         return new_formula

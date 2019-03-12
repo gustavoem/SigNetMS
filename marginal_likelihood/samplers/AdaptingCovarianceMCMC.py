@@ -5,6 +5,7 @@ from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariateLognormal import MultivariateLognormal
 from marginal_likelihood.CovarianceMatrix import calc_covariance
 from marginal_likelihood.utils import safe_power
+from marginal_likelihood.utils import safe_exp
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
     """ Objects of this class are able to return a sample of theta using 
@@ -76,16 +77,22 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         except:
             raise ValueError ("The covariance matrix is not positive " \
                     + "definite. Try using a bigger starting sample.")
-
+        
         l_ratio = self._calc_likeli_ratio (new_l, old_l)
-        prior_ratio = np.exp (new_t.get_log_p () - old_t.get_log_p ())
+        prior_ratio = safe_exp (new_t.get_log_p () - old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
+        if self._is_verbose:
+            print ("\tnew given old: " + str (new_gv_old))
+            print ("\told given new: " + str (old_gv_new))
+            print ("\tprior ratio: " + str (prior_ratio))
+            print ("\tlikelihood ratio: " + str (l_ratio))
+            print ("\tjump ratio: " + str (jump_ratio))
         return l_ratio * prior_ratio * jump_ratio
 
 
     def _calc_likeli_ratio (self, log_new_l, log_old_l):
         """ Calcultes the ratio (new_l / old_l) ^ t. """
-        return safe_power (np.exp (log_new_l - log_old_l), self._t)
+        return safe_power (safe_exp (log_new_l - log_old_l), self._t)
 
 
     def _calc_log_likelihood (self, theta):

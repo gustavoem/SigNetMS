@@ -77,7 +77,6 @@ class SBML:
         if formula == "":
             formula = "0"
         
-        print ("Kinetic law for ", species_name, ": ", SBML.__remove_compartments (formula))
         return SBML.__remove_compartments (formula)
             
     

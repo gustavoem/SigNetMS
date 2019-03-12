@@ -5,7 +5,6 @@ from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \
         AdaptingCovarianceMCMC
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from marginal_likelihood.CovarianceMatrix import calc_covariance
-from marginal_likelihood.utils import safe_power
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class FixedCovarianceMCMC (AdaptingCovarianceMCMC):

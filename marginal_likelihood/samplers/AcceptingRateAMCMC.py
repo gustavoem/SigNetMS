@@ -2,7 +2,6 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from marginal_likelihood.utils import safe_power
 from marginal_likelihood.utils import safe_exp
 from distributions.MultivariateLognormal import MultivariateLognormal
 

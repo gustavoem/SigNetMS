@@ -70,10 +70,15 @@ class AcceptingRateAMCMC (MetropolisHastings):
         j_gv_new = self._create_jump_dist (new_t)
         new_gv_old = j_gv_old.pdf (new_t.get_values ())
         old_gv_new = j_gv_new.pdf (old_t.get_values ())
-
         l_ratio = safe_power (np.exp (new_l - old_l), self.__t)
         prior_ratio = np.exp (new_t.get_log_p () - old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
+        if self._is_verbose:
+            print ("\tnew given old: " + str (new_gv_old))
+            print ("\told given new: " + str (old_gv_new))
+            print ("\tprior ratio: " + str (prior_ratio))
+            print ("\tlikelihood ratio: " + str (l_ratio))
+            print ("\tjump ratio: " + str (jump_ratio))
         return l_ratio * prior_ratio * jump_ratio
         
 

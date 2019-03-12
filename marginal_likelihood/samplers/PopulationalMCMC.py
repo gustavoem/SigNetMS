@@ -88,8 +88,15 @@ class PopulationalMCMC:
             r = safe_power (tkotj, betas[j]) * \
                 safe_power (tjotk, betas[k]) * \
                 (j_gv_k / k_gv_j)
+            
+            if self.__verbose:
+                print ("\ttheta_j over theta_k: " + str (tjotk))
+                print ("\ttheta_k over theta_j: " + str (tkotj))
+                print ("\tr: " + str (r))
 
             if np.random.uniform () <= r:
+                if self.__verbose:
+                    print ("Inverted j and k.")
                 fc_mcmcs[j].manual_jump (thetak.get_copy (), thetak_l)
                 fc_mcmcs[k].manual_jump (thetaj.get_copy (), thetaj_l)
         

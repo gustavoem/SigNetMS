@@ -78,8 +78,8 @@ class ODES:
             time_points):
         """ Integrates using scipy odeint """
         y, infodict = odeint (sys_f, initial_state, time_points, 
-                mxstep=5000, full_output=True, tfirst=True, atol=1e-12,
-                rtol=1e-8)
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-2,
+                rtol=1e-1)
         return y
 
 
@@ -89,8 +89,8 @@ class ODES:
             stiff problems. """
         dt = .1
         ode = spi.ode (sys_f)
-        ode.set_integrator ('vode', nsteps=50000, method='bdf', 
-                max_step=dt, atol=1e-12, rtol=1e-8)
+        ode.set_integrator ('vode', nsteps=5000, method='bdf', 
+                max_step=dt, atol=1e-6, rtol=1e-4)
         ode.set_initial_value (initial_state, time_points[0])
         y = [initial_state]
         i = 1

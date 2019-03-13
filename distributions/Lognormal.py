@@ -24,6 +24,11 @@ class Lognormal:
         s = self.__s
         return np.exp (mu + s * s / 2)
 
+    def variance (self):
+        """ Returns the variance of the Lognormal distribution. """
+        s2 = self.__s * self.__s
+        var = (np.exp (s2) - 1) * np.exp (2 * self.__mu + s2)
+        return var
 
     def rvs (self, n=None):
         """ Returns independent observations of this random variable. 

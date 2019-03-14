@@ -16,6 +16,14 @@ def safe_power (a, b):
     return x
 
 
+def safe_exp_ratio (a, b):
+    """ calculates the ratio exp (a) / exp (b). """
+    if not b > float ("-inf"):
+        return float ("+inf")
+    else:
+        return safe_exp (a - b)
+
+
 def safe_exp (a):
     """ Calculates np.exp (a) safely. """
     # python max float is

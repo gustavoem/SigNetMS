@@ -16,8 +16,13 @@ def safe_power (a, b):
     return x
 
 
+def safe_pow_exp_ratio (a, b, t): 
+    """ Calculates the pow (exp (a) / exp (b), t). """
+    return safe_exp_ratio (a * t, b * t)
+
+
 def safe_exp_ratio (a, b):
-    """ calculates the ratio exp (a) / exp (b). """
+    """ Calculates the ratio exp (a) / exp (b). """
     if not b > float ("-inf"):
         return float ("+inf")
     else:

@@ -1,7 +1,7 @@
 import numpy as np
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from marginal_likelihood.utils import safe_power
 from marginal_likelihood.utils import safe_exp_ratio
+from marginal_likelihood.utils import safe_pow_exp_ratio
 from distributions.DiscreteLaplacian import DiscreteLaplacian
 
 
@@ -86,9 +86,9 @@ class PopulationalMCMC:
             j_gv_k = inv_temp_jump_dist.pdf (j + 1)
             k_gv_j = temp_jump_dist.pdf (k + 1)
             
-            r = safe_power (tkotj, betas[j]) * \
-                safe_power (tjotk, betas[k]) * \
-                (j_gv_k / k_gv_j)
+            tktj_pw = safe_pow_exp_ratio (thetak_l, thetaj_l, betas[j])
+            tjtk_pw = safe_pow_exp_ratio (thetaj_l, thetak_l, betas[k])
+            r = tktj_pw * tjtk_pw * (j_gv_k / k_gv_j)
             
             if self.__verbose:
                 print ("\ttheta_j over theta_k: " + str (tjotk))

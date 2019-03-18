@@ -1,7 +1,7 @@
 import numpy as np
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from marginal_likelihood.utils import safe_power
-from marginal_likelihood.utils import safe_exp
+from marginal_likelihood.utils import safe_exp_ratio
 from distributions.DiscreteLaplacian import DiscreteLaplacian
 
 
@@ -81,8 +81,8 @@ class PopulationalMCMC:
             thetaj, thetaj_l = sample[0], likelihoods[0]
             sample, likelihoods = fc_mcmcs[k].get_last_sampled (1)
             thetak, thetak_l = sample[0], likelihoods[0]
-            tjotk = safe_exp (thetaj_l - thetak_l)
-            tkotj = safe_exp (thetak_l - thetaj_l)
+            tjotk = safe_exp_ratio (thetaj_l, thetak_l)
+            tkotj = safe_exp_ratio (thetak_l, thetaj_l)
             j_gv_k = inv_temp_jump_dist.pdf (j + 1)
             k_gv_j = temp_jump_dist.pdf (k + 1)
             

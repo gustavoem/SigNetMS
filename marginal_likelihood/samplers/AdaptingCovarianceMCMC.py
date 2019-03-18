@@ -7,6 +7,7 @@ from marginal_likelihood.CovarianceMatrix import calc_covariance
 from marginal_likelihood.utils import safe_power
 from marginal_likelihood.utils import safe_exp
 from marginal_likelihood.utils import safe_exp_ratio
+from marginal_likelihood.utils import safe_pow_exp_ratio
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
     """ Objects of this class are able to return a sample of theta using 
@@ -94,8 +95,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
 
     def _calc_likeli_ratio (self, log_new_l, log_old_l):
         """ Calcultes the ratio (new_l / old_l) ^ t. """
-        log_l_ratio = safe_exp_ratio (log_new_l, log_old_l)
-        return safe_power (log_l_ratio, self._t)
+        return safe_pow_exp_ratio (log_new_l, log_old_l, self._t)
 
 
     def _calc_log_likelihood (self, theta):

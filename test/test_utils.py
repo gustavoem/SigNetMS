@@ -6,6 +6,7 @@ import unittest
 import numpy as np
 from marginal_likelihood.utils import safe_exp
 from marginal_likelihood.utils import safe_exp_ratio
+from marginal_likelihood.utils import safe_pow_exp_ratio
 from subprocess import Popen
 from contextlib import redirect_stdout
 
@@ -36,3 +37,13 @@ class TestUtils (unittest.TestCase):
         # if the second part is -inf then we shoulg get +inf
         expected = float ("+inf")
         self.assertEqual (safe_exp_ratio (2, float ("-inf")), expected)
+
+
+    def test_safe_pow_exp_ratio (self):
+        """ Tests pow_exp_ratio function. """
+        a = -1000
+        b = -2000
+        t = 1e-6
+        r = safe_pow_exp_ratio (a, b, t)
+        assert (abs (r - 0.99) < 1e-1)
+

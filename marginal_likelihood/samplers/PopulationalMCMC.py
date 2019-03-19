@@ -1,7 +1,7 @@
 import numpy as np
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from marginal_likelihood.utils import safe_exp_ratio
-from marginal_likelihood.utils import safe_pow_exp_ratio
+from utils import safe_exp_ratio
+from utils import safe_pow_exp_ratio
 from distributions.DiscreteLaplacian import DiscreteLaplacian
 
 

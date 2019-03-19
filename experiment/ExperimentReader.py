@@ -4,7 +4,7 @@ sys.path.insert (0, '..')
 from experiment.Experiment import Experiment
 from experiment.ExperimentSet import ExperimentSet
 from lxml import etree
-from marginal_likelihood.utils import clean_tag
+from utils import clean_tag
 import numpy as np
 
 def read_txt_experiment_file (file_name, var):

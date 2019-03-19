@@ -3,7 +3,7 @@ sys.path.insert (0, '..')
 
 from lxml import etree
 from experiment.Experiment import Experiment
-from marginal_likelihood.utils import clean_tag
+from utils import clean_tag
 import numpy as np
 
 class ExperimentSet:

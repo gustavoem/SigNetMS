@@ -1,5 +1,9 @@
+import sys
+sys.path.insert (0, '..')
+
 import numpy as np
 from numpy.random import multivariate_normal as multivar_normal
+from utils import safe_log
 
 class MultivariateLognormal:
     """ This class implements a multivariate lognormal random variable. 
@@ -89,4 +93,4 @@ class MultivariateLognormal:
         """ Returns the value of the probability density function of 
             this random variable on point x. """
         # TODO: simplify calculations
-        return np.log (self.pdf (x))
+        return safe_log (self.pdf (x))

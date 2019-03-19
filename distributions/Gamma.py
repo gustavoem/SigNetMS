@@ -1,4 +1,9 @@
+import sys
+sys.path.insert (0, '..')
+
 import numpy as np
+from utils import safe_log
+
 
 class Gamma:
     """ This class implements a gamma random variable. """
@@ -82,4 +87,4 @@ class Gamma:
         """ Returns the log value of the probability density function of 
             this random variable on point x. """
         # TODO: simplify calculations
-        return np.log (self.pdf (x))
+        return safe_log (self.pdf (x))

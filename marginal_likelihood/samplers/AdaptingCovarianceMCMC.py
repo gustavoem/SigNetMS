@@ -4,10 +4,10 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariateLognormal import MultivariateLognormal
 from marginal_likelihood.CovarianceMatrix import calc_covariance
-from marginal_likelihood.utils import safe_power
-from marginal_likelihood.utils import safe_exp
-from marginal_likelihood.utils import safe_exp_ratio
-from marginal_likelihood.utils import safe_pow_exp_ratio
+from utils import safe_power
+from utils import safe_exp
+from utils import safe_exp_ratio
+from utils import safe_pow_exp_ratio
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
     """ Objects of this class are able to return a sample of theta using 

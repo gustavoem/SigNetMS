@@ -1,4 +1,9 @@
+import sys
+sys.path.insert (0, '..')
+
 import numpy as np
+from utils import safe_log
+
 
 class DiscreteLaplacian:
     """ This class implements a Laplacian discrete random variable.
@@ -81,4 +86,4 @@ class DiscreteLaplacian:
     def log_pdf (self, j):
         """ Returns log p_j (j). """
         # TODO: simplify calculations
-        return np.log (self.pdf (j))
+        return safe_log (self.pdf (j))

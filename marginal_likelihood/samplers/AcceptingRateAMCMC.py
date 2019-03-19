@@ -2,10 +2,9 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from marginal_likelihood.utils import safe_power
-from marginal_likelihood.utils import safe_exp
-from marginal_likelihood.utils import safe_exp_ratio
-from marginal_likelihood.utils import safe_pow_exp_ratio
+from utils import safe_pow_exp_ratio
+from utils import safe_exp
+from utils import safe_exp_ratio
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):

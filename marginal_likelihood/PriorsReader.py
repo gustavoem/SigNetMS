@@ -2,7 +2,7 @@ from marginal_likelihood.RandomParameter import RandomParameter
 from marginal_likelihood.RandomParameterList import RandomParameterList
 from distributions.Gamma import Gamma
 from distributions.Lognormal import Lognormal
-from marginal_likelihood.utils import clean_tag
+from utils import clean_tag
 from lxml import etree
 import sys
 

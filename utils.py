@@ -7,6 +7,17 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+def safe_log (x):
+    """ Calculates the log of x safely. """
+    if x < 0:
+        raise ValueError ("x needs to be nonnegative.")
+
+    min_positive = sys.float_info.min
+    if x < min_positive:
+        return float ("-inf")
+    else:
+        return np.log (x)
+
 def safe_power (a, b):
     """ Calculates a ** b safely."""
     try:
@@ -18,15 +29,31 @@ def safe_power (a, b):
 
 def safe_pow_exp_ratio (a, b, t): 
     """ Calculates the pow (exp (a) / exp (b), t). """
-    return safe_exp_ratio (a * t, b * t)
+    # if a is not -inf and b is -inf: I want the ratio to be +inf
+    # if a is -inf and b is not -inf: I want the ratio to be -inf
+    # if a is -inf and b is -inf: I want the ratio to be 1
+    if not a > float ("-inf"):
+        at = a
+    else:
+        at = a * t
+
+    if not b > float ("-inf"):
+        bt = b
+    else:
+        bt = b * t
+
+    return safe_exp_ratio (at, bt)
 
 
 def safe_exp_ratio (a, b):
     """ Calculates the ratio exp (a) / exp (b). """
-    if not b > float ("-inf"):
+    if not a > float ("-inf") and not b > float ("-inf"):
+        a = 0
+        b = 0
+    elif not b > float ("-inf"):
         return float ("+inf")
-    else:
-        return safe_exp (a - b)
+    
+    return safe_exp (a - b)
 
 
 def safe_exp (a):

@@ -4,14 +4,23 @@ sys.path.insert (0, '..')
 import io
 import unittest
 import numpy as np
-from marginal_likelihood.utils import safe_exp
-from marginal_likelihood.utils import safe_exp_ratio
-from marginal_likelihood.utils import safe_pow_exp_ratio
+from utils import safe_log
+from utils import safe_exp
+from utils import safe_exp_ratio
+from utils import safe_pow_exp_ratio
 from subprocess import Popen
 from contextlib import redirect_stdout
 
 
 class TestUtils (unittest.TestCase):
+    
+    def test_safe_log (self):
+        """ Tests safe_log. """
+        e = np.exp (1)
+        self.assertEqual (safe_log (e), np.log (e))
+        self.assertEqual (safe_log (1e-400), float ("-inf"))
+        self.assertEqual (safe_log (0), float ("-inf"))
+
 
     def test_safe_exp (self):
         """ Tests safe_exp. """

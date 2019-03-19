@@ -78,6 +78,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
                 old_t.get_log_p ())
         jump_ratio = old_gv_new / new_gv_old
         if self._is_verbose:
+            print ("\told log prior: " + str (old_t.get_log_p ()))
+            print ("\tnew log prior: " + str (new_t.get_log_p ()))
             print ("\tnew given old: " + str (new_gv_old))
             print ("\told given new: " + str (old_gv_new))
             print ("\tprior ratio: " + str (prior_ratio))
@@ -93,6 +95,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
 
     def _iteration_update (self):
         if self._n_jumps % self.__sigma_update_n == 0:
+            print ("Updated sigma")
             self.__update_Sigma ()
         
     

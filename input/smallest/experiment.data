@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ExperimentSet>
+  <Experiment>
+    <row>
+      <element value="0.0" index="0"/>
+      <element value="20.00667852389437" index="1"/>
+    </row>
+    <row>
+      <element value="142.85714285714286" index="0"/>
+      <element value="60.61216368988336" index="1"/>
+    </row>
+    <row>
+      <element value="285.7142857142857" index="0"/>
+      <element value="129.15382976361977" index="1"/>
+    </row>
+    <row>
+      <element value="428.57142857142856" index="0"/>
+      <element value="160.94770380950294" index="1"/>
+    </row>
+    <row>
+      <element value="571.4285714285714" index="0"/>
+      <element value="167.13973577865534" index="1"/>
+    </row>
+    <row>
+      <element value="714.2857142857143" index="0"/>
+      <element value="168.0444204765364" index="1"/>
+    </row>
+    <row>
+      <element value="857.1428571428571" index="0"/>
+      <element value="168.20277670996927" index="1"/>
+    </row>
+    <row>
+      <element value="1000.0" index="0"/>
+      <element value="168.22288662735917" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="B" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="0.0" index="0"/>
+      <element value="19.991732700731877" index="1"/>
+    </row>
+    <row>
+      <element value="142.85714285714286" index="0"/>
+      <element value="60.58317273344466" index="1"/>
+    </row>
+    <row>
+      <element value="285.7142857142857" index="0"/>
+      <element value="129.1408440571498" index="1"/>
+    </row>
+    <row>
+      <element value="428.57142857142856" index="0"/>
+      <element value="160.93778130566355" index="1"/>
+    </row>
+    <row>
+      <element value="571.4285714285714" index="0"/>
+      <element value="167.1299925347945" index="1"/>
+    </row>
+    <row>
+      <element value="714.2857142857143" index="0"/>
+      <element value="168.0676080758877" index="1"/>
+    </row>
+    <row>
+      <element value="857.1428571428571" index="0"/>
+      <element value="168.18978134982405" index="1"/>
+    </row>
+    <row>
+      <element value="1000.0" index="0"/>
+      <element value="168.19844761482938" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="B" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="0.0" index="0"/>
+      <element value="19.98466829242517" index="1"/>
+    </row>
+    <row>
+      <element value="142.85714285714286" index="0"/>
+      <element value="60.60898763705779" index="1"/>
+    </row>
+    <row>
+      <element value="285.7142857142857" index="0"/>
+      <element value="129.15445130775765" index="1"/>
+    </row>
+    <row>
+      <element value="428.57142857142856" index="0"/>
+      <element value="160.9470905892251" index="1"/>
+    </row>
+    <row>
+      <element value="571.4285714285714" index="0"/>
+      <element value="167.1345840698311" index="1"/>
+    </row>
+    <row>
+      <element value="714.2857142857143" index="0"/>
+      <element value="168.0706483616953" index="1"/>
+    </row>
+    <row>
+      <element value="857.1428571428571" index="0"/>
+      <element value="168.20459315989754" index="1"/>
+    </row>
+    <row>
+      <element value="1000.0" index="0"/>
+      <element value="168.22521227376407" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="B" col="1"/>
+    </interpretation>
+  </Experiment>
+</ExperimentSet>

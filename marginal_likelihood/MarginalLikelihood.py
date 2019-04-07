@@ -15,6 +15,7 @@ from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 from marginal_likelihood.samplers.PopulationalMCMC import \
         PopulationalMCMC
+from utils import plot_theta_var_sample
 import numpy as np
 import random
 import re
@@ -84,7 +85,14 @@ class MarginalLikelihood:
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs,
                 verbose=verbose)
         betas, thetas, log_ls = pop_mcmc.get_sample (n_pop)
-
+    
+        if self.__verbose:
+            for i in range (theta_prior.get_size ()):
+                p = theta_prior[i]
+                file_name = p.name + 'posterior.png'
+                plot_theta_var_sample (thetas, i, file_name, p.name,
+                        custom_dir=model.name)
+        
         ml = self.__calculate_marginal_likelihood (betas, thetas, 
                 log_ls)
         return ml

@@ -13,5 +13,5 @@ def sbml_to_odes (sbml):
     params = sbml.get_all_param ()
     for param in params:
         odes.define_parameter (param, params[param])
-
+    odes.name = sbml.name
     return odes

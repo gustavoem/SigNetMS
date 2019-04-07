@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model2" name="Model 2">
+    <listOfCompartments>
+      <compartment id="compartment" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="A" name="A" compartment="compartment" initialConcentration="200"/>
+      <species id="B" name="B" compartment="compartment" initialConcentration="20"/>
+      <species id="AB" name="AB" compartment="compartment" initialConcentration="0"/>
+      <species id="C" name="C" compartment="compartment" initialConcentration="200"/>
+    </listOfSpecies>
+    <listOfReactions>
+    <reaction id="reaction_0" name="A + B -> AB" reversible="false">
+        <listOfReactants>
+          <speciesReference species="A"/>
+          <speciesReference species="B"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="AB"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> A </ci>
+              <ci> B </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="1.7e-4"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="AB -> A + B">
+        <listOfReactants>
+          <speciesReference species="AB"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="A"/>
+          <speciesReference species="B"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k2 </ci>
+              <ci> AB </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k2" value="0.4"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_2" name="C -> B with enzyme AB" reversible="false">
+        <listOfReactants>
+          <speciesReference species="C"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="B"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kcat3 </ci>
+                  <ci> AB </ci>
+                  <ci> C </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Km3 </ci>
+                  <ci> C </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="kcat3" value="2"/>
+            <parameter id="Km3" value="1.64e3"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

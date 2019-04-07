@@ -28,6 +28,9 @@ class ODES:
         # A hash table with values of parameters
         self.param_table = {}
 
+        # The model's name
+        self.name = ''
+
 
     def __create_var (self, var):
         """ Creates a new variable and adds it to the system. """
@@ -78,8 +81,8 @@ class ODES:
             time_points):
         """ Integrates using scipy odeint """
         y, infodict = odeint (sys_f, initial_state, time_points, 
-                mxstep=5000, full_output=True, tfirst=True, atol=1e-8,
-                rtol=1e-6)
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-6,
+                rtol=1e-8)
         return y
 
 

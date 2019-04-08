@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<priors xlmns="http://ime.usp.br/gestrela/signetms/priors">
+    <prior distribution="gamma" a="1" b="0.01" name="k1"/>
+    <prior distribution="gamma" a="2" b="0.5" name="k2"/>
+    <prior distribution="gamma" a="4" b="1" name="kcat3"/>
+    <prior distribution="gamma" a="2" b="1500" name="Km3"/>
+    <prior distribution="gamma" a="2" b="1" name="V4"/>
+    <prior distribution="gamma" a="2" b="100" name="Km4"/>
+    <prior distribution="gamma" a="2" b="0.4" name="V5"/>
+    <prior distribution="gamma" a="2" b="100" name="Km5"/>
+    <experimental_error distribution="gamma" a="2" b="3" name="Noise"/>
+</priors>

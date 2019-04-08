@@ -26,6 +26,9 @@ class SBML:
 
         # Stores the number of parameters
         self.num_params = 0
+
+        # Stores the model name
+        self.name = ''
                 
     
     def load_file (self, file_name):
@@ -41,6 +44,7 @@ class SBML:
         converter.convert ()
 
         self.sbml_obj = sbmldoc
+        self.name = str (sbmldoc.model.name)
         self.__global_param = self.__get_global_params ()
         self.__local_param = self.__get_local_params ()
         return True

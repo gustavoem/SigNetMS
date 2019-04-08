@@ -6,6 +6,8 @@ import sys
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
+import errno
 
 def safe_log (x):
     """ Calculates the log of x safely. """
@@ -75,7 +77,22 @@ def clean_tag (xmlnode):
     return etree.QName (xmlnode.tag).localname
 
 
-def plot_theta_var_sample (sample, var_idx, fig_name, plot_label):
+def create_dir_safe (dir_name):
+    """ Safely creates a directory. """
+    try:
+        os.makedirs(dir_name)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+
+def plot_theta_var_sample (sample, var_idx, fig_name, plot_label, 
+        custom_dir=None):
+    if custom_dir is not None:
+        create_dir_safe (custom_dir)
+        print ("Custom dir: " + custom_dir)
+        fig_name = custom_dir + "/" + fig_name
+        
     x = np.array ([theta[var_idx].value for theta in sample])
     sns_plot = sns.kdeplot (x, label=plot_label)
     fig = sns_plot.get_figure ()

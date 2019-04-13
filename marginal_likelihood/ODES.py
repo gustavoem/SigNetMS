@@ -1,6 +1,6 @@
 import re
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('Agg') #uncomment when running on server
 
 from scipy.integrate import odeint
 import scipy.integrate as spi
@@ -156,10 +156,11 @@ class ODES:
 
 
     def overtime_plot (self, var_list, t, initial_state_map=None, 
-            filename=''):
+            filename='', xlabel=None, ylabel=None, title=None):
         """ Plots the values of a variable VAR over time t. """
         values_map = self.evaluate_on (t, initial_state_map)
-        ODES.__plot (values_map, var_list, t, filename)
+        ODES.__plot (values_map, var_list, t, filename, xlabel, ylabel,
+                title)
 
 
     # possible speedup: call this function only when it's necessary
@@ -285,7 +286,8 @@ class ODES:
 
 
     @staticmethod
-    def __plot (values_map, exp_list, t, filename):
+    def __plot (values_map, exp_list, t, filename, xlabel, ylabel, 
+            title):
         """ Plots values of vars in var_list that were observed on time 
             t. """
         legend = []
@@ -303,6 +305,14 @@ class ODES:
                 values.append (v)
             plt.plot (t, values)
         plt.legend (legend)
+        
+        if xlabel: 
+            plt.xlabel (xlabel)
+        if ylabel: 
+            plt.ylabel (ylabel)
+        if title: 
+            plt.title (title)
+
         if filename:
             plt.savefig (filename)
         else:

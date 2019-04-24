@@ -6,6 +6,7 @@ from utils import safe_pow_exp_ratio
 from utils import safe_exp
 from utils import safe_exp_ratio
 from distributions.MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateNormal import MultivariateNormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive
@@ -51,8 +52,10 @@ class AcceptingRateAMCMC (MetropolisHastings):
         S = np.eye (n)
         for i in range (n):
             S[i, i] = self._jump_S[i]
-        mu = np.log (t_vals) - S.diagonal () / 2
-        jump_dist = MultivariateLognormal (mu, S)
+        # mu = np.log (t_vals) - S.diagonal () / 2
+        mu = np.array (t_vals)
+        # jump_dist = MultivariateLognormal (mu, S)
+        jump_dist = MultivariateNormal (mu, S)
         return jump_dist
 
 

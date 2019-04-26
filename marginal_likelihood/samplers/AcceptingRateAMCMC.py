@@ -37,8 +37,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
             prior_variance = param_dist.variance ()
             sigma2 = np.log (np.sqrt (prior_variance) + 1)
             jump_S.append (np.sqrt (sigma2))
-        print ("Starting jump S: ")
-        print (jump_S)
+        #print ("Starting jump S: ")
+        #print (jump_S)
         return jump_S
 
     

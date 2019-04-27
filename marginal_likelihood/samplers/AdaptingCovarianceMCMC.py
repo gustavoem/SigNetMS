@@ -50,8 +50,14 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
     def _create_jump_dist (self, theta_t):
         """ The jump distribution is Multivariate Lognormal. """
         t_vals = theta_t.get_values ()
-        mu = np.log (t_vals) - self._jump_S.diagonal () / 2
-        jump_dist = MultivariateLognormal (mu, self._jump_S)
+        mu = np.array (t_vals)
+        print ("Creating jump distribution with mean: ", end='')
+        print (mu)
+        print ("and variance: ")
+        print (self._jump_S)
+        jump_dist = \
+            MultivariateLognormal.create_lognormal_with_shape (mu, 
+                    self._jump_S)
         return jump_dist
 
     def get_sample (self, N):

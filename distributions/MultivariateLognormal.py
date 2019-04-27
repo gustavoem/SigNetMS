@@ -18,7 +18,7 @@ class MultivariateLognormal:
         self.__inv_S = None
         self.__det_S = None
 
-    
+
     def copy (self):
         """ Returns a copy of this object. """
         cpy = MultivariateLognormal (self.__mu, self.__S)
@@ -94,3 +94,40 @@ class MultivariateLognormal:
             this random variable on point x. """
         # TODO: simplify calculations
         return safe_log (self.pdf (x))
+
+
+    @staticmethod
+    def create_lognormal_with_shape (mu, S):
+        """ Creates a Lognormal distribution with mean mu and 
+            covariance S. """
+        mu = np.array (mu)
+        S = np.array (S)
+        S_diagonal = S.diagonal ()
+        mu2 = mu * mu
+        n = len (mu)
+        n_ones = np.ones (n)
+        
+        # normal_mu_i = ln (mu_i / sqrt[S_ii / mu_i^2 + 1])
+        normal_mu = np.log (mu / np.sqrt (S_diagonal / mu2 + n_ones))
+
+        # normal_S_diag_i = ln (S_ii / mu_i^2 + 1)
+        normal_S_diagonal = np.log (S_diagonal / (mu * mu) + n_ones)               
+        normal_S = np.zeros ((n, n))
+        for i in range (n):
+            for j in range (i):
+                # normal_S_ij = 1 + S_ij / exp (normal_mu_i + 
+                #       normal_mu_j + 1/2 (normal_S_ii + normal_S_jj)) 
+                nSiinSjj = normal_S_diagonal[i] + normal_S_diagonal[j]
+                muimuj = mu[i] * mu[j]
+                print ("log_arg = 1 + S[" + str(i)+"]["+str(j)+"] / muimuj = ")
+                print ("1 + " + str(S[i][j]) + " / " + str (muimuj))
+                log_arg = 1 + S[i][j] / muimuj
+                if (log_arg < 0):
+                    log_arg = 1
+                x = np.log (log_arg)
+                normal_S[i][j] = x
+                normal_S[j][i] = x
+        for i in range (n):
+            normal_S[i][i] = normal_S_diagonal[i]
+        
+        return MultivariateLognormal (normal_mu, normal_S)

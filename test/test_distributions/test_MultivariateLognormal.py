@@ -65,3 +65,35 @@ class TestMultivariateLognormal (unittest.TestCase):
         x = [1, 1, 1]
         analytic = 1 / np.sqrt ((2 * np.pi) ** 3 )
         assert (abs (X.pdf (x) - analytic) < 1e-4)
+
+
+    def test_create_shaped_distribution (self):
+        """ Tests if we can create a Multivariate Lognormal 
+            distribution with a specified mean and variance. """
+        mu = [1, 2, .1]
+        S = np.array ([[.1,      0, -0], 
+             [0,      .2,  1e-4], 
+             [0, 1e-4,   .2]])
+        X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
+
+        N = 5000
+        mean = np.array ([.0, .0, .0])
+        for i in range (N):
+            x = X.rvs ()
+            mean += x
+        mean /= N
+        assert all (abs (mu - mean) < 1e-1)
+
+        S = np.array ([[1,    0,   -0], 
+                       [0,    1, 1e-4], 
+                       [0, 1e-4,    1]])
+        X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
+
+        N = 5000
+        mean = np.array ([.0, .0, .0])
+        for i in range (N):
+            x = X.rvs ()
+            mean += x
+        mean /= N
+        assert all (abs (mu - mean) < 1e-1)
+

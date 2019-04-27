@@ -52,7 +52,9 @@ class TestAcceptingRateAMCMC (unittest.TestCase):
         mock_mh.start_sample_from_prior ()
         
         before = mock_mh.get_jump_S ()
-        mock_mh.get_sample (9)
+        t, l = mock_mh.get_sample (1)
+        for i in range (8):
+            mock_mh.manual_jump (t[-1], l[-1])
         after = mock_mh.get_jump_S ()
         assert all (np.array (before) == np.array (after))
         mock_mh.get_sample (1)

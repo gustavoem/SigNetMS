@@ -36,10 +36,11 @@ class AcceptingRateAMCMC (MetropolisHastings):
         theta = self._theta
         jump_S = []
         for p in theta:
-            #param_dist = p.get_distribution ()
-            #prior_variance = param_dist.variance ()
-            #sigma2 = np.log (np.sqrt (prior_variance) + 1)
-            jump_S.append (1)
+            param_dist = p.get_distribution ()
+            prior_variance = param_dist.variance ()
+            sigma2 = prior_variance
+            jump_S.append (sigma2)
+            #jump_S.append (1)
         return jump_S
 
     
@@ -52,10 +53,13 @@ class AcceptingRateAMCMC (MetropolisHastings):
         S = np.eye (n)
         for i in range (n):
             S[i, i] = self._jump_S[i]
-        # mu = np.log (t_vals) - S.diagonal () / 2
-        mu = np.array (t_vals)
-        # jump_dist = MultivariateLognormal (mu, S)
-        jump_dist = MultivariateNormal (mu, S)
+        mu = t_vals
+        print ("Creating jump dist with mean: ")
+        print (t_vals)
+        print ("and variance: ")
+        print (S)
+        jump_dist = MultivariateLognormal.create_lognormal_with_shape (mu, 
+                        S)
         return jump_dist
 
 
@@ -97,7 +101,6 @@ class AcceptingRateAMCMC (MetropolisHastings):
 
     def _iteration_update (self):
         if self._n_jumps % self.__sigma_update_n == 0:
-            print ("Updated sigma")
             self.__update_Sigma ()
         
     
@@ -106,10 +109,14 @@ class AcceptingRateAMCMC (MetropolisHastings):
             so as recommended in section "Efficient Metopolis jumping 
             rules" from Bayesian Data Analysis (Third Edition), Gelman. 
             """
+        print ("Sigma started with: ")
         acceptance_rate = self.get_acceptance_ratio ()
         jump_S = self._jump_S
+        print (jump_S)
         for i in range (len (jump_S)):
             if acceptance_rate > .4 and jump_S[i] < 10:
                 jump_S[i] += jump_S[i] * .5
             if acceptance_rate < .25 and jump_S[i] > 1e-4:
                 jump_S[i] -= jump_S[i] * .5
+        print ("Updated sigma to: ")
+        print (jump_S)

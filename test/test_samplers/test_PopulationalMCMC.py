@@ -33,7 +33,8 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         strata_size = 2
         fcmcmcs = self.create_list_of_fcmcmc (n_strata * \
                 strata_size + 2)
-        pop_mcmc = PopulationalMCMC (n_strata, strata_size, fcmcmcs)
+        pop_mcmc = PopulationalMCMC (n_strata, strata_size, fcmcmcs,
+                verbose=False)
         sample = pop_mcmc.get_sample (10)[0]
         self.assertEqual (len (sample), 22)
 
@@ -46,7 +47,8 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         fcmcmcs = []
         for i in range (n):
             S = self.create_covar_matrix ()
-            sampler = FixedCovarianceMCMC (theta, model, experiments, S)
+            sampler = FixedCovarianceMCMC (theta, model, experiments, S,
+                    verbose=False)
             sampler.start_sample_from_prior ()
             fcmcmcs.append (sampler)
         return fcmcmcs
@@ -56,8 +58,8 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         my_artificial_sample = []
         sample_mean = [0.05, 0.1, 0.2, .3]
         S = np.eye (4) / 5
-        mu = np.log (np.array (sample_mean)) - S.diagonal () / 2
-        my_sample_dist = MultivariateLognormal (mu, S)
+        my_sample_dist = MultivariateLognormal.\
+                create_lognormal_with_shape (sample_mean, S)
         for i in range (50):
             values = my_sample_dist.rvs ()
             my_artificial_sample.append (values)

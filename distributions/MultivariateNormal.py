@@ -53,6 +53,9 @@ class MultivariateNormal:
         S = self.__S
         if n is None:
             normal_values = np_multivar_normal (mu, S)
+            for i in range (len (normal_values)):
+                if normal_values[i] < 0:
+                    normal_values[i] *= -1
         else:        
             normal_values = np_multivar_normal (mu, S, n)
         return np.array (normal_values)

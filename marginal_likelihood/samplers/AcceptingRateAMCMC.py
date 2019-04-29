@@ -58,8 +58,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         print (t_vals)
         print ("and variance: ")
         print (S)
-        jump_dist = MultivariateLognormal.create_lognormal_with_shape (mu, 
-                        S)
+        jump_dist = MultivariateNormal (mu, S)
         return jump_dist
 
 

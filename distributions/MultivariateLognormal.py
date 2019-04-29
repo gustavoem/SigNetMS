@@ -76,15 +76,22 @@ class MultivariateLognormal:
         logx_minus_mu.shape = (n, 1)
         logx_minus_mu_t = logx_minus_mu.transpose ()
     
-        term1 = 1 / np.sqrt (np.power (2 * np.pi, n) * det_S)
+        print ("\tlogx - mu = " + str (logx_minus_mu))
+        
+        term1 = 1 / np.sqrt (np.power (2 * np.pi, n) * abs (det_S))
         term2 = 1 
         for xi in x:
             term2 *= xi
         term2 = 1 / term2
 
+        print ("\tdet_S = " + str (det_S))
+        print ("\t1/ sqrt (2pi^n * det_S) = " + str (term1))
 
         term3 = float (np.exp (-.5 * np.dot (np.dot (logx_minus_mu_t, 
             inv_S), logx_minus_mu)))
+        
+
+        print ("\tterm3 = " + str (term3))
 
         return term1 * term2 * term3
 
@@ -93,7 +100,10 @@ class MultivariateLognormal:
         """ Returns the value of the probability density function of 
             this random variable on point x. """
         # TODO: simplify calculations
-        return safe_log (self.pdf (x))
+        p = self.pdf (x)
+        print ("\tp = " + str (p))
+        logp = safe_log (p)
+        return logp
 
 
     @staticmethod

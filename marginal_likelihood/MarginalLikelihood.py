@@ -63,7 +63,8 @@ class MarginalLikelihood:
         strata_size = self.__strata_size
         verbose = self.__verbose
 
-        betas = PopulationalMCMC.sample_betas (n_strata, strata_size)
+        betas = PopulationalMCMC.sample_scheduled_betas (n_strata * 
+                strata_size)
         fc_mcmcs = []
 
         print ("Phase 1 and 2 starts.")

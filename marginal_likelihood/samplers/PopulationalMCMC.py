@@ -19,7 +19,7 @@ class PopulationalMCMC:
     def __init__ (self, n_strata, strata_size, fc_mcmcs, betas=None, 
             verbose=False):
         """ Default constructor. """
-        if n_strata * strata_size + 2 != len (fc_mcmcs):
+        if n_strata * strata_size != len (fc_mcmcs):
             raise ValueError ("The list of covariances and starts " \
                     + "should have the same size as n_strata * " \
                     + "strata_size")
@@ -27,7 +27,8 @@ class PopulationalMCMC:
         self.__n_strata = n_strata
         self.__strata_size = strata_size
         if betas == None:
-            self.__betas = PopulationalMCMC.sample_betas (n_strata, strata_size)
+            self.__betas = PopulationalMCMC.sample_betas (n_strata * \
+                    strata_size)
         else:
             self.__betas = betas
         self.__fc_mcmcs = fc_mcmcs
@@ -54,6 +55,18 @@ class PopulationalMCMC:
                 betas.append (x)
             betas.sort ()
         betas.append (1)
+        return betas
+
+
+    @staticmethod
+    def sample_scheduled_betas (n):
+        """ Samples betas from a fixed schedule. """
+        betas = []
+        sched_power = PopulationalMCMC.__SCHEDULE_POWER
+        for i in range (n):
+            x = (i / (n - 1)) ** sched_power
+            betas.append (x)
+        betas.sort ()
         return betas
 
 

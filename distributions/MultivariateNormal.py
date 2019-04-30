@@ -6,8 +6,8 @@ from numpy.random import multivariate_normal as np_multivar_normal
 from utils import safe_log
 
 class MultivariateNormal:
-    """ This class implements a multivariate lognormal random variable. 
-    """
+    """ This class implements a multivariate folded normal random 
+        variable. """
 
     def __init__ (self, mu, Sigma):
         """ Default constructor. mu and sigma are the mean and variance

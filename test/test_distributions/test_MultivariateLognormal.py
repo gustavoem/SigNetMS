@@ -84,16 +84,4 @@ class TestMultivariateLognormal (unittest.TestCase):
         mean /= N
         assert all (abs (mu - mean) < 1e-1)
 
-        S = np.array ([[1,    0,   -0], 
-                       [0,    1, 1e-4], 
-                       [0, 1e-4,    1]])
-        X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
-
-        N = 5000
-        mean = np.array ([.0, .0, .0])
-        for i in range (N):
-            x = X.rvs ()
-            mean += x
-        mean /= N
-        assert all (abs (mu - mean) < 1e-1)
 

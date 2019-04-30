@@ -40,7 +40,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
             prior_variance = param_dist.variance ()
             sigma2 = prior_variance
             jump_S.append (sigma2)
-            #jump_S.append (1)
+        print ("Starting jump S: ")
+        print (jump_S)
         return jump_S
 
     

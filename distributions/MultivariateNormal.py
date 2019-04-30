@@ -6,7 +6,7 @@ from numpy.random import multivariate_normal as np_multivar_normal
 from utils import safe_log
 
 class MultivariateNormal:
-    """ This class implements a multivariate lognormal random variable. 
+    """ This class implements a multivariate Normal random variable. 
     """
 
     def __init__ (self, mu, Sigma):

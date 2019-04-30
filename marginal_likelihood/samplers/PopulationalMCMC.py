@@ -25,7 +25,7 @@ class PopulationalMCMC:
 
         self.__n_strata = n_strata
         self.__strata_size = strata_size
-        self.__sample_betas (n_strata, strata_size)
+        self.__sample_scheduled_betas (n_strata * strata_size)
         self.__fc_mcmcs = fc_mcmcs
         self.__define_samplers_temp (self.__betas, self.__fc_mcmcs)
         self.__verbose = verbose
@@ -37,7 +37,7 @@ class PopulationalMCMC:
         return PopulationalMCMC.__SCHEDULE_POWER
 
     
-    def __sample_betas (self, n_strata, strata_size):
+    def __sample_strata_betas (self, n_strata, strata_size):
         """ Samples the temperatures array. """
         betas = []
         sched_power = PopulationalMCMC.__SCHEDULE_POWER
@@ -48,6 +48,17 @@ class PopulationalMCMC:
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()
+        self.__betas = betas
+
+
+    def __sample_scheduled_betas (self, n):
+        """ Samples betas from a fixed schedule. """
+        betas = []
+        sched_power = PopulationalMCMC.__SCHEDULE_POWER
+        for i in range (n):
+            x = (i / (n - 1)) ** sched_power
+            betas.append (x)
+        betas.sort ()
         self.__betas = betas
 
 

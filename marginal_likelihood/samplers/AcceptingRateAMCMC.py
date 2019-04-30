@@ -7,6 +7,7 @@ from utils import safe_exp
 from utils import safe_exp_ratio
 from distributions.MultivariateLognormal import MultivariateLognormal
 from distributions.MultivariateNormal import MultivariateNormal
+from distributions.MultivariatePositiveNormal import MultivariatePositiveNormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive
@@ -59,7 +60,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         print (t_vals)
         print ("and variance: ")
         print (S)
-        jump_dist = MultivariateNormal (mu, S)
+        jump_dist = MultivariatePositiveNormal (mu, S)
         return jump_dist
 
 

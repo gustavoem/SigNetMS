@@ -54,6 +54,7 @@ class PopulationalMCMC:
     def __sample_scheduled_betas (self, n):
         """ Samples betas from a fixed schedule. """
         betas = []
+        sched_power = PopulationalMCMC.__SCHEDULE_POWER
         for i in range (n):
             x = (i / (n - 1)) ** sched_power
             betas.append (x)

@@ -112,5 +112,4 @@ class MultivariatePositiveNormal:
         logpx = self.__normal_log_pdf (x)
         logpy = self.__normal_log_pdf (y)
         ratio = safe_exp_ratio (logpx, logpy)
-        print ("ratio = " + str (ratio))
         return ratio

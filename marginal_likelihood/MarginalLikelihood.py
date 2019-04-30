@@ -101,15 +101,22 @@ class MarginalLikelihood:
                 # n_strata * strata_size, experiments, model, theta_prior)
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs,
                 betas=betas, verbose=verbose)
-        betas, thetas, log_ls = pop_mcmc.get_sample (n_pop)
-    
-        if self.__verbose:
-            for i in range (theta_prior.get_size ()):
-                p = theta_prior[i]
-                file_name = p.name + 'posterior.png'
-                plot_theta_var_sample (thetas, i, file_name, p.name,
-                        custom_dir=model.name)
         
+        pop_mcmc.get_sample (n_pop)
+        betas, thetas, log_ls = pop_mcmc.get_last_sampled (n_pop // 4)
+        
+        if self.__verbose:
+            print ("Sampling ended. Here are the sampled parameters" + \
+                    " separated by temperature")
+            for i in range (len (betas)):
+                temp = betas[i]
+                print ("Sample for t = " + str (temp))
+                for j in range (len (thetas[i])):
+                    theta = thetas[i][j]
+                    likeli = log_ls[i][j]
+                    print ("parameter = " + str (theta.get_values ()) +\
+                            " likelihood = " + str (likeli))
+
         ml = self.__calculate_marginal_likelihood (betas, thetas, 
                 log_ls)
         return ml
@@ -135,37 +142,39 @@ class MarginalLikelihood:
         """ Given a list with samples, calculates the marginal 
             likelihood. """
         ml = 0
-        j = 0 
-        n_strata = self.__n_strata
-        strata_size = self.__strata_size
-        sched_power = PopulationalMCMC.get_sched_power ()
         
         if self.__verbose:
             print ("Estimating marginal likelihood")
-        for i in range (n_strata):
-            strata_start = (i / n_strata) ** sched_power
-            strata_end = ((i + 1) / n_strata) ** sched_power
-            del_strata = strata_end - strata_start
+
+        exp_gv_tip1 = 0
+        power_sample_ip1 = thetas[0]
+        for j in range (len (power_sample_ip1)):
+            log_l = likelihoods[0][j]
+            exp_gv_tip1 += log_l
+        exp_gv_tip1 /= len (power_sample_ip1)
+
+        for i in range (len (betas) - 1):
+            tip1 = betas[i + 1]
+            ti = betas[i]
+                        
+            exp_gv_ti = exp_gv_tip1
+            exp_gv_tip1 = 0
+            power_sample_ip1 = thetas[i + 1]
+            for j in range (len (power_sample_ip1)):
+                log_l = likelihoods[i + 1][j]
+                exp_gv_tip1 += log_l
+            exp_gv_tip1 /= len (power_sample_ip1)
+
+            ml += (tip1 - ti) * (exp_gv_tip1 + exp_gv_ti)
             
             if self.__verbose:
-                print ("strata_start = " + str (strata_start))
-                print ("strata_end = " + str (strata_end))
-                print ("del_strata = " + str (del_strata))
-                
-            strat_sum = 0
-            while j < len (betas) and betas[j] <= strata_end:
-                log_p_y_given_theta = likelihoods[j]
-                strat_sum += log_p_y_given_theta
-                if self.__verbose:
-                    print ("\tTheta: ", end='')
-                    for r in thetas[j]:
-                        print (r.value, end=' ')
-                    print ("\n\tLikelihood: " + str (log_p_y_given_theta) \
-                            + "\n")
-                    print ("Strat_sum = " + str (strat_sum))
-                j += 1
+                print ("first temperature = " + str (ti))
+                print ("second temperature = " + str (tip1))
+                print ("log ml given first temperature = " + \
+                        str (exp_gv_ti))
+                print ("log ml given second temperature = " + \
+                        str (exp_gv_tip1))
 
-            strat_sum *= (del_strata / strata_size)
-            ml += strat_sum
-        print ("Calculated marginal likelihood: " + str (ml))
+        ml /= 2
+        print ("Calculated log marginal likelihood: " + str (ml))
         return ml

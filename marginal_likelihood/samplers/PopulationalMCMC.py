@@ -108,3 +108,15 @@ class PopulationalMCMC:
             sample.append (sub_sample[0])
             likls.append (likeli[0])
         return (betas, sample, likls)
+
+
+    def get_last_sampled (self, N):
+        betas = self.__betas
+        fc_mcmcs = self.__fc_mcmcs
+        sample = []
+        likelihoods = []
+        for i in range (len (betas)):
+            sub_sample, likeli = fc_mcmcs[i].get_last_sampled (N)
+            sample.append (sub_sample)
+            likelihoods.append (likeli)
+        return (betas, sample, likelihoods)

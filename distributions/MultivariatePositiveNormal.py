@@ -5,6 +5,7 @@ import numpy as np
 from numpy.random import multivariate_normal as np_multivar_normal
 from utils import safe_log
 from utils import safe_exp_ratio
+from utils import safe_exp
 
 class MultivariatePositiveNormal:
     """ This class implements a multivariate Normal random variable that
@@ -72,8 +73,7 @@ class MultivariatePositiveNormal:
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
-        raise NotImplementedError ("This method is not implemented.")
-
+        return safe_exp (self.log_pdf (x))
     
     def log_pdf (self, x):
         """ Returns the value of the probability density function of 

@@ -32,11 +32,11 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         n_strata = 10
         strata_size = 2
         fcmcmcs = self.create_list_of_fcmcmc (n_strata * \
-                strata_size + 2)
+                strata_size)
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fcmcmcs,
                 verbose=False)
         sample = pop_mcmc.get_sample (10)[0]
-        self.assertEqual (len (sample), 22)
+        self.assertEqual (len (sample), 20)
 
 
     def create_list_of_fcmcmc (self, n):

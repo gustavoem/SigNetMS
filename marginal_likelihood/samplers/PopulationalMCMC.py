@@ -27,8 +27,8 @@ class PopulationalMCMC:
         self.__n_strata = n_strata
         self.__strata_size = strata_size
         if betas == None:
-            self.__betas = PopulationalMCMC.sample_betas (n_strata * \
-                    strata_size)
+            self.__betas = PopulationalMCMC.sample_scheduled_betas \
+                (n_strata * strata_size)
         else:
             self.__betas = betas
         self.__fc_mcmcs = fc_mcmcs

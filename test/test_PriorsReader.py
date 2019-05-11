@@ -71,7 +71,7 @@ class TestPriorsReader (unittest.TestCase):
         model = SBML ()
         model.load_file ("input/model1.xml")
         theta = define_sbml_params_priors (model, 'input/model1.priors')
-        sbml_parameters = model.get_all_parameters ()
-        for t in theta:
+        sbml_parameters = model.get_all_param ()
+        for t in theta.get_model_parameters ():
             assert (t.name in sbml_parameters)
         

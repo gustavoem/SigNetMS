@@ -41,8 +41,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
             prior_variance = param_dist.variance ()
             sigma2 = prior_variance
             jump_S.append (sigma2)
-        print ("Starting jump S: ")
-        print (jump_S)
+        # print ("Starting jump S: ")
+        # print (jump_S)
         return jump_S
 
     
@@ -56,10 +56,10 @@ class AcceptingRateAMCMC (MetropolisHastings):
         for i in range (n):
             S[i, i] = self._jump_S[i]
         mu = t_vals
-        print ("Creating jump dist with mean: ")
-        print (t_vals)
-        print ("and variance: ")
-        print (S)
+        # print ("Creating jump dist with mean: ")
+        # print (t_vals)
+        # print ("and variance: ")
+        # print (S)
         jump_dist = MultivariatePositiveNormal (mu, S)
         return jump_dist
 
@@ -110,14 +110,14 @@ class AcceptingRateAMCMC (MetropolisHastings):
             so as recommended in section "Efficient Metopolis jumping 
             rules" from Bayesian Data Analysis (Third Edition), Gelman. 
             """
-        print ("Sigma started with: ")
+        # print ("Sigma started with: ")
         acceptance_rate = self.get_acceptance_ratio ()
         jump_S = self._jump_S
-        print (jump_S)
+        # print (jump_S)
         for i in range (len (jump_S)):
             if acceptance_rate > .4 and jump_S[i] < 10:
                 jump_S[i] += jump_S[i] * .5
             if acceptance_rate < .25 and jump_S[i] > 1e-4:
                 jump_S[i] -= jump_S[i] * .5
-        print ("Updated sigma to: ")
-        print (jump_S)
+        # print ("Updated sigma to: ")
+        # print (jump_S)

@@ -63,3 +63,15 @@ class TestPriorsReader (unittest.TestCase):
                 len (model.get_all_param ()))
         sigma = theta.get_experimental_error ()
         assert (sigma > 0)
+
+
+    def test_definition_of_sbml_parameters (self):
+        """ Tests if the priors have the correct parameter names of the
+        sbml model. """
+        model = SBML ()
+        model.load_file ("input/model1.xml")
+        theta = define_sbml_params_priors (model, 'input/model1.priors')
+        sbml_parameters = model.get_all_parameters ()
+        for t in theta:
+            assert (t.name in sbml_parameters)
+        

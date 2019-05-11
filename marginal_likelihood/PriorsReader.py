@@ -65,6 +65,7 @@ def define_sbml_params_priors (sbml, filename):
         for prior_p in default_priors.get_model_parameters ():
             if original_name == prior_p.name:
                 param_prior = prior_p.copy ()
+                param_prior.name = param
                 break
         
         if param_prior == None:

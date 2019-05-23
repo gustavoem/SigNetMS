@@ -35,3 +35,13 @@ The arguments related to the sampling algorithms are:
 The program also has optinal arguments
 * `--verbose` if you'd like a verbose run
 * `--help` if you need help
+
+## Sample inputs
+A sample command to run SigNetMS on `bioinformatics` dataset:
+
+`python SigNetMS.py input/bioinformatics/model[1-4].xml input/bioinformatics/model.priors input/bioinformatics/experiment.data 10000 1000 5000 5000`
+
+
+A sample command to run SigNetMS on `smallest` dataset:
+
+`python SigNetMS.py input/smallest/model[1-4].xml input/smallest/model[1-4]_gamma.priors input/smallest/experiment.data 10000 1000 5000 5000`

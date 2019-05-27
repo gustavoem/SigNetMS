@@ -22,6 +22,8 @@ use Populational Monte Carlo Markov Chain, which allow us to mix samples of diff
 ## Running SigNetMS
 To run SigNetMS, you will need to provide to the program some arguments that are related to the problem instance and some that are related to the sampling algorithms used to calculate the desired estimate. 
 
+`SigNetMS.py [-h] [--verbose [VERBOSE]] model priors experiment first_sampling_iterations sigma_update_n second_sampling_iterations third_sampling_iterations`
+
 The arguments related to the problem instance are:
 * `model` - an SBML file with defined kinetic laws;
 * `priors` - an XML file that with the prior distribution of the model parameters;
@@ -29,14 +31,14 @@ The arguments related to the problem instance are:
 Some examples of these files are provided in the `input` folder.
 
 The arguments related to the sampling algorithms are:
-* `first_sampling_iterations `
-* `sigma_update_n`
-* `second_sampling_iterations`
-* `third_sampling_iterations`
+* `first_sampling_iterations ` - number of iterations on the first sampling step;
+* `sigma_update_n` - number of iterations between updates of covariance matrix on the first step;
+* `second_sampling_iterations` - number of iterations on the second sampling step;
+* `third_sampling_iterations` - number of iterations on the third sampling step;
 
-The program also has optinal arguments
-* `--verbose` if you'd like a verbose run
-* `--help` if you need help
+The program also has optinal arguments.
+* `--verbose` if you'd like a verbose run.
+* `--help` if you need help.
 
 ## Sample inputs
 A sample command to run SigNetMS on `bioinformatics` dataset:

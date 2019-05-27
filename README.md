@@ -49,3 +49,14 @@ A sample command to run SigNetMS on `bioinformatics` dataset:
 A sample command to run SigNetMS on `smallest` dataset:
 
 `python SigNetMS.py input/smallest/model[1-4].xml input/smallest/model[1-4]_gamma.priors input/smallest/experiment.data 10000 1000 5000 5000`
+
+
+## Running tests
+We used the standard testing framework, `unittest`. To run the tests, you should first change directories to the `test` directory and then type commands such as: 
+* `python -m unittest` - to run all tests;
+* `python -m unittest discover test_distributions` - to run all tests on the `test_distributions` directory.
+
+
+## Installing SigNetMS
+SigNetMS is meant to be run with python versions above 3. A list of python packages necessary to use SigNetMS is available on `requirements.txt`. The simplest way to install the necessary packages is using pip (version 3 or above):
+`pip install -r requirements.txt --user`.

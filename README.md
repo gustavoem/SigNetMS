@@ -41,10 +41,16 @@ The program also has optinal arguments.
 * `--help` if you need help.
 
 ## Sample inputs
+### Bioinformatics
+The example we call bioinformatics is a model selection input presented on the work of Vyshemirsky and Girolami (2007). It is composed of four models. The model `model1.xml`, with parameters `k1 = 0.07`, `k2 = 0.6`, `k3 = 0.05`, `k4 = 0.3`, `V = 0.017`, `Km = 0.3`, is used to generate a simulation to which a gaussian error is added, generating 3 observations with noise, presented on `experiment.data` file. These observation are used as experimental data for model ranking. Three other models are present in this example, `model2.xml`, `model3.xml` and `model4.xml`; respectively, they represent a simplified version of model1, a version of model1 missing an "important" interaction, and a more complex version of model1. The prior distribution of parameters is available on `model.priors` file.
+
 A sample command to run SigNetMS on `bioinformatics` dataset:
 
 `python SigNetMS.py input/bioinformatics/model[1-4].xml input/bioinformatics/model.priors input/bioinformatics/experiment.data 10000 1000 5000 5000`
 
+### Smallest
+This example was created by Gustavo Estrela and Marcelo Reis and it is also composed of four models. Model `model1.xml` was used with parameters `k1 = 1.7e−4`, `k2 = 0.4`, `kcat3 = 2`, `K3m = 1.43e3`,
+`V4 = 1` and `K4m = 1.07e2` to generate 3 artificial observations of a pathway. Three other models are present in this example, `model2.xml`, `model3.xml` and `model4.xml`; respectively, they represent a model that is a simplification of model1, a model that is a more complex version of model1, and a copy of model1 that has two interactions inverted. The prior distribution for each model is available on `model*_gamma.priors` file.
 
 A sample command to run SigNetMS on `smallest` dataset:
 

@@ -71,13 +71,14 @@ class MultivariatePositiveNormal:
 
 
     def pdf (self, x):
-        """ Returns the value of the probability density function of 
-            this random variable on point x. """
+        """ Returns an approximate value of the probability density 
+            function of this random variable on point x. """
         return safe_exp (self.log_pdf (x))
+
     
     def log_pdf (self, x):
-        """ Returns the value of the probability density function of 
-            this random variable on point x. """
+        """ Returns an approximate value of the log of the probability 
+            density function of this random variable on point x. """
         mu = self.__mu
         S = self.__S
         inv_S = self.__get_S_inverse ()

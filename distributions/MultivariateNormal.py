@@ -6,7 +6,7 @@ from numpy.random import multivariate_normal as np_multivar_normal
 from utils import safe_log
 
 class MultivariateNormal:
-    """ This class implements a multivariate folded normal random 
+    """ This class implements a multivariate multivariate normal random 
         variable. """
 
     def __init__ (self, mu, Sigma):
@@ -53,9 +53,6 @@ class MultivariateNormal:
         S = self.__S
         if n is None:
             normal_values = np_multivar_normal (mu, S)
-            for i in range (len (normal_values)):
-                if normal_values[i] < 0:
-                    normal_values[i] *= -1
         else:        
             normal_values = np_multivar_normal (mu, S, n)
         return np.array (normal_values)

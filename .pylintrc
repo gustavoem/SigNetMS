@@ -68,7 +68,8 @@ max-module-lines=1000
 # `trailing-comma` allows a space between comma and closing bracket: (a, ).
 # `empty-line` allows space-only lines.
 no-space-check=trailing-comma,
-               dict-separator
+               dict-separator,
+               
 
 # Allow the body of a class to be on the same line as the declaration if body
 # contains single statement.
@@ -90,8 +91,7 @@ logging-modules=logging
 
 # List of note tags to take in consideration, separated by a comma.
 notes=FIXME,
-      XXX,
-      TODO
+      XXX
 
 
 [BASIC]
@@ -343,3 +343,7 @@ deprecated-modules=regsub,
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
 overgeneral-exceptions=Exception
+
+disable=R,
+        C,
+        c-extension-no-member

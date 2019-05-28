@@ -2,9 +2,9 @@ import sys
 sys.path.insert (0, '..')
 
 import unittest
-from marginal_likelihood.SBML import SBML
-from marginal_likelihood.ODES import ODES
-from marginal_likelihood.SBMLtoODES import sbml_to_odes 
+from model.SBML import SBML
+from model.ODES import ODES
+from model.SBMLtoODES import sbml_to_odes 
 
 class TestSBMLtoODES (unittest.TestCase):
     

@@ -5,8 +5,8 @@ import unittest
 import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
-from marginal_likelihood.RandomParameterList import RandomParameterList
-from marginal_likelihood.RandomParameter import RandomParameter
+from model.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
 from distributions.Gamma import Gamma
 from distributions.MultivariateLognormal import MultivariateLognormal
 

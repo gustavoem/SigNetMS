@@ -2,7 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import unittest
-from marginal_likelihood.CovarianceMatrix import calc_covariance
+from covariance_estimate import calc_covariance
 
 class TestCovarianceMatrix (unittest.TestCase):
 

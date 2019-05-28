@@ -6,7 +6,6 @@
 
 import numpy as np
 from scipy.stats import lognorm
-import marginal_likelihood.RandomParameter
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data

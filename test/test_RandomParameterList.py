@@ -2,8 +2,8 @@ import sys
 sys.path.insert (0, '..')
 
 import unittest
-from marginal_likelihood.RandomParameterList import RandomParameterList
-from marginal_likelihood.RandomParameter import RandomParameter
+from model.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
 from distributions.Gamma import Gamma
 
 

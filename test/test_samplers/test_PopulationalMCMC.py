@@ -3,19 +3,20 @@ sys.path.insert (0, '..')
 
 import unittest
 import numpy as np
-from marginal_likelihood.SBML import SBML
+from model.SBML import SBML
+from model.SBMLtoODES import sbml_to_odes
+from model.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
+from model.PriorsReader import define_sbml_params_priors
+from distributions.MultivariateLognormal import MultivariateLognormal
+from distributions.Gamma import Gamma
+from experiment.ExperimentSet import ExperimentSet
+from covariance_estimate import calc_covariance
 from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 from marginal_likelihood.samplers.PopulationalMCMC import \
         PopulationalMCMC
-from marginal_likelihood.SBMLtoODES import sbml_to_odes
-from marginal_likelihood.RandomParameterList import RandomParameterList
-from marginal_likelihood.RandomParameter import RandomParameter
-from marginal_likelihood.CovarianceMatrix import calc_covariance
-from marginal_likelihood.PriorsReader import define_sbml_params_priors
-from distributions.MultivariateLognormal import MultivariateLognormal
-from distributions.Gamma import Gamma
-from experiment.ExperimentSet import ExperimentSet
+
 
 class TestFixedCovarianceMCMC (unittest.TestCase):
     

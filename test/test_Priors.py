@@ -4,8 +4,8 @@ sys.path.insert (0, '..')
 import os
 import unittest
 import numpy as np
-from marginal_likelihood.PriorsReader import read_priors_file
-from marginal_likelihood.RandomParameter import RandomParameter
+from model.PriorsReader import read_priors_file
+from model.RandomParameter import RandomParameter
 from distributions.Gamma import Gamma
 
 

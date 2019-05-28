@@ -4,12 +4,12 @@ sys.path.insert(0, '..')
 import unittest
 import math
 import numpy as np
-from marginal_likelihood.ODES import ODES
+from model.ODES import ODES
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.Gamma import Gamma
 from experiment.Experiment import Experiment
-from marginal_likelihood.RandomParameterList import RandomParameterList
-from marginal_likelihood.RandomParameter import RandomParameter
+from model.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
 
 class TestLikelihoodFunction (unittest.TestCase):
     

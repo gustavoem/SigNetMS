@@ -3,7 +3,7 @@ sys.path.insert(0, '..')
 
 import unittest
 import re
-from marginal_likelihood.SBML import SBML
+from model.SBML import SBML
 
 
 class TestSBMLMethods (unittest.TestCase):

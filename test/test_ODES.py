@@ -4,7 +4,7 @@ sys.path.insert(0, '..')
 import unittest
 import math
 import numpy as np
-from marginal_likelihood.ODES import ODES
+from model.ODES import ODES
 
 
 class TestODESMethods (unittest.TestCase):

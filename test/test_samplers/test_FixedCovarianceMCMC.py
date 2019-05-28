@@ -3,15 +3,15 @@ sys.path.insert (0, '..')
 
 import unittest
 import numpy as np
-from marginal_likelihood.SBML import SBML
-from marginal_likelihood.SBMLtoODES import sbml_to_odes
-from marginal_likelihood.PriorsReader import define_sbml_params_priors
+from model.SBML import SBML
+from model.SBMLtoODES import sbml_to_odes
+from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
 from distributions.Gamma import Gamma
 from distributions.MultivariateLognormal import MultivariateLognormal
-from marginal_likelihood.RandomParameterList import RandomParameterList
-from marginal_likelihood.RandomParameter import RandomParameter
-from marginal_likelihood.CovarianceMatrix import calc_covariance
+from model.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
+from covariance_estimate import calc_covariance
 from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 
@@ -21,7 +21,8 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         sbml = SBML ()
         sbml.load_file ('input/simple_enzymatic.xml')
         self.__model = sbml_to_odes (sbml)
-        self.__experiments = ExperimentSet ('input/simple_enzymatic.data')
+        self.__experiments = \
+                ExperimentSet ('input/simple_enzymatic.data')
         self.__theta_priors = define_sbml_params_priors (sbml, 
                 'input/simple_enzymatic.priors')
 

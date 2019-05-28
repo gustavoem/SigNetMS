@@ -2,9 +2,9 @@ import sys
 sys.path.insert (0, '..')
 
 import unittest
-from marginal_likelihood.PriorsReader import read_priors_file
-from marginal_likelihood.PriorsReader import define_sbml_params_priors 
-from marginal_likelihood.SBML import SBML
+from model.PriorsReader import read_priors_file
+from model.PriorsReader import define_sbml_params_priors 
+from model.SBML import SBML
 import numpy as np
 
 class TestPriorsReader (unittest.TestCase):

@@ -1,5 +1,5 @@
-from marginal_likelihood.RandomParameter import RandomParameter
-from marginal_likelihood.RandomParameterList import RandomParameterList
+from model.RandomParameter import RandomParameter
+from model.RandomParameterList import RandomParameterList
 from distributions.Gamma import Gamma
 from distributions.Lognormal import Lognormal
 from utils import clean_tag

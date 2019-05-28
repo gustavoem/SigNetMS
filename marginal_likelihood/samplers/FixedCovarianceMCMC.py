@@ -3,9 +3,6 @@ from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \
         AdaptingCovarianceMCMC
-from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from marginal_likelihood.CovarianceMatrix import calc_covariance
-from distributions.MultivariateLognormal import MultivariateLognormal
 
 class FixedCovarianceMCMC (AdaptingCovarianceMCMC):
     """ Objects of this class are able to return a sample of theta using

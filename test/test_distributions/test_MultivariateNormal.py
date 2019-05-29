@@ -52,5 +52,20 @@ class TestMultivariateLognormal (unittest.TestCase):
              [0, 0, 1]]
         X = MultivariateNormal (mu, S)
         x = [1, 1, 1]
-        analytic = 1 / np.sqrt ((2 * np.pi) ** 3 )
-        # assert (abs (X.pdf (x) - analytic) < 1e-4)
+        analytic = 1 / np.sqrt ((2 * np.pi) ** 3) * np.exp (-.5 * 3)
+        assert (abs (X.pdf (x) - analytic) < 1e-4)
+
+
+    def test_copy (self):
+        """ Tests if we can copy an object. """
+        mu = [1, 2, 3, 4]
+        S = np.array ([[2, 0, 0, 0], 
+             [0, 1, 0, 0], 
+             [0, 0, 4, 1],
+             [0, 0, 1, 2]])
+        X = MultivariateNormal (mu, S)
+        Y = X.copy ()
+        x = [1, 1, 1, 1]
+        assert all (abs (Y.mean () - X.mean ()) < 1e-4)
+        assert (abs (X.pdf (x) - Y.pdf (x)) < 1e-4)
+

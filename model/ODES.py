@@ -41,7 +41,7 @@ class ODES:
     def print_equations (self):
         """ Prints all var equations. """
         for var in self.index_map:
-            print ('d' + var + '/dt = ', end='')
+            print ("d" + var + "/dt = ", end="")
             print (self.rate_eq[self.index_map[var]], end='\n\n')
 
 
@@ -49,10 +49,10 @@ class ODES:
         """ Adds an equation representing the change rate of a variable.
         """
         if var in self.index_map:
-            self.rate_eq[index_map[var]] = formula
+            self.rate_eq[self.index_map[var]] = formula
             return
         
-        idx = self.__create_var (var)
+        self.__create_var (var)
         self.rate_eq.append (formula)
         self.initial_state.append (None)
 
@@ -61,7 +61,7 @@ class ODES:
         """ Defines the initial value of a variable. """
         idx = None
         if var not in self.index_map:
-            idx = __create_var (var)
+            idx = self.__create_var (var)
         else:
             idx = self.index_map[var]
         self.initial_state[idx] = value
@@ -80,7 +80,7 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        y, infodict = odeint (sys_f, initial_state, time_points, 
+        y, _ = odeint (sys_f, initial_state, time_points, 
                 mxstep=5000, full_output=True, tfirst=True, atol=1e-6,
                 rtol=1e-8)
         return y
@@ -99,7 +99,7 @@ class ODES:
         i = 1
         while ode.t < time_points[-1]: # and ode.succesful ():
             next_point = min (ode.t + dt, time_points[i])
-            ode.integrate (time_points[i])
+            ode.integrate (next_point)
             if ode.t >= time_points[i]:
                 y.append (ode.y)
                 i += 1
@@ -143,7 +143,8 @@ class ODES:
             initial_state_map=None):
         """ Integrates the system and returns an array containing the
             values of exp on each time-step evaluated of the system."""
-        system_states = self.evaluate_on (time_points)
+        system_states = self.evaluate_on (time_points, \
+                initial_state_map)
         aeval = Interpreter ()
         values = []
         for i in range (len (time_points)):
@@ -176,10 +177,10 @@ class ODES:
 
         # Parameters are constant over time
         symbol_table = dict (self.param_table)
-
+        
+        #pylint: disable=unused-argument
         def system_function (t, state):
             dstatedt = []
-            current_state = {}
 
             for var, idx in self.index_map.items ():
                 symbol_table[var] = state[idx]
@@ -217,6 +218,8 @@ class ODES:
         # J is a matrix of lambdas
         # define a function here that returns the J matrix evaluated
         symbol_table = dict (self.param_table)
+
+        #pylint: disable=unused-argument
         def jacobian_function (state, t):
             for var, idx in self.index_map.items ():
                 symbol_table[var] = state[idx]
@@ -236,7 +239,7 @@ class ODES:
         """ Returns the derivative of f in respect to x. This function
             only works for f that depends only linearly (or inverse 
             linearly) on x. """
-        var_pattern = r'(^|\s|\+|-|\*|\/)(' + x + ')($|\s|\+|-|\*|\/)'
+        var_pattern = r"(^|\s|\+|-|\*|\/)(" + x + r")($|\s|\+|-|\*|\/)"
         var = x
         fX = re.sub (var_pattern, lambda m: m.group (1) + ' X ' + \
                 m.group (3), f)
@@ -276,11 +279,15 @@ class ODES:
         x = 0
         try:
             x = eval (func)
-        except Exception as e:
+        except NameError as e:
             print ("Couldn't evaluate formula: \n " +
                     "\t" + func + "\n"
                     "Did you define system variables and " +
                     "parameters correctly?\n")
+            print (e)
+        except SyntaxError as e:
+            print ("Couldn't evaluate formula: \n " +
+                    "\t" + func + "\n")
             print (e)
         return x
 

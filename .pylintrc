@@ -307,6 +307,8 @@ valid-metaclass-classmethod-first-arg=mcs
 # Allow wildcard imports from modules that define __all__.
 allow-wildcard-with-all=no
 
+ignored-modules=ODES
+
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
 # only in one or another interpreter, leading to false positives when analysed.
@@ -346,4 +348,5 @@ overgeneral-exceptions=Exception
 
 disable=R,
         C,
-        c-extension-no-member
+        c-extension-no-member,
+        assignment-from-no-return # pylint bug :(

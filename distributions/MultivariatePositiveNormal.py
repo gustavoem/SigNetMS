@@ -22,30 +22,40 @@ class MultivariatePositiveNormal:
             multivariate normal distribution. """
         self.__mu = np.array (mu)
         self.__S = np.array (Sigma)
-        self.__inv_S = None
-        self.__det_S = None
+        self._inv_S = None
+        self._det_S = None
 
     
     def copy (self):
         """ Returns a copy of this object. """
-        cpy = MultivariateNormal (self.__mu, self.__S)
-        cpy.__inv_S = self.__inv_S
-        cpy.__det_S = self.__det_S
+        cpy = MultivariatePositiveNormal (self.__mu, self.__S)
+        cpy.set_S_inverse (self._inv_S)
+        cpy.set_S_determinant (self._det_S)
         return cpy
+
+    
+    def set_S_inverse (self, inv_S):
+        """ Sets the inverse of S, if you already have it. """
+        self._inv_S = inv_S
+
+
+    def set_S_determinant (self, det_S):
+        """ Sets the determinant of S, if you already have it. """
+        self._det_S = det_S
 
 
     def __get_S_inverse (self):
         """ Returns the inverse of the S matrix. """
-        if self.__inv_S is None:
-            self.__inv_S = np.linalg.inv (self.__S)
-        return self.__inv_S
+        if self._inv_S is None:
+            self._inv_S = np.linalg.inv (self.__S)
+        return self._inv_S
 
 
     def __get_S_determinant (self):
         """ Returns the determinant of the S matrix. """
-        if self.__det_S is None:
-            self.__det_S = np.linalg.det (self.__S)
-        return self.__det_S
+        if self._det_S is None:
+            self._det_S = np.linalg.det (self.__S)
+        return self._det_S
 
 
     def mean (self):
@@ -80,7 +90,6 @@ class MultivariatePositiveNormal:
         """ Returns an approximate value of the log of the probability 
             density function of this random variable on point x. """
         mu = self.__mu
-        S = self.__S
         inv_S = self.__get_S_inverse ()
         n = len (mu)
         x_minus_mu = x - mu
@@ -95,7 +104,6 @@ class MultivariatePositiveNormal:
         """ Returns the pdf value of x as if this instance were Normal. 
         """
         mu = self.__mu
-        S = self.__S
         n = len (mu)
         inv_S = self.__get_S_inverse ()
         det_S = self.__get_S_determinant ()

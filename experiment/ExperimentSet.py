@@ -14,6 +14,7 @@ class ExperimentSet:
         self.__experiment_set = []
         if filename != "":
             self.load_data_file (filename)
+        self.__iterator = None
     
     
     def __getitem__ (self, key):
@@ -23,19 +24,13 @@ class ExperimentSet:
 
     def __iter__ (self):
         """ Iterator start. """
-        self.__current = 0
-        return self
+        self.__iterator = iter (self.__experiment_set)
+        return self.__iterator
 
 
     def __next__ (self):
         """ Iterator step. """
-        if self.__current >= len (self.__experiment_set):
-            self.__current = 0
-            raise StopIteration
-        else:
-            a = self.__experiment_set[self.__current]
-            self.__current += 1
-            return a
+        return next (self.__iterator)
 
 
     def add (self, experiment):
@@ -75,8 +70,7 @@ class ExperimentSet:
                 elif clean_tag (children) == "condition" :
                     continue
                 elif clean_tag (children) == "interpretation":
-                    interp = self.__read_interpretation (children, 
-                            file_name)
+                    interp = self.__read_interpretation (children)
                 else:
                     print ("Unexpected child of dataset in" + file_name)
             rows = np.array (rows)
@@ -95,7 +89,7 @@ class ExperimentSet:
             self.add (e)
 
     @staticmethod
-    def __read_interpretation (interp, file_name):
+    def __read_interpretation (interp):
         """ Reads the interpretation subtree of an experiment data file.  
         """ 
         interp_arr = [None] * len (interp)
@@ -140,7 +134,7 @@ class ExperimentSet:
                 value_elm = etree.SubElement (row, "element")
                 value_elm.set ("value", str (exp.values[i]))
                 value_elm.set ("index", "1")
-            condition_elm = etree.SubElement (exp_root, "condition")
+            etree.SubElement (exp_root, "condition")
             interp_elm = etree.SubElement (exp_root, "interpretation")
             time_interp = etree.SubElement (interp_elm, "time")
             time_interp.set ("col", "0")

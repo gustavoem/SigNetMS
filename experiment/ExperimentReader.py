@@ -1,11 +1,4 @@
-import sys
-sys.path.insert (0, '..')
-
 from experiment.Experiment import Experiment
-from experiment.ExperimentSet import ExperimentSet
-from lxml import etree
-from utils import clean_tag
-import numpy as np
 
 def read_txt_experiment_file (file_name, var):
     """ This function can read experiment files. The experiment data is 
@@ -30,7 +23,6 @@ def read_txt_experiment_file (file_name, var):
         
         times.append (l[0])
         if (experiment_values == []):
-            nof_exp_per_line = len (l) - 1
             experiment_values = [[] for i in range (len (l) - 1)]
         for i in range (1, len (l)):
             experiment_values[i - 1].append (float (l[i]))

@@ -1,4 +1,3 @@
-import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \

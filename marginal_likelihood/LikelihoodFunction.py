@@ -5,7 +5,6 @@
 #Biochemical Species
 
 import numpy as np
-from scipy.stats import lognorm
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data

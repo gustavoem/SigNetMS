@@ -1,5 +1,3 @@
-import numpy as np
-
 class RandomParameterList:
     """ This class stores a list of random parameters. """
 
@@ -7,7 +5,6 @@ class RandomParameterList:
         """ Default constructor. """
         self.__param_list = []
         self.__experimental_error = None
-        self.__current = None
         self.__iterator = None
 
 

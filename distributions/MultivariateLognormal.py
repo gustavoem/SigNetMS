@@ -15,30 +15,40 @@ class MultivariateLognormal:
             multivariate normal distribution. """
         self.__mu = np.array (mu)
         self.__S = np.array (Sigma)
-        self.__inv_S = None
-        self.__det_S = None
+        self._inv_S = None
+        self._det_S = None
 
 
     def copy (self):
         """ Returns a copy of this object. """
         cpy = MultivariateLognormal (self.__mu, self.__S)
-        cpy.__inv_S = self.__inv_S
-        cpy.__det_S = self.__det_S
+        cpy.set_S_inverse (self._inv_S)
+        cpy.set_S_determinant (self._det_S)
         return cpy
+
+
+    def set_S_inverse (self, inv_S):
+        """ Sets the inverse of S, if you already have it. """
+        self._inv_S = inv_S
+
+
+    def set_S_determinant (self, det_S):
+        """ Sets the determinant of S, if you already have it. """
+        self._det_S = det_S
 
 
     def __get_S_inverse (self):
         """ Returns the inverse of the S matrix. """
-        if self.__inv_S is None:
-            self.__inv_S = np.linalg.inv (self.__S)
-        return self.__inv_S
+        if self._inv_S is None:
+            self._inv_S = np.linalg.inv (self.__S)
+        return self._inv_S
 
 
     def __get_S_determinant (self):
         """ Returns the determinant of the S matrix. """
-        if self.__det_S is None:
-            self.__det_S = np.linalg.det (self.__S)
-        return self.__det_S
+        if self._det_S is None:
+            self._det_S = np.linalg.det (self.__S)
+        return self._det_S
 
 
     def mean (self):
@@ -68,7 +78,6 @@ class MultivariateLognormal:
             return 0
             
         mu = self.__mu
-        S = self.__S
         n = len (mu)
         inv_S = self.__get_S_inverse ()
         det_S = self.__get_S_determinant ()
@@ -125,9 +134,7 @@ class MultivariateLognormal:
         normal_S = np.zeros ((n, n))
         for i in range (n):
             for j in range (i):
-                # normal_S_ij = 1 + S_ij / exp (normal_mu_i + 
-                #       normal_mu_j + 1/2 (normal_S_ii + normal_S_jj)) 
-                nSiinSjj = normal_S_diagonal[i] + normal_S_diagonal[j]
+                # normal_S_ij = ln [S_ij / (mu_i * mu_j) + 1]
                 muimuj = mu[i] * mu[j]
                 # print ("log_arg = 1 + S[" + str(i)+"]["+str(j)+"] / muimuj = ")
                 # print ("1 + " + str(S[i][j]) + " / " + str (muimuj))

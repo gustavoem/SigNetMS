@@ -2,6 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import numpy as np
+from distributions.Gamma import Gamma
 from utils import safe_log
 
 
@@ -62,7 +63,6 @@ class DiscreteLaplacian:
     def rvs (self, n=None):
         """ Returns independend observations of this random variable.
         """
-        N = self.__N
         if n is None:
             return self.__randomly_variate ()
         else:

@@ -1,5 +1,4 @@
 import numpy as np
-from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_exp_ratio
 from utils import safe_pow_exp_ratio
 from distributions.DiscreteLaplacian import DiscreteLaplacian
@@ -50,7 +49,7 @@ class PopulationalMCMC:
         for i in range (n_strata):
             strata_start = (i /  n_strata) ** sched_power
             strata_end = ((i + 1) / n_strata) ** sched_power
-            for j in range (strata_size):
+            for _ in range (strata_size):
                 x = np.random.uniform (strata_start, strata_end)
                 betas.append (x)
             betas.sort ()

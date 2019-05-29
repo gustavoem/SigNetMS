@@ -33,7 +33,7 @@ class Experiment:
             element1.set ("value", str (self.values[i]))
             element1.set ("index", "1")
         
-        condition = etree.SubElement (root, "condition")
+        etree.SubElement (root, "condition")
         interpretation = etree.SubElement (root, "interpretation")
         time_interp = etree.SubElement (interpretation, "time")
         time_interp.set ("col", "0")
@@ -42,7 +42,7 @@ class Experiment:
         var_interp.set ("col", "1")
 
         tree = etree.ElementTree (root)
-        tree.write(file_name, pretty_print=True, encoding='utf-8', 
+        tree.write(filename, pretty_print=True, encoding='utf-8', 
                 standalone=True, xml_declaration=True)
 
     def get_as_abcsysbio_syntax (self, i=None):

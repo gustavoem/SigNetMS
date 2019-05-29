@@ -2,11 +2,6 @@
 # observed data using the methodology presented in "Inferring Signaling 
 # Pathway Topologies from Multiple Perturbation Measurements of Specific 
 # Biochemical Species", Tian-Rui Xu, et. al.
-
-from model.RandomParameter import RandomParameter
-from model.RandomParameterList import RandomParameterList
-from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from model.ODES import ODES
 from marginal_likelihood.samplers.AcceptingRateAMCMC import \
         AcceptingRateAMCMC
 from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \
@@ -15,10 +10,6 @@ from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 from marginal_likelihood.samplers.PopulationalMCMC import \
         PopulationalMCMC
-from utils import plot_theta_var_sample
-import numpy as np
-import random
-import re
 
 
 class MarginalLikelihood:
@@ -130,7 +121,7 @@ class MarginalLikelihood:
         S = adap_cov_mcmc.get_jump_covariance ()
         start_t, start_l = adap_cov_mcmc.get_last_sampled (1)
         fc_mcmcs = []
-        for i in range (m):
+        for _ in range (m):
             sampler = FixedCovarianceMCMC (theta_prior, model, 
                     experiments, S)
             sampler.define_start_sample (start_t, start_l)

@@ -1,15 +1,15 @@
 from SBML import SBML
-from ODES import ODES
 from SBMLtoODES import sbml_to_odes
 from Experiment import Experiment
+from ExperimentSet import ExperimentSet
 import numpy as np
 
 
-def add_noise (values):
-    for i in range (len (values)):
+def add_noise (vals):
+    for j in range (len (vals)):
         eps = np.random.normal (0, .01)
-        if values[i] + eps > 0:
-            values[i] += eps
+        if vals[j] + eps > 0:
+            vals[j] += eps
 
 
 sbml = SBML ()
@@ -18,6 +18,7 @@ odes = sbml_to_odes (sbml)
 time = [0, 2, 5, 10, 20, 40, 60, 100]
 values = odes.evaluate_on (time)
 
+exp_set = ExperimentSet ()
 for i in range (3):
     noised_values = {}
     for x in values:
@@ -25,5 +26,6 @@ for i in range (3):
 
     add_noise (noised_values["Rpp"])
     experiment = Experiment (time, noised_values["Rpp"], "Rpp")
-    experiment.save_to_file ('../input/bioinformatics/ex_' + str (i) + \
-            '.data')
+    exp_set.add (experiment)
+
+exp_set.save_to_file ('../input/bioinformatics/experiment.data')

@@ -72,7 +72,6 @@ class MultivariateNormal:
         """ Returns the value of the probability density function of 
             this random variable on point x. """
         mu = self.__mu
-        S = self.__S
         n = len (mu)
         inv_S = self.__get_S_inverse ()
         det_S = self.__get_S_determinant ()

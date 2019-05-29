@@ -60,7 +60,7 @@ class MetropolisHastings:
             the parameter. """
         new_t = self._theta.get_copy ()
         for p in new_t:
-            val = p.set_rand_value ()
+            p.set_rand_value ()
         new_l = self._calc_log_likelihood (new_t)
         self._sample.append (new_t)
         self._sample_log_likelds.append (new_l)
@@ -82,7 +82,7 @@ class MetropolisHastings:
                     + "Try using the start_sample_from_prior () " \
                     + "method.")
 
-        for i in range (N):
+        for _ in range (N):
             old_t = self._sample[-1]
             old_l = self._sample_log_likelds[-1]
             new_t = self.propose_jump (old_t)

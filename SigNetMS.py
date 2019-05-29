@@ -1,12 +1,8 @@
 from model.SBML import SBML
-from model.ODES import ODES
 from model.SBMLtoODES import sbml_to_odes
 from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
-from model.PriorsReader import read_priors_file
 from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
-import numpy as np
-import re
 
 import argparse
 

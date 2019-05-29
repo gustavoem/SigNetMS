@@ -170,24 +170,23 @@ class ODES:
         """ Creates a function that describes the dynamics of the 
             system. """
 
-        evaluable_formulas = []
-        for formula in self.rate_eq:
-            formula = ODES.__make_evaluable (formula)
-            evaluable_formulas.append (formula)
-
+        rate_eq_evaluator = Interpreter ()
         # Parameters are constant over time
-        symbol_table = dict (self.param_table)
+        for param in self.param_table:
+            rate_eq_evaluator.symtable[param] = self.param_table[param]
         
         #pylint: disable=unused-argument
         def system_function (t, state):
             dstatedt = []
 
+            # Complete symtable with states
             for var, idx in self.index_map.items ():
-                symbol_table[var] = state[idx]
+                rate_eq_evaluator.symtable[var] = state[idx]
 
             for i in range (len (state)):
-                x = ODES.__calc_evaluable_func (evaluable_formulas[i], 
-                        symbol_table)
+                # x = ODES.__calc_evaluable_func (evaluable_formulas[i], 
+                        # symbol_table)
+                x = rate_eq_evaluator (self.rate_eq[i])
                 dstatedt.append (x)
             return dstatedt
 

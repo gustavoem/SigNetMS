@@ -7,6 +7,8 @@ class RandomParameterList:
         """ Default constructor. """
         self.__param_list = []
         self.__experimental_error = None
+        self.__current = None
+        self.__iterator = None
 
 
     def __getitem__ (self, key):
@@ -16,19 +18,13 @@ class RandomParameterList:
 
     def __iter__ (self):
         """ Iterator start. """
-        self.__current = 0
-        return self
+        self.__iterator = iter (self.__param_list)
+        return self.__iterator
 
 
     def __next__ (self):
         """ Iterator step. """
-        if self.__current >= len (self.__param_list):
-            self.__current = 0
-            raise StopIteration
-        else:
-            a = self.__param_list[self.__current]
-            self.__current += 1
-            return a
+        return next (self.__iterator)
 
     
     def get_copy (self):

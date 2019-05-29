@@ -72,6 +72,7 @@ class TestRandomParameterList (unittest.TestCase):
         theta.append (p2)
         self.assertEqual (theta[0].name, 'p1')
         self.assertEqual (theta[1].name, 'p2')
+
         
     def test_get_experimental_error (self):
         """ Tests if we can have an experimental error on the list of
@@ -89,3 +90,25 @@ class TestRandomParameterList (unittest.TestCase):
         theta.append (p2)
         
         self.assertEqual (theta.get_experimental_error (), 123)
+
+
+    def test_get_iterator (self):
+        """ Tests if we can get an iterator of the object. """
+        p1 = RandomParameter ('p1', Gamma (2, 2))
+        p2 = RandomParameter ('p2', Gamma (3, 2))
+        sigma = RandomParameter ('sigma', Gamma (2, .1))
+        p1.value = 1
+        p2.value = 2
+        sigma.value = 123
+        theta = RandomParameterList ()
+        theta.append (p1)
+        theta.append (p2)
+        theta.set_experimental_error (sigma)
+
+        my_iterator = iter (theta)
+        it_1 = next (my_iterator)
+        assert (it_1.name == 'p1')
+        it_2 = next (my_iterator)
+        assert (it_2.name == 'p2')
+        it_3 = next (my_iterator)
+        assert (it_3.name == 'sigma')

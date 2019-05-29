@@ -170,8 +170,9 @@ class ODES:
         """ Creates a function that describes the dynamics of the 
             system. """
 
+        # Start the symbol table of intepreter with parameter values
+        # because they are constant over time.
         rate_eq_evaluator = Interpreter ()
-        # Parameters are constant over time
         for param in self.param_table:
             rate_eq_evaluator.symtable[param] = self.param_table[param]
         
@@ -179,14 +180,13 @@ class ODES:
         def system_function (t, state):
             dstatedt = []
 
-            # Complete symtable with states
+            # Add variables states to the interpreter symbol table
             for var, idx in self.index_map.items ():
                 rate_eq_evaluator.symtable[var] = state[idx]
 
             for i in range (len (state)):
-                # x = ODES.__calc_evaluable_func (evaluable_formulas[i], 
-                        # symbol_table)
-                x = rate_eq_evaluator (self.rate_eq[i])
+                formula = self.rate_eq[i]
+                x = ODES.__calc_func (formula, {}, rate_eq_evaluator)
                 dstatedt.append (x)
             return dstatedt
 
@@ -253,31 +253,23 @@ class ODES:
     def __formula_to_lambda (formula):
         """ Given a string formula, transform it on a lambda function. 
         """
-        evaluable_formula = ODES.__make_evaluable (formula)
         def func (symbol_table):
-            return ODES.__calc_evaluable_func (evaluable_formula, 
-                    symbol_table)
+            return ODES.__calc_func (formula, symbol_table)
         return func
 
 
     @staticmethod
-    def __make_evaluable (formula):
-        """ Transforms a formula in an evaluable formula. We do that by
-            replacing a variable var by symbol_table[var] in the 
-            formula. """
-        new_formula = re.sub (r'(([A-z]|_)\w*)', 
-                lambda m: 
-                    m.group (0) if m.group (0) == "pow" 
-                    else "symbol_table['" + m.group (0) + "']", formula)
-        return new_formula
-
-
-    @staticmethod
-    def __calc_evaluable_func (func, symbol_table):
+    def __calc_func (func, symbol_table, interpreter=None):
         """ Evaluate func in the scope of symbol table. """
         x = 0
+        if interpreter == None:
+            interpreter = Interpreter ()
+
+        for symbol in symbol_table:
+            interpreter.symtable[symbol] = symbol_table[symbol]
+        
         try:
-            x = eval (func)
+            x = interpreter (func)
         except NameError as e:
             print ("Couldn't evaluate formula: \n " +
                     "\t" + func + "\n"
@@ -306,8 +298,7 @@ class ODES:
                 symbol_table = {}
                 for var in var_list:
                     symbol_table[var] = values_map[var][i]
-                e_exp = ODES.__make_evaluable (exp)
-                v = ODES.__calc_evaluable_func (e_exp, symbol_table)
+                v = ODES.__calc_func (exp, symbol_table)
                 values.append (v)
             plt.plot (t, values)
         plt.legend (legend)

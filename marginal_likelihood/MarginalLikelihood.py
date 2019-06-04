@@ -11,7 +11,7 @@ from marginal_likelihood.samplers.FixedCovarianceMCMC import \
 from marginal_likelihood.samplers.PopulationalMCMC import \
         PopulationalMCMC
 
-
+from parallel_map import parallel_map
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
@@ -42,13 +42,39 @@ class MarginalLikelihood:
         self.__strata_size = strata_size
         self.__verbose = verbose
 
+    
+    @staticmethod
+    def __run_phase_one_and_two (temp, experiments, model, theta_prior,
+            n_acc, n_adap_cov, n_sigma_update, verbose):
+        """ Map function to run phase 2 and 3 for each temperature. """
+        # Phase 1
+        acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments, 
+                n_sigma_update, verbose=verbose)
+        acc_mcmc.set_temperature (temp)
+        acc_mcmc.start_sample_from_prior ()
+        sample, likelis = acc_mcmc.get_sample (n_acc)
 
+        # Phase 2
+        adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
+                experiments, verbose=verbose)
+        adap_cov_mcmc.set_temperature (temp)
+        adap_cov_mcmc.define_start_sample (sample, likelis)
+        sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
+
+        # Construct phase 3 local temperature sampler
+        S = adap_cov_mcmc.get_jump_covariance ()
+        fc_mcmc = FixedCovarianceMCMC (theta_prior, model, 
+                experiments, S, t=temp, verbose=verbose)
+        theta = sample[-1]
+        log_likeli = likelis[-1]
+        fc_mcmc.define_start_sample ([theta], [log_likeli])
+        return fc_mcmc
+
+        
     def estimate_marginal_likelihood (self, experiments, model, 
             theta_prior):
         """ This function estimates the marginal likelihood of a  model.
         """
-        n_acc = self.__phase1_iterations
-        n_adap_cov = self.__phase2_iterations
         n_pop = self.__phase3_iterations
         n_strata = self.__n_strata
         strata_size = self.__strata_size
@@ -56,44 +82,20 @@ class MarginalLikelihood:
 
         betas = PopulationalMCMC.sample_scheduled_betas (n_strata * 
                 strata_size)
-        fc_mcmcs = []
-
         print ("Phase 1 and 2 starts.")
-        for b in betas:
-            if verbose:
-                print ("Temperature t = " + str (b))
-
-            # Phase 1
-            acc_mcmc = AcceptingRateAMCMC (theta_prior, model, 
-                    experiments, self.__sigma_update_n, verbose=verbose)
-            acc_mcmc.set_temperature (b)
-            acc_mcmc.start_sample_from_prior ()
-            sample, likelis = acc_mcmc.get_sample (n_acc)
-
-            # Phase 2
-            adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
-                    experiments, verbose=verbose)
-            adap_cov_mcmc.set_temperature (b)
-            adap_cov_mcmc.define_start_sample (sample, likelis)
-            sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)
-
-            # Construct phase 3 local temperature sampler
-            S = adap_cov_mcmc.get_jump_covariance ()
-            fc_mcmc = FixedCovarianceMCMC (theta_prior, model, 
-                    experiments, S, t=b, verbose=verbose)
-            theta = sample[-1]
-            log_likeli = likelis[-1]
-            fc_mcmc.define_start_sample ([theta], [log_likeli])
-            fc_mcmcs.append (fc_mcmc)
-           
+        phase_1_n_2_f = lambda temp : \
+                MarginalLikelihood.__run_phase_one_and_two (temp, \
+                experiments, model, theta_prior, 
+                self.__phase1_iterations, self.__phase2_iterations,
+                self.__sigma_update_n, False) 
+        nof_process = 4
+        fc_mcmcs = parallel_map (phase_1_n_2_f, betas, nof_process)
+                       
         if verbose:
             print ("Phase 3 starts.")
         # Phase 3
-        # fc_mcmcs = self.__create_fcmcmc_samplers (adap_cov_mcmc, 
-                # n_strata * strata_size, experiments, model, theta_prior)
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs,
                 betas=betas, verbose=verbose)
-        
         pop_mcmc.get_sample (n_pop)
         betas, thetas, log_ls = pop_mcmc.get_last_sampled (n_pop // 4)
         

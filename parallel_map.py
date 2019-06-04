@@ -1,6 +1,4 @@
-from multiprocessing import Pool
 import multiprocessing
-import random
 
 # This solution is inspired on the solution of klaus se on the Stack 
 # Overflow thread:
@@ -27,8 +25,10 @@ def parallel_map (f, X, nof_process):
         p.start ()
 
     sent = [q_in.put ((i, x)) for i, x in enumerate (X)]
-    [q_in.put ((None, None)) for _ in range (nof_process)]
-    [p.join () for p in proc]
+    # sends a final signal to every worker
+    for _ in range (nof_process):
+        q_in.put ((None, None))
+    for p in proc:
+        p.join ()
     res = [q_out.get () for _ in range (len (sent))]
-
     return [x for i, x in sorted (res)]

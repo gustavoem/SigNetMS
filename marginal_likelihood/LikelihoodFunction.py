@@ -38,14 +38,16 @@ class LikelihoodFunction:
         return log_l
 
 
-    def __get_sys_measure (self, measure_expression, t, theta):
+    def __get_sys_measure (self, measure_expression, t, theta, 
+            initial_concentrations=None):
         """ Calculates the values of the measure on times t and with 
             theta parameters. theta should be a RandomParameter object. """
         if (theta is not None):
             for param in theta.get_model_parameters ():
                 self.__ode.define_parameter (param.name, param.value)
     
-        return self.__ode.evaluate_exp_on (measure_expression, t)
+        return self.__ode.evaluate_exp_on (measure_expression, t, \
+                initial_state_map=initial_concentrations)
 
 
     def get_log_likelihood (self, experiments, theta):
@@ -54,11 +56,17 @@ class LikelihoodFunction:
             measure, calculates the likelihood of all expeirments. """
         t = experiments[0].times
         measure_expression = experiments[0].measure_expression
-        X_sys = self.__get_sys_measure (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
-        # print ("\nX_sys: " + str (X_sys))
         log_l = 0
         for exp in experiments:
+            ic_ammend = {}
+            erkpp_ic = exp.values[0] * 100
+            erk_ic = 10000 - erkpp_ic
+            ic_ammend['ERKPP'] = erkpp_ic
+            ic_ammend['ERK'] = erk_ic
+            X_sys = self.__get_sys_measure (measure_expression, t, \
+                    theta, initial_concentrations=ic_ammend)
+            # print ("\nX_sys: " + str (X_sys))
             X_obs = exp.values
             # print ("\tX_obs: " + str (X_obs))
             log_l += self.__calculate_likelihood (X_sys, X_obs, sigma)

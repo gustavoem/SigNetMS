@@ -3,7 +3,6 @@ from model.SBMLtoODES import sbml_to_odes
 from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
 from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
-import multiprocessing
 import argparse
 
 parser = argparse.ArgumentParser ()

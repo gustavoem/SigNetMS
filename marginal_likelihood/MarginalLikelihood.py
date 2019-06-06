@@ -10,6 +10,7 @@ from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 from marginal_likelihood.samplers.PopulationalMCMC import \
         PopulationalMCMC
+import multiprocessing
 
 from parallel_map import parallel_map
 class MarginalLikelihood:

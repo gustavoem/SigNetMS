@@ -90,6 +90,5 @@ class TestPriorsReader (unittest.TestCase):
         """
         model = SBML ()
         model.load_file ('input/model1.xml')
-        define_sbml_params_priors (model, 'input/overcomplete.priors')
         self.assertWarns (Warning, define_sbml_params_priors, model, \
                 'input/overcomplete.priors')

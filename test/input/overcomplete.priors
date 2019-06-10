@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<priors xlmns="http://ime.usp.br/gestrela/signetms/priors">
+    <prior distribution="gamma" a="2.0" b="0.01" name="SosKcat"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="SosKm"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="Kcat"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="Km"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="k1"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="V"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="spurious_param1"/>
+    <prior distribution="gamma" a="2.0" b="0.1" name="spurious_param2"/>
+    <experimental_error distribution="gamma" a="2.0" b="2.6" 
+        name="Sigma"/>
+</priors>

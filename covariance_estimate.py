@@ -19,6 +19,7 @@ def calc_covariance (sample):
         v = v.reshape ([n, 1])
         vT = np.array (v.transpose ())
         cov_matrix += v * vT
-    return cov_matrix / len (sample)
+    cov_matrix = cov_matrix / len (sample)
+    return cov_matrix.diagonal () * np.eye (n)
 
      

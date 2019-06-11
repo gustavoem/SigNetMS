@@ -4,7 +4,6 @@ from distributions.Gamma import Gamma
 from distributions.Lognormal import Lognormal
 from utils import clean_tag
 from lxml import etree
-import sys
 import warnings
 
 def __create_distribution (dist_type, args):

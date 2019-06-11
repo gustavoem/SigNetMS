@@ -75,3 +75,20 @@ class TestPriorsReader (unittest.TestCase):
         for t in theta.get_model_parameters ():
             assert (t.name in sbml_parameters)
         
+
+    def test_priors_fully_defined (self):
+        """ Tests if priors file define priors for all parameters of 
+            a model. """
+        model = SBML ()
+        model.load_file ('input/model1.xml')
+        self.assertRaises (ValueError, define_sbml_params_priors, model, 
+                'input/incomplete.priors')
+
+    def test_no_spurious_parameter (self):
+        """ Tests if warning is showed whenever the priors file define
+            some parameter that is not present on the sbml parameters.
+        """
+        model = SBML ()
+        model.load_file ('input/model1.xml')
+        self.assertWarns (Warning, define_sbml_params_priors, model, \
+                'input/overcomplete.priors')

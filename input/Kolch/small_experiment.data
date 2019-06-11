@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ExperimentSet>
+  <Experiment>
+    <row>
+      <element value="0" index="0"/>
+      <element value="9.03" index="1"/>
+    </row>
+    <row>
+      <element value="2" index="0"/>
+      <element value="7.03" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="34.49" index="1"/>
+    </row>
+    <row>
+      <element value="10" index="0"/>
+      <element value="23.71" index="1"/>
+    </row>
+    <row>
+      <element value="20" index="0"/>
+      <element value="9.03" index="1"/>
+    </row>
+    <row>
+      <element value="40" index="0"/>
+      <element value="7.9" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="ERKPP/100" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="0" index="0"/>
+      <element value="3.78" index="1"/>
+    </row>
+    <row>
+      <element value="2" index="0"/>
+      <element value="4.77" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="34.49" index="1"/>
+    </row>
+    <row>
+      <element value="10" index="0"/>
+      <element value="20.26" index="1"/>
+    </row>
+    <row>
+      <element value="20" index="0"/>
+      <element value="6.67" index="1"/>
+    </row>
+    <row>
+      <element value="40" index="0"/>
+      <element value="5.1" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="ERKPP/100" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="0" index="0"/>
+      <element value="3.29" index="1"/>
+    </row>
+    <row>
+      <element value="2" index="0"/>
+      <element value="3.78" index="1"/>
+    </row>
+    <row>
+      <element value="5" index="0"/>
+      <element value="30.66" index="1"/>
+    </row>
+    <row>
+      <element value="10" index="0"/>
+      <element value="34.49" index="1"/>
+    </row>
+    <row>
+      <element value="20" index="0"/>
+      <element value="7.41" index="1"/>
+    </row>
+    <row>
+      <element value="40" index="0"/>
+      <element value="4.85" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="ERKPP/100" col="1"/>
+    </interpretation>
+  </Experiment>
+</ExperimentSet>

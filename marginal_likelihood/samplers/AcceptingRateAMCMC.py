@@ -4,8 +4,6 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
-from distributions.MultivariatePositiveNormal import \
-        MultivariatePositiveNormal
 from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):

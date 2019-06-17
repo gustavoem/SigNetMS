@@ -1,7 +1,10 @@
-from SBML import SBML
-from SBMLtoODES import sbml_to_odes
-from Experiment import Experiment
-from ExperimentSet import ExperimentSet
+import sys
+sys.path.insert (0, '..')
+
+from model.SBML import SBML
+from model.SBMLtoODES import sbml_to_odes
+from .Experiment import Experiment
+from .ExperimentSet import ExperimentSet
 import numpy as np
 
 

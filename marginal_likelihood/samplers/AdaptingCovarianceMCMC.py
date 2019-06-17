@@ -2,8 +2,6 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from distributions.MultivariatePositiveNormal import \
-        MultivariatePositiveNormal
 from distributions.MultivariateLognormal import MultivariateLognormal
 from covariance_estimate import calc_covariance_diagonal
 from utils import safe_exp_ratio

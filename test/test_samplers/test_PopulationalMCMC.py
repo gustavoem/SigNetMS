@@ -11,7 +11,7 @@ from model.PriorsReader import define_sbml_params_priors
 from distributions.MultivariateLognormal import MultivariateLognormal
 from distributions.Gamma import Gamma
 from experiment.ExperimentSet import ExperimentSet
-from covariance_estimate import calc_covariance
+from covariance_estimate import calc_covariance_diagonal
 from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 from marginal_likelihood.samplers.PopulationalMCMC import \
@@ -64,5 +64,5 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         for i in range (50):
             values = my_sample_dist.rvs ()
             my_artificial_sample.append (values)
-        covar = calc_covariance (my_artificial_sample)
+        covar = calc_covariance_diagonal (my_artificial_sample)
         return covar

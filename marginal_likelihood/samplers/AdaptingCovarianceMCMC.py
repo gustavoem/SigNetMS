@@ -5,7 +5,7 @@ from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariatePositiveNormal import \
         MultivariatePositiveNormal
 from distributions.MultivariateLognormal import MultivariateLognormal
-from covariance_estimate import calc_covariance
+from covariance_estimate import calc_covariance_diagonal
 from utils import safe_exp_ratio
 from utils import safe_pow_exp_ratio
 
@@ -39,7 +39,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         sample_values = [] 
         for t in self._sample:
             sample_values.append (t.get_values ())
-        self._jump_S = calc_covariance (sample_values) 
+        self._jump_S = calc_covariance_diagonal (sample_values) 
     
     
     def get_jump_covariance (self):

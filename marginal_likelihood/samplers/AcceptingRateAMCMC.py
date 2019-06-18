@@ -4,7 +4,7 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
-from distributions.MultivariatePositiveNormal import MultivariatePositiveNormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive
@@ -53,12 +53,9 @@ class AcceptingRateAMCMC (MetropolisHastings):
         for i in range (n):
             S[i, i] = self._jump_S[i]
         mu = t_vals
-        # print ("Creating jump dist with mean: ")
-        # print (t_vals)
-        # print ("and variance: ")
-        # print (S)
-        jump_dist = MultivariatePositiveNormal (mu, S)
-        return jump_dist
+        # jump_dist = MultivariatePositiveNormal (mu, S)
+        dist = MultivariateLognormal.create_lognormal_with_shape (mu, S)
+        return dist
 
 
     def set_temperature (self, t):

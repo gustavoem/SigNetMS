@@ -84,24 +84,15 @@ class MultivariateLognormal:
         logx_minus_mu = np.log (x) - mu
         logx_minus_mu.shape = (n, 1)
         logx_minus_mu_t = logx_minus_mu.transpose ()
-    
-        # print ("\tlogx - mu = " + str (logx_minus_mu))
         
         term1 = 1 / np.sqrt (np.power (2 * np.pi, n) * abs (det_S))
         term2 = 1 
         for xi in x:
             term2 *= xi
         term2 = 1 / term2
-
-        # print ("\tdet_S = " + str (det_S))
-        # print ("\t1/ sqrt (2pi^n * det_S) = " + str (term1))
-
         term3 = float (np.exp (-.5 * np.dot (np.dot (logx_minus_mu_t, 
             inv_S), logx_minus_mu)))
         
-
-        # print ("\tterm3 = " + str (term3))
-
         return term1 * term2 * term3
 
     
@@ -110,7 +101,6 @@ class MultivariateLognormal:
             this random variable on point x. """
         # TODO: simplify calculations
         p = self.pdf (x)
-        # print ("\tp = " + str (p))
         logp = safe_log (p)
         return logp
 
@@ -118,7 +108,7 @@ class MultivariateLognormal:
     @staticmethod
     def create_lognormal_with_shape (mu, S):
         """ Creates a Lognormal distribution with mean mu and 
-            covariance S. """
+            covariance S (diagnoal matrix). """
         mu = np.array (mu)
         S = np.array (S)
         S_diagonal = S.diagonal ()
@@ -131,20 +121,5 @@ class MultivariateLognormal:
 
         # normal_S_diag_i = ln (S_ii / mu_i^2 + 1)
         normal_S_diagonal = np.log (S_diagonal / (mu * mu) + n_ones)               
-        normal_S = np.zeros ((n, n))
-        for i in range (n):
-            for j in range (i):
-                # normal_S_ij = ln [S_ij / (mu_i * mu_j) + 1]
-                muimuj = mu[i] * mu[j]
-                # print ("log_arg = 1 + S[" + str(i)+"]["+str(j)+"] / muimuj = ")
-                # print ("1 + " + str(S[i][j]) + " / " + str (muimuj))
-                log_arg = 1 + S[i][j] / muimuj
-                if (log_arg < 0):
-                    log_arg = 1
-                x = np.log (log_arg)
-                normal_S[i][j] = x
-                normal_S[j][i] = x
-        for i in range (n):
-            normal_S[i][i] = normal_S_diagonal[i]
-        
+        normal_S = normal_S_diagonal * np.eye (n)
         return MultivariateLognormal (normal_mu, normal_S)

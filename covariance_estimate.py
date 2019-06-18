@@ -3,9 +3,10 @@
 
 import numpy as np
 
-def calc_covariance (sample):
+def calc_covariance_diagonal (sample):
     """ Given a list of samples (lists of values) of variables, compute
-        an estimation of the covariance matrix. """
+        an estimation of a matrix that has only the diagonal of the
+        covariance matrix and zeros on other positions. """
     n = len (sample[0])
     theta_sum = np.zeros (n)
     for theta in sample:
@@ -19,6 +20,7 @@ def calc_covariance (sample):
         v = v.reshape ([n, 1])
         vT = np.array (v.transpose ())
         cov_matrix += v * vT
-    return cov_matrix / len (sample)
+    cov_matrix = cov_matrix / len (sample)
+    return cov_matrix.diagonal () * np.eye (n)
 
      

@@ -2,8 +2,8 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from distributions.MultivariatePositiveNormal import MultivariatePositiveNormal
-from covariance_estimate import calc_covariance
+from distributions.MultivariateLognormal import MultivariateLognormal
+from covariance_estimate import calc_covariance_diagonal
 from utils import safe_exp_ratio
 from utils import safe_pow_exp_ratio
 
@@ -37,7 +37,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         sample_values = [] 
         for t in self._sample:
             sample_values.append (t.get_values ())
-        self._jump_S = calc_covariance (sample_values) 
+        self._jump_S = calc_covariance_diagonal (sample_values) 
     
     
     def get_jump_covariance (self):
@@ -53,8 +53,10 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         # print (mu)
         # print ("and variance: ")
         # print (self._jump_S)
-        jump_dist = MultivariatePositiveNormal (mu, self._jump_S)
-        return jump_dist
+        # jump_dist = MultivariatePositiveNormal (mu, self._jump_S)
+        dist = MultivariateLognormal.create_lognormal_with_shape (mu, \
+                self._jump_S) 
+        return dist
 
     def get_sample (self, N):
         """ Get a sample of size N. """

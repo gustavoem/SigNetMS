@@ -56,7 +56,7 @@ theta_priors = define_sbml_params_priors (sbml, priors_file)
 ml = MarginalLikelihood (first_step_n, 
                          sigma_update_n, 
                          second_step_n, 
-                         third_step_n, 20, 2, \
+                         third_step_n, 10, 2, \
                          verbose=verbose, n_process=nof_process)
 log_l = ml.estimate_marginal_likelihood (experiments, odes, 
         theta_priors)

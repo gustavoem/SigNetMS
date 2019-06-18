@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <priors>
   <prior distribution="gamma" a="2" b="3e-4" name="SosKcat"/>
-  <prior distribution="gamma" a="1.1" b="0.1111" name="SosKm"/>
+  <prior distribution="gamma" a="1" b="0.1111" name="SosKm"/>
   <prior distribution="gamma" a="2" b="3e-4" name="k1"/>
-  <prior distribution="gamma" a="1.1" b="0.1111" name="Km"/>
+  <prior distribution="gamma" a="1" b="0.1111" name="Km"/>
   <prior distribution="gamma" a="2" b="3e-4" name="V"/>
   <prior distribution="gamma" a="2" b="3e-4" name="Kcat"/>
   <experimental_error distribution="gamma" a="2" b="3e-4" name="Noise"/>

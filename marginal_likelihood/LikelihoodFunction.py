@@ -58,6 +58,7 @@ class LikelihoodFunction:
         measure_expression = experiments[0].measure_expression
         sigma = theta.get_experimental_error ()
         log_l = 0
+        #X_sys = self.__get_sys_measure (measure_expression, t, theta)
         for exp in experiments:
             ic_ammend = {}
             erkpp_ic = exp.values[0] * 100

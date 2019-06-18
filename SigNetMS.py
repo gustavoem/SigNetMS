@@ -27,6 +27,8 @@ parser.add_argument ('--verbose', type=bool, nargs='?', const=True, \
         help="Verbose run.")
 parser.add_argument ('--n_process', type=int, nargs='?', default=0, \
         help="Number of parallel process used on sampling step.")
+parser.add_argument ('--pool_of_threads', type=bool, nargs='?', 
+        const=True, help="Use threads instead of process as workers.")
 args = parser.parse_args ()
 
 # Problem input
@@ -41,6 +43,7 @@ second_step_n = int (args.second_sampling_iterations)
 third_step_n = int (args.third_sampling_iterations)
 verbose = args.verbose
 nof_process = args.n_process
+pool_of_threads = args.pool_of_threads
 
 
 
@@ -56,8 +59,9 @@ theta_priors = define_sbml_params_priors (sbml, priors_file)
 ml = MarginalLikelihood (first_step_n, 
                          sigma_update_n, 
                          second_step_n, 
-                         third_step_n, 20, 2, \
-                         verbose=verbose, n_process=nof_process)
+                         third_step_n, 10, 2, \
+                         verbose=verbose, n_process=nof_process,
+                         pool_of_threads=pool_of_threads)
 log_l = ml.estimate_marginal_likelihood (experiments, odes, 
         theta_priors)
 print ("log_l = " + str (log_l))

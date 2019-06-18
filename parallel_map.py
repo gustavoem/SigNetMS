@@ -1,5 +1,6 @@
-import multiprocessing
-
+import multiprocessing as multi_process
+import multiprocessing.dummy as multi_thread
+    
 # This solution is inspired on the solution of klaus se on the Stack 
 # Overflow thread:
 # https://stackoverflow.com/questions/3288595/multiprocessing-how-to-use-pool-map-on-a-function-defined-in-a-class
@@ -13,13 +14,17 @@ def __fun_runner (f, q_in, q_out):
         q_out.put (run_result)
 
 
-def parallel_map (f, X, nof_process):
+def parallel_map (f, X, nof_process, pool_of_threads=False):
     """ Runs a map of X to f in parallel, using nof_process process. """
-    q_in = multiprocessing.Queue (1)
-    q_out = multiprocessing.Queue ()
+    if pool_of_threads:
+        multi_library = multi_thread
+    else:
+        multi_library = multi_process
 
-    proc = [multiprocessing.Process (target=__fun_runner, 
-        args=(f, q_in, q_out)) for _ in range (nof_process)]
+    q_in = multi_library.Queue (1)
+    q_out = multi_library.Queue ()
+    proc = [multi_library.Process (target=__fun_runner, \
+            args=(f, q_in, q_out)) for _ in range (nof_process)]
 
     for p in proc:
         p.daemon = True

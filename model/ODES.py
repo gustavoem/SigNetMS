@@ -81,8 +81,8 @@ class ODES:
             time_points):
         """ Integrates using scipy odeint """
         y, _ = odeint (sys_f, initial_state, time_points, 
-                mxstep=5000, full_output=True, tfirst=True, atol=1e-6,
-                rtol=1e-8)
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-2,
+                rtol=1e-4)
         return y
 
 

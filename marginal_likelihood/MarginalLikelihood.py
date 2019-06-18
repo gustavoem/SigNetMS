@@ -19,7 +19,8 @@ class MarginalLikelihood:
     
     def __init__ (self, phase1_iterations, sigma_update_n, 
             phase2_iterations, phase3_iterations, n_strata, 
-            strata_size, verbose=False, n_process=0):
+            strata_size, verbose=False, n_process=0, \
+                    pool_of_threads=False):
         """ Default constructor. phase1_iterations is the number of 
             iterations performed by the AcceptingRateAMCMC, which is
             an adaptive sampler that performs independent MCMC on each
@@ -42,6 +43,7 @@ class MarginalLikelihood:
         self.__n_strata = n_strata
         self.__strata_size = strata_size
         self.__verbose = verbose
+        self.__pool_of_threads = pool_of_threads
 
         if n_process == 0:
             self.__n_process = max (1, \
@@ -98,7 +100,8 @@ class MarginalLikelihood:
                 experiments, model, theta_prior, 
                 self.__phase1_iterations, self.__phase2_iterations,
                 self.__sigma_update_n, False) 
-        fc_mcmcs = parallel_map (phase_1_n_2_f, betas, n_process)
+        fc_mcmcs = parallel_map (phase_1_n_2_f, betas, n_process, 
+                pool_of_threads=self.__pool_of_threads)
                        
         if verbose:
             print ("Phase 3 starts.")

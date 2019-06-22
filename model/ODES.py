@@ -80,7 +80,8 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        y, _ = odeint (sys_f, initial_state, time_points, 
+        jacobian = self.get_system_jacobian ()
+        y, _ = odeint (sys_f, initial_state, time_points, Dfun=jacobian,
                 mxstep=5000, full_output=True, tfirst=True, atol=1e-6,
                 rtol=1e-8)
         return y
@@ -219,7 +220,7 @@ class ODES:
         symbol_table = dict (self.param_table)
 
         #pylint: disable=unused-argument
-        def jacobian_function (state, t):
+        def jacobian_function (t, state):
             for var, idx in self.index_map.items ():
                 symbol_table[var] = state[idx]
 

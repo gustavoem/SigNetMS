@@ -239,14 +239,15 @@ class ODES:
         """ Returns the derivative of f in respect to x. This function
             only works for f that depends only linearly (or inverse 
             linearly) on x. """
-        var_pattern = r"(^|\s|\+|-|\*|\/)(" + x + r")($|\s|\+|-|\*|\/)"
-        var = x
-        fX = re.sub (var_pattern, lambda m: m.group (1) + ' X ' + \
-                m.group (3), f)
-        dfX = str (diff (fX, 'X'))
-        var_pattern = r'(^|\s|\+|-|\*|\/)(X)($|\s|\+|-|\*|\/)'
-        df = re.sub (var_pattern, lambda m: m.group (1) + var + \
-                m.group (3), dfX)
+        # We need to avoid overriding sympy's reserved variable names.
+        # Also, if we start every variable with a prefix x_ than sympy
+        # will assume they are variables and won't raise errors of 
+        # undefined variables.
+        var_patt = re.compile (r"([a-z|A-Z|_][a-z|A-Z|0-9|_]*)")
+        fX = var_patt.sub (lambda m: "x_" + m.group (1), f)
+        dfX = str (diff (fX, 'x_' + x))
+        suf_var_patt = re.compile (r"(x_[a-z|A-Z|_][a-z|A-Z|0-9|_]*)")
+        df =  suf_var_patt.sub (lambda m: m.group (1)[2:], dfX)
         return df
 
 

@@ -80,10 +80,8 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        jacobian = self.get_system_jacobian ()
-        y, _ = odeint (sys_f, initial_state, time_points, Dfun=jacobian,
-                mxstep=5000, full_output=True, tfirst=True, atol=1e-6,
-                rtol=1e-8)
+        y, _ = odeint (sys_f, initial_state, time_points, mxstep=5000, 
+                full_output=True, tfirst=True, atol=1e-6, rtol=1e-8)
         return y
 
 

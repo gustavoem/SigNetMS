@@ -2,7 +2,6 @@ import re
 import matplotlib
 matplotlib.use('Agg') #uncomment when running on server
 
-from scipy.integrate import odeint
 import scipy.integrate as spi
 from sympy import diff
 from asteval import Interpreter
@@ -80,9 +79,15 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        y, _ = odeint (sys_f, initial_state, time_points, mxstep=5000, 
-                full_output=True, tfirst=True, atol=1e-6, rtol=1e-8)
-        return y
+        if len (time_points) > 1:
+            t_eval = time_points
+        else:
+            t_eval = None
+
+        ans = spi.solve_ivp (sys_f, (time_points[0], time_points[-1]),
+                initial_state, t_eval=t_eval, vectorized=True,
+                atol=1e-6, rtol=1e-8)
+        return np.array (ans.y)
 
 
     def __integrate_with_stiff_alg (self, sys_f, initial_state, 
@@ -132,9 +137,9 @@ class ODES:
             idx = self.index_map[var]
             if zeroed_times:
                 # ignore first entry (initial state)
-                values_map[var] = list (y[1:, idx])
+                values_map[var] = list (y[idx, 1:])
             else:
-                values_map[var] = list (y[:, idx])
+                values_map[var] = list (y[idx, :])
         return values_map
 
 
@@ -176,18 +181,24 @@ class ODES:
             rate_eq_evaluator.symtable[param] = self.param_table[param]
         
         #pylint: disable=unused-argument
-        def system_function (t, state):
-            dstatedt = []
+        def system_function (t, states):
+            n, m = states.shape
+            full_dstatedt = np.zeros ((n, m))
 
-            # Add variables states to the interpreter symbol table
-            for var, idx in self.index_map.items ():
-                rate_eq_evaluator.symtable[var] = state[idx]
+                        
+            for j in range (m):
+                # Add variables states to the interpreter symbol table
+                for var, idx in self.index_map.items ():
+                    rate_eq_evaluator.symtable[var] = states[:, j][idx]
 
-            for i in range (len (state)):
-                formula = self.rate_eq[i]
-                x = ODES.__calc_func (formula, {}, rate_eq_evaluator)
-                dstatedt.append (x)
-            return dstatedt
+                dstatedt = []
+                for i in range (n):
+                    formula = self.rate_eq[i]
+                    x = ODES.__calc_func (formula, {}, \
+                            rate_eq_evaluator)
+                    dstatedt.append (x)
+                full_dstatedt[:, j] = dstatedt
+            return full_dstatedt
 
         return system_function
 

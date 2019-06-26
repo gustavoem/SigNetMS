@@ -18,9 +18,9 @@ class TestODESMethods (unittest.TestCase):
         odes.add_equation ("x2", "x2")
         odes.define_initial_value ("x1", 100.0)
         odes.define_initial_value ("x2", 250.5)
-        y = odes.evaluate_on ([0])
-        self.assertListEqual (y["x1"], [100])
-        self.assertListEqual (y["x2"], [250.5])
+        y = odes.evaluate_on ([0, 0.1])
+        self.assertEqual (y["x1"][0], 100)
+        self.assertEqual (y["x2"][0], 250.5)
 
 
     def test_integration (self):

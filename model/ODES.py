@@ -31,6 +31,9 @@ class ODES:
         # The model's name
         self.name = ''
 
+        # A sympy object that represents the system
+        self.sys_eq = None
+
 
     def __create_var (self, var):
         """ Creates a new variable and adds it to the system. """
@@ -55,6 +58,7 @@ class ODES:
         self.__create_var (var)
         self.rate_eq.append (formula)
         self.initial_state.append (None)
+        self.sys_eq = None
 
 
     def define_initial_value (self, var, value):
@@ -163,33 +167,32 @@ class ODES:
                 title)
 
 
-    # possible speedup: call this function only when it's necessary
-    # to redefine the system
     def __create_system_function (self):
         """ Creates a function that describes the dynamics of the 
             system. """
-
+        if self.sys_eq == None:
+            self.__define_sys_eq ()
         # Start the symbol table of intepreter with parameter values
         # because they are constant over time.
-        rate_eq_evaluator = Interpreter ()
-        for param in self.param_table:
-            rate_eq_evaluator.symtable[param] = self.param_table[param]
+        # rate_eq_evaluator = Interpreter ()
+        # for param in self.param_table:
+            # rate_eq_evaluator.symtable[param] = self.param_table[param]
         
         #pylint: disable=unused-argument
-        def system_function (t, state):
-            dstatedt = []
+        # def system_function (t, state):
+            # dstatedt = []
 
             # Add variables states to the interpreter symbol table
-            for var, idx in self.index_map.items ():
-                rate_eq_evaluator.symtable[var] = state[idx]
+            # for var, idx in self.index_map.items ():
+                # rate_eq_evaluator.symtable[var] = state[idx]
 
-            for i in range (len (state)):
-                formula = self.rate_eq[i]
-                x = ODES.__calc_func (formula, {}, rate_eq_evaluator)
-                dstatedt.append (x)
-            return dstatedt
+            # for i in range (len (state)):
+                # formula = self.rate_eq[i]
+                # x = ODES.__calc_func (formula, {}, rate_eq_evaluator)
+                # dstatedt.append (x)
+            # return dstatedt
 
-        return system_function
+        # return system_function
 
 
     def get_system_jacobian (self):

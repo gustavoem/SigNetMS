@@ -271,70 +271,23 @@ class ODES:
             return answ.squeeze ()
         return wrapped_fun
 
+
     def get_system_jacobian (self):
         """ Creates the jacobian of the function that describes the 
             dynamics of the system. """
+        # system_function = f (state) = (f_1 (state), ..., f_n (state))
+        if self.sys_eq == None:
+            self.__create_system_function () 
 
-        #system_function = f (state) = (f_1 (state), ..., f_n (state))
-        J_functions = []
-        
-        # For each component of f
-        for i in range (len (self.rate_eq)):
-            J_functions.append ([])
-            f_i = self.rate_eq[i]
-            
-            J_functions[i] = [None for x in range (len (self.rate_eq))]
-
-            # For each var we calculate  df_i/dx_j
-            for var in self.index_map:
-                j = self.index_map[var]
-                dfdvar = ODES.__derivate (f_i, var)
-                J_ij = ODES.__formula_to_lambda (dfdvar)
-                J_functions[i][j] = J_ij
-        
-        # J is a matrix of lambdas
-        # define a function here that returns the J matrix evaluated
-        symbol_table = dict (self.param_table)
-
-        #pylint: disable=unused-argument
-        def jacobian_function (t, state):
-            for var, idx in self.index_map.items ():
-                symbol_table[var] = state[idx]
-
-            J_values = []
-            for i in range (len (state)):
-                J_values.append ([])
-                for j in range (len (state)):
-                    J_values[i].append (J_functions[i][j] (symbol_table))
-            return J_values
-
-        return jacobian_function
-
-
-    @staticmethod 
-    def __derivate (f, x):
-        """ Returns the derivative of f in respect to x. This function
-            only works for f that depends only linearly (or inverse 
-            linearly) on x. """
-        # We need to avoid overriding sympy's reserved variable names.
-        # Also, if we start every variable with a prefix x_ than sympy
-        # will assume they are variables and won't raise errors of 
-        # undefined variables.
-        var_patt = re.compile (r"([a-z|A-Z|_][a-z|A-Z|0-9|_]*)")
-        fX = var_patt.sub (lambda m: "x_" + m.group (1), f)
-        dfX = str (diff (fX, 'x_' + x))
-        suf_var_patt = re.compile (r"(x_[a-z|A-Z|_][a-z|A-Z|0-9|_]*)")
-        df =  suf_var_patt.sub (lambda m: m.group (1)[2:], dfX)
-        return df
-
-
-    @staticmethod
-    def __formula_to_lambda (formula):
-        """ Given a string formula, transform it on a lambda function. 
-        """
-        def func (symbol_table):
-            return ODES.__calc_func (formula, symbol_table)
-        return func
+        rhs = self.sys_eq.rhs
+        print (rhs)
+        sys_vars = self.sys_vars
+        sys_params = self.sys_params
+        sym_jacobian = rhs.jacobian (sys_vars)
+        lam_jacobian = sym.lambdify ([sys_vars, sys_params], \
+                sym_jacobian)
+        jac_fun = self.odeint_sys_wrapper (lam_jacobian)
+        return jac_fun
 
 
     @staticmethod

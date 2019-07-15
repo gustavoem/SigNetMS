@@ -83,6 +83,9 @@ class ODES:
     def define_parameter (self, param, value):
         """ Defines the value of some parameter. """
         self.param_table[param] = value
+        self.sys_eq = None
+        self.sys_vars = None
+        self.sys_params = None
 
 
     def get_all_parameters (self):
@@ -93,8 +96,13 @@ class ODES:
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy odeint """
-        y, _ = odeint (sys_f, initial_state, time_points, mxstep=5000, 
-                full_output=True, tfirst=True, atol=1e-6, rtol=1e-8)
+        # The order of iterations of a dict in python will not change
+        # if nothing has been added (if that is true, the system is 
+        # rewritten).
+        args = [self.param_table[param] for param in self.param_table]
+        y, _ = odeint (sys_f, initial_state, time_points, args=(args,),
+                mxstep=5000, full_output=True, tfirst=True, atol=1e-6, 
+                rtol=1e-8)
         return y
 
 

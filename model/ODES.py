@@ -4,7 +4,8 @@ matplotlib.use('Agg') #uncomment when running on server
 
 from scipy.integrate import odeint
 import scipy.integrate as spi
-from sympy import diff
+import sympy as sym
+from sympy.parsing.sympy_parser import parse_expr
 from asteval import Interpreter
 import matplotlib.pyplot as plt
 import numpy as np
@@ -34,6 +35,11 @@ class ODES:
         # A sympy object that represents the system
         self.sys_eq = None
 
+        # A sympy object that represents the system variables in sys_eq
+        self.sys_vars = None
+
+        # A sympy object that represents the system parameters in sys_eq
+        self.sys_params = None
 
     def __create_var (self, var):
         """ Creates a new variable and adds it to the system. """
@@ -167,33 +173,57 @@ class ODES:
                 title)
 
 
+    def __get_sym_vars_equations (self):
+        """ Returns a tuple with sympy symbols of vars, parameters and 
+            its correspondant reaction rate equations. """
+        local_dict = {}
+        var_symbols = []
+        for var in self.index_map:
+            var_sym = sym.symbols (var)
+            var_symbols.append (var_sym)
+            local_dict[var] = var_sym
+
+        parameters = []
+        for param in self.param_table:
+            p_symbol = sym.symbols (param)
+            parameters.append (p_symbol)
+            local_dict[param] = p_symbol
+
+        rate_equations = []
+        for var in self.index_map:
+            var_idx = self.index_map[var]
+            expr = parse_expr (self.rate_eq[var_idx], local_dict=local_dict)
+            rate_equations.append (expr)
+        return var_symbols, parameters, rate_equations
+
+
+    def __define_sys_eq (self):
+        """ Creates a sympy object that represents the system of 
+            ordinary differential equations. """
+        n = len (self.rate_eq)
+        m = len (self.param_table)
+        var_names, params, equations = self.__get_sym_vars_equations ()
+        brute_odes_rhs = sym.Matrix (equations) # var, param not indexed
+        sym_vars = sym.MatrixSymbol ('y', n, 1)
+        sym_dvars = sym.MatrixSymbol ('dy', n, 1)
+        sym_p = sym.MatrixSymbol ('p', 1, m)
+        var_to_sym_map = dict (zip (list (self.index_map), sym_vars))
+        p_to_sym_map = dict (zip (list (self.param_table), sym_p))
+        odes_rhs_idxdvar = brute_odes_rhs.xreplace (var_to_sym_map)
+        odes_rhs = odes_rhs_idxdvar.xreplace (p_to_sym_map)
+        self.sys_eq = sym.Eq (sym_dvars, odes_rhs)
+        print (self.sys_eq)
+        self.sys_vars = sym_vars
+        self.sys_params = sym_p
+
+
     def __create_system_function (self):
         """ Creates a function that describes the dynamics of the 
             system. """
         if self.sys_eq == None:
             self.__define_sys_eq ()
-        # Start the symbol table of intepreter with parameter values
-        # because they are constant over time.
-        # rate_eq_evaluator = Interpreter ()
-        # for param in self.param_table:
-            # rate_eq_evaluator.symtable[param] = self.param_table[param]
         
-        #pylint: disable=unused-argument
-        # def system_function (t, state):
-            # dstatedt = []
-
-            # Add variables states to the interpreter symbol table
-            # for var, idx in self.index_map.items ():
-                # rate_eq_evaluator.symtable[var] = state[idx]
-
-            # for i in range (len (state)):
-                # formula = self.rate_eq[i]
-                # x = ODES.__calc_func (formula, {}, rate_eq_evaluator)
-                # dstatedt.append (x)
-            # return dstatedt
-
-        # return system_function
-
+        
 
     def get_system_jacobian (self):
         """ Creates the jacobian of the function that describes the 

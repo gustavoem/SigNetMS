@@ -76,6 +76,7 @@ class TestODESMethods (unittest.TestCase):
         params = odes.get_all_parameters ()
         self.assertEqual (params["k"], 2)
         self.assertEqual (params["k2"], 4)
+        odes.evaluate_on ([0])
 
     
     def test_get_system_jacobian (self):

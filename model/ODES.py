@@ -30,6 +30,12 @@ class ODES:
 
         # The model's name
         self.name = ''
+    
+        # The function that represents the system
+        self.sys_function = None
+
+        # The function that represents the system jacobian
+        self.sys_jacobian = None
 
         # A sympy object that represents the system
         self.sys_eq = None
@@ -54,6 +60,15 @@ class ODES:
             print (self.rate_eq[self.index_map[var]], end='\n\n')
 
 
+    def __erase_sympy_objects (self):
+        """ Sets to none the sympy objects that model the system. """
+        self.sys_function = None
+        self.sys_jacobian = None
+        self.sys_eq = None
+        self.sys_vars = None
+        self.sys_params = None
+
+
     def add_equation (self, var, formula):
         """ Adds an equation representing the change rate of a variable.
         """
@@ -64,9 +79,7 @@ class ODES:
         self.__create_var (var)
         self.rate_eq.append (formula)
         self.initial_state.append (None)
-        self.sys_eq = None
-        self.sys_vars = None
-        self.sys_params = None
+        self.__erase_sympy_objects ()
 
 
     def define_initial_value (self, var, value):
@@ -81,11 +94,11 @@ class ODES:
 
     def define_parameter (self, param, value):
         """ Defines the value of some parameter. """
-        self.param_table[param] = value
-        self.sys_eq = None
-        self.sys_vars = None
-        self.sys_params = None
+        if param not in self.param_table:
+            self.__erase_sympy_objects ()
 
+        self.param_table[param] = value
+        
 
     def get_all_parameters (self):
         """ Returns all parameters of the system. """
@@ -143,7 +156,7 @@ class ODES:
                 idx = self.index_map[var]
                 initial_state[idx] = initial_state_map[var]
 
-        sys_function = self.__create_system_function ()
+        sys_function = self.__get_system_function ()
         y = self.__integrate_with_odeint (sys_function, 
                 initial_state, time_points)
         
@@ -226,12 +239,13 @@ class ODES:
         self.sys_params = sym_p
 
 
-    def __create_system_function (self):
+    def __get_system_function (self):
         """ Creates a function that describes the dynamics of the 
             system. """
-        if self.sys_eq == None:
-            self.__define_sys_eq ()
+        if self.sys_function != None:
+            return self.sys_function
         
+        self.__define_sys_eq ()
         sys_eq_rhs = self.sys_eq.rhs
         sys_vars = self.sys_vars
         sys_params = self.sys_params
@@ -242,6 +256,7 @@ class ODES:
         # (parameters). It returns also a numpy array, corresponding to
         # the evaluated derivatives, of shape (n, 1).
         wrapped_sys_fun = self.odeint_sys_wrapper (sys_lambda)
+        self.sys_function = wrapped_sys_fun
         return wrapped_sys_fun 
 
 
@@ -283,8 +298,11 @@ class ODES:
         """ Creates the jacobian of the function that describes the 
             dynamics of the system. """
         # system_function = f (state) = (f_1 (state), ..., f_n (state))
+        if self.sys_jacobian != None:
+            return self.sys_jacobian
+
         if self.sys_eq == None:
-            self.__create_system_function () 
+            self.__get_system_function () 
 
         rhs = self.sys_eq.rhs
         sys_vars = self.sys_vars
@@ -293,6 +311,7 @@ class ODES:
         lam_jacobian = sym.lambdify ([sys_vars, sys_params], \
                 sym_jacobian)
         jac_fun = self.odeint_sys_wrapper (lam_jacobian)
+        self.sys_jacobian = jac_fun
         return jac_fun
 
 

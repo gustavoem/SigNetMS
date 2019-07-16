@@ -262,13 +262,20 @@ class ODES:
             """
         n = len (self.rate_eq)
         m = len (self.param_table)
-        def wrapped_fun (t, state, args):
-            npstate = np.array (state)
-            npparams = np.array (args)
-            npstate.shape = (n, 1)
-            npparams.shape = (m, 1)
-            answ = lamb (npstate, npparams)
-            return answ.squeeze ()
+        if m == 0:
+            def wrapped_fun (t, state, args):
+                npstate = np.array (state)
+                npstate.shape = (n, 1)
+                answ = lamb (npstate, None)
+                return answ.squeeze ()
+        else:
+            def wrapped_fun (t, state, args):
+                npstate = np.array (state)
+                npparams = np.array (args)
+                npstate.shape = (n, 1)
+                npparams.shape = (m, 1)
+                answ = lamb (npstate, npparams)
+                return answ.squeeze ()
         return wrapped_fun
 
 
@@ -280,7 +287,6 @@ class ODES:
             self.__create_system_function () 
 
         rhs = self.sys_eq.rhs
-        print (rhs)
         sys_vars = self.sys_vars
         sys_params = self.sys_params
         sym_jacobian = rhs.jacobian (sys_vars)

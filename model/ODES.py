@@ -112,9 +112,10 @@ class ODES:
         # if nothing has been added (if that is true, the system is 
         # rewritten).
         args = [self.param_table[param] for param in self.param_table]
+        jacobian = self.get_system_jacobian ()
         y, _ = odeint (sys_f, initial_state, time_points, args=(args,),
-                mxstep=5000, full_output=True, tfirst=True, atol=1e-6, 
-                rtol=1e-8)
+                Dfun=jacobian, mxstep=5000, full_output=True, 
+                tfirst=True, atol=1e-6, rtol=1e-8)
         return y
 
 

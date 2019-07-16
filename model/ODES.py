@@ -1,4 +1,3 @@
-import re
 import matplotlib
 matplotlib.use('Agg') #uncomment when running on server
 
@@ -222,7 +221,6 @@ class ODES:
         p_to_sym_map = dict (zip (params, sym_p))
         odes_rhs_idxdvar = brute_odes_rhs.xreplace (var_to_sym_map)
         odes_rhs = odes_rhs_idxdvar.xreplace (p_to_sym_map)
-        fun = sym.lambdify ([sym_vars, sym_p], odes_rhs)
         self.sys_eq = sym.Eq (sym_dvars, odes_rhs)
         self.sys_vars = sym_vars
         self.sys_params = sym_p
@@ -264,12 +262,14 @@ class ODES:
         m = len (self.param_table)
         if m == 0:
             def wrapped_fun (t, state, args):
+                #pylint: disable=unused-argument
                 npstate = np.array (state)
                 npstate.shape = (n, 1)
                 answ = lamb (npstate, None)
                 return answ.squeeze ()
         else:
             def wrapped_fun (t, state, args):
+                #pylint: disable=unused-argument
                 npstate = np.array (state)
                 npparams = np.array (args)
                 npstate.shape = (n, 1)

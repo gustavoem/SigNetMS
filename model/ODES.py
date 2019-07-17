@@ -227,6 +227,7 @@ class ODES:
     def __define_sys_eq (self):
         """ Creates a sympy object that represents the system of 
             ordinary differential equations. """
+        print ("Creating system symbolic equations and function.")
         n = len (self.rate_eq)
         m = len (self.param_table)
         var_names, params, equations = self.__get_sym_vars_equations ()
@@ -274,22 +275,15 @@ class ODES:
             """
         n = len (self.rate_eq)
         m = len (self.param_table)
-        if m == 0:
-            def wrapped_fun (t, state, args):
-                #pylint: disable=unused-argument
-                npstate = np.array (state, dtype='d')
-                npstate.shape = (n, 1)
-                answ = lamb (npstate, None)
-                return answ.squeeze ()
-        else:
-            def wrapped_fun (t, state, args):
-                #pylint: disable=unused-argument
-                npstate = np.array (state, dtype='d')
-                npparams = np.array (args, dtype='d')
-                npstate.shape = (n, 1)
-                npparams.shape = (m, 1)
-                answ = lamb (npstate, npparams)
-                return answ.squeeze ()
+
+        def wrapped_fun (t, state, args):
+            #pylint: disable=unused-argument
+            npstate = np.array (state, dtype='d')
+            npparams = np.array (args, dtype='d')
+            npstate.shape = (n, 1)
+            npparams.shape = (m, 1)
+            answ = lamb (npstate, npparams)
+            return answ.squeeze ()
         return wrapped_fun
 
 

@@ -90,6 +90,11 @@ class MarginalLikelihood:
         verbose = self.__verbose
         n_process = self.__n_process
 
+        # initialize ODEs function and jacobian
+        model.evaluate_on ([experiments[0].times[0]])
+        model.get_system_jacobian ()
+
+
         betas = PopulationalMCMC.sample_scheduled_betas (n_strata * 
                 strata_size)
         print ("Phase 1 and 2 starts.")

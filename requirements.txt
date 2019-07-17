@@ -13,5 +13,6 @@ pytz==2018.6
 scipy==1.1.0
 seaborn==0.9.0
 six==1.11.0
-sympy==1.3
+# this is a version of sympy that has an issue with autowrap fixed
+https://github.com/sympy/sympy/archive/cc6d08f8e286f83a3f0243a2062392b9825528af.zip
 pylint==1.9.4

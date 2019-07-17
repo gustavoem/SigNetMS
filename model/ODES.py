@@ -227,7 +227,6 @@ class ODES:
     def __define_sys_eq (self):
         """ Creates a sympy object that represents the system of 
             ordinary differential equations. """
-        print ("Creating system symbolic equations and function.")
         n = len (self.rate_eq)
         m = len (self.param_table)
         var_names, params, equations = self.__get_sym_vars_equations ()

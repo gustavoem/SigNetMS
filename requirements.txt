@@ -16,3 +16,6 @@ six==1.11.0
 # this is a version of sympy that has an issue with autowrap fixed
 https://github.com/sympy/sympy/archive/cc6d08f8e286f83a3f0243a2062392b9825528af.zip
 pylint==1.9.4
+# pathos multiprocessing
+https://github.com/uqfoundation/pathos/archive/b72f986e934dd87fdefd1dc83a33dc02466e126a.zip
+Cython==0.29.12

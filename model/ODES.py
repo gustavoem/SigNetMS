@@ -253,7 +253,8 @@ class ODES:
         sys_vars = self.sys_vars
         sys_params = self.sys_params
         sys_fun = autowrap (self.sys_eq, backend='cython', \
-                tempdir='autowrap_sys_tmp', args=[sys_vars, sys_params])
+                tempdir='autowrap_sys_' + self.name + '_tmp', \
+                args=[sys_vars, sys_params])
         wrapped_fun = self.odeint_sys_wrapper (sys_fun)
         self.sys_function = wrapped_fun
         return wrapped_fun

@@ -1,8 +1,17 @@
+import sys
+sys.path.insert(0, '..')
+
 import argparse
 import json
 import subprocess 
 import re
+import ray
 from pathlib import Path
+from model.SBML import SBML
+from experiment.ExperimentSet import ExperimentSet
+from model.SBMLtoODES import sbml_to_odes
+from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
+from model.PriorsReader import define_sbml_params_priors
 
 def prepare_workers (workers, ray_path):
     current_path = str (Path ().absolute ())
@@ -43,8 +52,30 @@ def prepare_workers (workers, ray_path):
             print (out.decode ("utf-8"))
             if err is not None:
                 print (err.decode ("utf-8"))
+    return redis_address
 
-    return
+
+@ray.remote
+def run_task (model_file, priors_file, experiments_file, \
+        iterations_phase1, sigma_update_n, iterations_phase2, \
+        iterations_phase3, nof_process):
+    import os
+    os.system ("export PYTHONPATH=\"${PYTHONPATH}\":/home/gestrela/cs/SigNetMS")
+    print ("PAAATH!!" + sys.path)
+    sbml = SBML ()
+    sbml.load_file (model_file)
+    odes = sbml_to_odes (sbml)
+    experiments = ExperimentSet (experiments_file)
+    theta_priors = define_sbml_params_priors (sbml, priors_file)
+    ml = MarginalLikelihood (int (iterations_phase1), 
+                             int (sigma_update_n), 
+                             int (iterations_phase2), 
+                             int (iterations_phase3), 20, 2, \
+                             verbose=False, n_process=int (nof_process))
+    log_l = ml.estimate_marginal_likelihood (experiments, odes, 
+            theta_priors)
+    return log_l
+
 
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
@@ -52,7 +83,6 @@ parser.add_argument ("tasks_file", help="A JSON file that defines" \
 parser.add_argument ("cluster_definition_file", help="A JSON file" \
         + " that defines the cluster that should be used to perform" \
         + " tasks")
-
 args = parser.parse_args ()
 tasks_filename = args.tasks_file
 cluster_filename = args.cluster_definition_file
@@ -61,8 +91,20 @@ cluster_file = open (cluster_filename, 'r')
 
 tasks_json = json.load (tasks_file)
 cluster_json = json.load (cluster_file)
-
 workers = cluster_json["machines"]
 ray_path = cluster_json["ray_path"]
 
-prepare_workers (workers, ray_path)
+# Prepares Ray on all machines
+redis_address = prepare_workers (workers, ray_path)
+
+# Initializes Ray for this program
+ray.init (redis_address=redis_address)
+
+sent_tasks = {}
+for task in tasks_json:
+    task_id = run_task.remote (*tasks_json[task])
+    sent_tasks[task] = task_id
+
+resulting_ml = {}
+for task in tasks_json:
+    resulting_ml[task] = ray.get (sent_tasks[task])

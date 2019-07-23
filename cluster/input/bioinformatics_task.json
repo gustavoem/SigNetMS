@@ -1,0 +1,43 @@
+{
+  "model1": [
+    "input/bioinformatics/model1.xml",
+    "input/bioinformatics/model.priors",
+    "input/bioinformatics/experiment.data",
+    "5000",
+    "1000",
+    "200",
+    "200",
+    "--n_process=8"
+  ],
+  "model2": [
+    "input/bioinformatics/model2.xml",
+    "input/bioinformatics/model.priors",
+    "input/bioinformatics/experiment.data",
+    "5000",
+    "1000",
+    "200",
+    "200",
+    "--n_process=8"
+  ],
+  "model3": [
+    "input/bioinformatics/model3.xml",
+    "input/bioinformatics/model.priors",
+    "input/bioinformatics/experiment.data",
+    "5000",
+    "1000",
+    "200",
+    "200",
+    "--n_process=8"
+  ],
+  "model4": [
+    "input/bioinformatics/model4.xml",
+    "input/bioinformatics/model.priors",
+    "input/bioinformatics/experiment.data",
+    "5000",
+    "1000",
+    "200",
+    "200",
+    "--n_process=8"
+  ]
+}
+

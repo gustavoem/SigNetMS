@@ -1,0 +1,7 @@
+{
+  "machines": [
+    "tolstoi",
+    "lowe"
+  ],
+  "ray_path": "/home/gestrela/signetms_env/bin/ray"
+}

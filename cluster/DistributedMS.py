@@ -1,5 +1,11 @@
 import argparse
 import json
+import os
+
+def prepare_workers (workers, ray_path):
+    # start the first element as a host
+    os.sys ("start_cluster_head.sh " + workers[0] + ray_path)
+
 
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
@@ -17,9 +23,7 @@ cluster_file = open (cluster_filename, 'r')
 tasks_json = json.load (tasks_file)
 cluster_json = json.load (cluster_file)
 
-print (tasks_json)
-print (cluster_json)
-
 workers = cluster_json["machines"]
 ray_path = cluster_json["ray_path"]
 
+prepare_workers (workers, ray_path)

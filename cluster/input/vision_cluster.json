@@ -1,7 +1,8 @@
 {
   "machines": [
     "tolstoi",
-    "puchkin"
+    "puchkin",
+    "dostoievski"
   ],
   "ray_path": "/home/gestrela/signetms_env/bin/ray"
 }

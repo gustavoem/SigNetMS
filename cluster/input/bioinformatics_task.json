@@ -7,7 +7,7 @@
     "1000",
     "200",
     "200",
-    "--n_process=8"
+    "8"
   ],
   "model2": [
     "input/bioinformatics/model2.xml",
@@ -17,7 +17,7 @@
     "1000",
     "200",
     "200",
-    "--n_process=8"
+    "8"
   ],
   "model3": [
     "input/bioinformatics/model3.xml",
@@ -27,7 +27,7 @@
     "1000",
     "200",
     "200",
-    "--n_process=8"
+    "8"
   ],
   "model4": [
     "input/bioinformatics/model4.xml",
@@ -37,7 +37,7 @@
     "1000",
     "200",
     "200",
-    "--n_process=8"
+    "8"
   ]
 }
 

@@ -7,11 +7,6 @@ import subprocess
 import re
 import ray
 from pathlib import Path
-from model.SBML import SBML
-from experiment.ExperimentSet import ExperimentSet
-from model.SBMLtoODES import sbml_to_odes
-from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
-from model.PriorsReader import define_sbml_params_priors
 
 def prepare_workers (workers, ray_path):
     current_path = str (Path ().absolute ())
@@ -27,6 +22,8 @@ def prepare_workers (workers, ray_path):
 
     redis_address_pattern = \
             re.compile (r".*redis-address (\d+\.\d+\.\d+\.\d+:\d+)")
+
+    print (out.decode ("utf-8"))
     try:
         m = redis_address_pattern.match (str (out))
         redis_address = m.group (1)
@@ -44,6 +41,9 @@ def prepare_workers (workers, ray_path):
                 redis_address], stdout=subprocess.PIPE)
         (out, err) = proc.communicate ()
         worker_up_pattern = re.compile (".*Started Ray on this node")
+        
+        print (out.decode ("utf-8"))
+
         if worker_up_pattern.search (str (out)):
             print ("[OK]")
         else:
@@ -55,18 +55,33 @@ def prepare_workers (workers, ray_path):
     return redis_address
 
 
+def abs_path (path, SIGNET_MS_PATH):
+    return SIGNET_MS_PATH + "/" + path
+
+
 @ray.remote
 def run_task (model_file, priors_file, experiments_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
-        iterations_phase3, nof_process):
-    import os
-    os.system ("export PYTHONPATH=\"${PYTHONPATH}\":/home/gestrela/cs/SigNetMS")
-    print ("PAAATH!!" + sys.path)
+        iterations_phase3, nof_process, SIGNET_MS_PATH):
+    # importing local modules...
+    sys.path.insert (0, SIGNET_MS_PATH)
+    from model.SBML import SBML
+    from experiment.ExperimentSet import ExperimentSet
+    from model.SBMLtoODES import sbml_to_odes
+    from marginal_likelihood.MarginalLikelihood \
+            import MarginalLikelihood
+    from model.PriorsReader import define_sbml_params_priors
+    from model.ODES import ODES
+
+    # Now the actual code...
+    model_abs_path = abs_path (model_file, SIGNET_MS_PATH)
+    experiments_abs_path = abs_path (experiments_file, SIGNET_MS_PATH)
+    priors_abs_path = abs_path (priors_file, SIGNET_MS_PATH)
     sbml = SBML ()
-    sbml.load_file (model_file)
+    sbml.load_file (model_abs_path)
     odes = sbml_to_odes (sbml)
-    experiments = ExperimentSet (experiments_file)
-    theta_priors = define_sbml_params_priors (sbml, priors_file)
+    experiments = ExperimentSet (experiments_abs_path)
+    theta_priors = define_sbml_params_priors (sbml, priors_abs_path)
     ml = MarginalLikelihood (int (iterations_phase1), 
                              int (sigma_update_n), 
                              int (iterations_phase2), 
@@ -75,7 +90,6 @@ def run_task (model_file, priors_file, experiments_file, \
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     return log_l
-
 
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
@@ -100,9 +114,22 @@ redis_address = prepare_workers (workers, ray_path)
 # Initializes Ray for this program
 ray.init (redis_address=redis_address)
 
+
+
+current_path = str (Path ().absolute ())
+SIGNET_MS_PATH = '/'.join (((current_path.split ('/'))[:-1]))
+
 sent_tasks = {}
 for task in tasks_json:
-    task_id = run_task.remote (*tasks_json[task])
+    task_id = run_task.remote (tasks_json[task][0], 
+            tasks_json[task][1],
+            tasks_json[task][2],
+            tasks_json[task][3],
+            tasks_json[task][4],
+            tasks_json[task][5],
+            tasks_json[task][6],
+            tasks_json[task][7],
+            SIGNET_MS_PATH)
     sent_tasks[task] = task_id
 
 resulting_ml = {}

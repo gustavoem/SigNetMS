@@ -305,7 +305,8 @@ class ODES:
         sym_jacobian = sym.MatrixSymbol ('J', n, n)
         sym_jac_eq = sym.Eq (sym_jacobian, sym_jacobian_rhs)
         jac_fun = autowrap (sym_jac_eq, backend='cython', \
-                tempdir='autowrap_jac_tmp', args=[sys_vars, sys_params])
+                tempdir='autowrap_jac' + self.name + '_tmp', \
+                args=[sys_vars, sys_params])
         wrapped_jac = self.odeint_sys_wrapper (jac_fun)
         self.sys_jacobian = wrapped_jac
         return wrapped_jac

@@ -6,6 +6,7 @@ import json
 import subprocess 
 import re
 import ray
+import warnings
 from pathlib import Path
 
 def prepare_workers (workers, ray_path):
@@ -48,11 +49,27 @@ def prepare_workers (workers, ray_path):
             print ("[OK]")
         else:
             print ("Failed!")
-            print ("Warning: Could not start ray on " + worker + ".")
-            print (out.decode ("utf-8"))
+            warnings.warn ("Could not start ray on " + worker + ".")
             if err is not None:
                 print (err.decode ("utf-8"))
     return redis_address
+
+
+def stop_clusters (workers, ray_path):
+    current_path = str (Path ().absolute ())
+    stop_worker_bin = current_path + "/stop_cluster_worker.sh"
+    
+    for worker in workers[::-1]:
+        print ("Stoping worker ", worker, "...", end="", flush=True)
+        proc = subprocess.Popen ([stop_worker_bin, worker, ray_path], \
+                stdout=subprocess.PIPE)
+        (out, err) = proc.communicate ()
+        return_code = proc.returncode
+        if return_code:
+            print (out.decode ("utf-8"))
+            warnings.warn ("Failed to stop ray!")
+        else:
+            print ("[OK]")
 
 
 def abs_path (path, SIGNET_MS_PATH):
@@ -63,6 +80,7 @@ def abs_path (path, SIGNET_MS_PATH):
 def run_task (model_file, priors_file, experiments_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
         iterations_phase3, nof_process, SIGNET_MS_PATH):
+    return 0
     # importing local modules...
     sys.path.insert (0, SIGNET_MS_PATH)
     from model.SBML import SBML
@@ -138,3 +156,4 @@ for task in tasks_json:
     task_name = task["name"]
     resulting_ml[task_name] = ray.get (sent_tasks[task_name])
 print (resulting_ml)
+stop_clusters (workers, ray_path)

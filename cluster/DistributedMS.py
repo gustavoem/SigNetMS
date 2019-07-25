@@ -82,11 +82,11 @@ def run_task (model_file, priors_file, experiments_file, \
     odes = sbml_to_odes (sbml)
     experiments = ExperimentSet (experiments_abs_path)
     theta_priors = define_sbml_params_priors (sbml, priors_abs_path)
-    ml = MarginalLikelihood (int (iterations_phase1), 
-                             int (sigma_update_n), 
-                             int (iterations_phase2), 
-                             int (iterations_phase3), 20, 2, \
-                             verbose=False, n_process=int (nof_process))
+    ml = MarginalLikelihood (iterations_phase1, 
+                             sigma_update_n, 
+                             iterations_phase2, 
+                             iterations_phase3, 20, 2, \
+                             verbose=False, n_process=nof_process)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     return log_l
@@ -107,6 +107,7 @@ tasks_json = json.load (tasks_file)
 cluster_json = json.load (cluster_file)
 workers = cluster_json["machines"]
 ray_path = cluster_json["ray_path"]
+process_by_task = cluster_json["n_process_by_task"]
 
 # Prepares Ray on all machines
 redis_address = prepare_workers (workers, ray_path)
@@ -114,24 +115,26 @@ redis_address = prepare_workers (workers, ray_path)
 # Initializes Ray for this program
 ray.init (redis_address=redis_address)
 
-
-
 current_path = str (Path ().absolute ())
 SIGNET_MS_PATH = '/'.join (((current_path.split ('/'))[:-1]))
 
 sent_tasks = {}
 for task in tasks_json:
-    task_id = run_task.remote (tasks_json[task][0], 
-            tasks_json[task][1],
-            tasks_json[task][2],
-            tasks_json[task][3],
-            tasks_json[task][4],
-            tasks_json[task][5],
-            tasks_json[task][6],
-            tasks_json[task][7],
+    task_id = run_task.remote (
+            task["model_file"], 
+            task["prior_file"],
+            task["experiment_file"],
+            int (task["phase1_it"]),
+            int (task["sigma_update_n"]),
+            int (task["phase2_it"]),
+            int (task["phase3_it"]),
+            int (process_by_task),
             SIGNET_MS_PATH)
-    sent_tasks[task] = task_id
+    task_name = task["name"]
+    sent_tasks[task_name] = task_id
 
 resulting_ml = {}
 for task in tasks_json:
-    resulting_ml[task] = ray.get (sent_tasks[task])
+    task_name = task["name"]
+    resulting_ml[task_name] = ray.get (sent_tasks[task_name])
+print (resulting_ml)

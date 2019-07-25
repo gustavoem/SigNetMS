@@ -1,43 +1,42 @@
-{
-  "model1": [
-    "input/bioinformatics/model1.xml",
-    "input/bioinformatics/model.priors",
-    "input/bioinformatics/experiment.data",
-    "5000",
-    "1000",
-    "200",
-    "200",
-    "8"
-  ],
-  "model2": [
-    "input/bioinformatics/model2.xml",
-    "input/bioinformatics/model.priors",
-    "input/bioinformatics/experiment.data",
-    "5000",
-    "1000",
-    "200",
-    "200",
-    "8"
-  ],
-  "model3": [
-    "input/bioinformatics/model3.xml",
-    "input/bioinformatics/model.priors",
-    "input/bioinformatics/experiment.data",
-    "5000",
-    "1000",
-    "200",
-    "200",
-    "8"
-  ],
-  "model4": [
-    "input/bioinformatics/model4.xml",
-    "input/bioinformatics/model.priors",
-    "input/bioinformatics/experiment.data",
-    "5000",
-    "1000",
-    "200",
-    "200",
-    "8"
-  ]
-}
-
+[
+  {
+    "name": "model1",
+    "model_file": "input/bioinformatics/model1.xml",
+    "prior_file": "input/bioinformatics/model.priors",
+    "experiment_file": "input/bioinformatics/experiment.data",
+    "phase1_it": "3000",
+    "sigma_update_n": "1000",
+    "phase2_it": "200",
+    "phase3_it": "300"
+  },
+  {
+    "name": "model2",
+    "model_file": "input/bioinformatics/model2.xml",
+    "prior_file": "input/bioinformatics/model.priors",
+    "experiment_file": "input/bioinformatics/experiment.data",
+    "phase1_it": "3000",
+    "sigma_update_n": "1000",
+    "phase2_it": "200",
+    "phase3_it": "300"
+  },
+  {
+    "name": "model3",
+    "model_file": "input/bioinformatics/model3.xml",
+    "prior_file": "input/bioinformatics/model.priors",
+    "experiment_file": "input/bioinformatics/experiment.data",
+    "phase1_it": "3000",
+    "sigma_update_n": "1000",
+    "phase2_it": "200",
+    "phase3_it": "300"
+  },
+  {
+    "name": "model4",
+    "model_file": "input/bioinformatics/model4.xml",
+    "prior_file": "input/bioinformatics/model.priors",
+    "experiment_file": "input/bioinformatics/experiment.data",
+    "phase1_it": "3000",
+    "sigma_update_n": "1000",
+    "phase2_it": "200",
+    "phase3_it": "300"
+  }
+]

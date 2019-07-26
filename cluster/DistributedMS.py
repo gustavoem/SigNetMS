@@ -19,7 +19,7 @@ def prepare_workers (workers, ray_path):
             end="", flush=True)
     proc = subprocess.Popen ([start_cluster_head_bin, workers[0], \
             ray_path], stdout=subprocess.PIPE)
-    (out, err) = proc.communicate ()
+    (out, _) = proc.communicate ()
 
     redis_address_pattern = \
             re.compile (r".*redis-address (\d+\.\d+\.\d+\.\d+:\d+)")
@@ -40,7 +40,7 @@ def prepare_workers (workers, ray_path):
         print ("Starting worker " + worker + "...", end="", flush=True)
         proc = subprocess.Popen ([start_worker_bin, worker, ray_path, \
                 redis_address], stdout=subprocess.PIPE)
-        (out, err) = proc.communicate ()
+        (out, _) = proc.communicate ()
         worker_up_pattern = re.compile (".*Started Ray on this node")
         
         print (out.decode ("utf-8"))
@@ -50,8 +50,6 @@ def prepare_workers (workers, ray_path):
         else:
             print ("Failed!")
             warnings.warn ("Could not start ray on " + worker + ".")
-            if err is not None:
-                print (err.decode ("utf-8"))
     return redis_address
 
 
@@ -63,7 +61,7 @@ def stop_clusters (workers, ray_path):
         print ("Stoping worker ", worker, "...", end="", flush=True)
         proc = subprocess.Popen ([stop_worker_bin, worker, ray_path], \
                 stdout=subprocess.PIPE)
-        (out, err) = proc.communicate ()
+        (out, _) = proc.communicate ()
         return_code = proc.returncode
         if return_code:
             print (out.decode ("utf-8"))
@@ -72,34 +70,37 @@ def stop_clusters (workers, ray_path):
             print ("[OK]")
 
 
-def abs_path (path, SIGNET_MS_PATH):
-    return SIGNET_MS_PATH + "/" + path
+def abs_path (path, prefix_path):
+    return prefix_path + "/" + path
+
+
+def get_signetms_path (current_path):
+    path_list = current_path.split ('/')
+    signetms_idx = path_list.index ('SigNetMS')
+    signetms_path_list = path_list[:signetms_idx + 1]
+    signetms_path = '/'.join (signetms_path_list)
+    return signetms_path
 
 
 @ray.remote
-def run_task (model_file, priors_file, experiments_file, \
+def run_task (model_file, priors_file, experiment_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
-        iterations_phase3, nof_process, SIGNET_MS_PATH):
-    return 0
+        iterations_phase3, nof_process, signetms_path):
     # importing local modules...
-    sys.path.insert (0, SIGNET_MS_PATH)
+    sys.path.insert (0, signetms_path)
     from model.SBML import SBML
     from experiment.ExperimentSet import ExperimentSet
     from model.SBMLtoODES import sbml_to_odes
     from marginal_likelihood.MarginalLikelihood \
             import MarginalLikelihood
     from model.PriorsReader import define_sbml_params_priors
-    from model.ODES import ODES
 
     # Now the actual code...
-    model_abs_path = abs_path (model_file, SIGNET_MS_PATH)
-    experiments_abs_path = abs_path (experiments_file, SIGNET_MS_PATH)
-    priors_abs_path = abs_path (priors_file, SIGNET_MS_PATH)
     sbml = SBML ()
-    sbml.load_file (model_abs_path)
+    sbml.load_file (model_file)
     odes = sbml_to_odes (sbml)
-    experiments = ExperimentSet (experiments_abs_path)
-    theta_priors = define_sbml_params_priors (sbml, priors_abs_path)
+    experiments = ExperimentSet (experiment_file)
+    theta_priors = define_sbml_params_priors (sbml, priors_file)
     ml = MarginalLikelihood (iterations_phase1, 
                              sigma_update_n, 
                              iterations_phase2, 
@@ -108,6 +109,7 @@ def run_task (model_file, priors_file, experiments_file, \
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
     return log_l
+
 
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
@@ -123,31 +125,38 @@ cluster_file = open (cluster_filename, 'r')
 
 tasks_json = json.load (tasks_file)
 cluster_json = json.load (cluster_file)
-workers = cluster_json["machines"]
-ray_path = cluster_json["ray_path"]
+workers_list = cluster_json["machines"]
+ray_abs_path = cluster_json["ray_path"]
 process_by_task = cluster_json["n_process_by_task"]
 
 # Prepares Ray on all machines
-redis_address = prepare_workers (workers, ray_path)
+redis_server_address = prepare_workers (workers_list, ray_abs_path)
 
 # Initializes Ray for this program
-ray.init (redis_address=redis_address)
+ray.init (redis_address=redis_server_address)
 
-current_path = str (Path ().absolute ())
-SIGNET_MS_PATH = '/'.join (((current_path.split ('/'))[:-1]))
+# Find SigNetMS and input absolute path
+current_abs_path = str (Path ().absolute ())
+signetms_abs_path = get_signetms_path (current_abs_path)
 
+# Send tasks
 sent_tasks = {}
 for task in tasks_json:
+    model_abs_path = abs_path (task["model_file"], signetms_abs_path)
+    prior_abs_path = abs_path (task["prior_file"], signetms_abs_path)
+    experiments_abs_path = abs_path (task["experiment_file"], \
+            signetms_abs_path)
+
     task_id = run_task.remote (
-            task["model_file"], 
-            task["prior_file"],
-            task["experiment_file"],
+            model_abs_path, 
+            prior_abs_path,
+            experiments_abs_path,
             int (task["phase1_it"]),
             int (task["sigma_update_n"]),
             int (task["phase2_it"]),
             int (task["phase3_it"]),
             int (process_by_task),
-            SIGNET_MS_PATH)
+            signetms_abs_path)
     task_name = task["name"]
     sent_tasks[task_name] = task_id
 
@@ -156,4 +165,4 @@ for task in tasks_json:
     task_name = task["name"]
     resulting_ml[task_name] = ray.get (sent_tasks[task_name])
 print (resulting_ml)
-stop_clusters (workers, ray_path)
+stop_clusters (workers_list, ray_abs_path)

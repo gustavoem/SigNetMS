@@ -19,3 +19,4 @@ pylint==1.9.4
 # pathos multiprocessing
 https://github.com/uqfoundation/pathos/archive/b72f986e934dd87fdefd1dc83a33dc02466e126a.zip
 Cython==0.29.12
+ray==0.7.2

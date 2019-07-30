@@ -2,7 +2,7 @@
   "machines": [
     "tolstoi",
     "puchkin",
-    "dostoievski"
+    "tolstoi"
   ],
   "ray_path": "/home/gestrela/signetms_env/bin/ray",
   "n_process_by_task": "8"

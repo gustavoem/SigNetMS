@@ -44,7 +44,6 @@ def prepare_workers (workers, ray_path):
         worker_up_pattern = re.compile (".*Started Ray on this node")
         
         print (out.decode ("utf-8"))
-
         if worker_up_pattern.search (str (out)):
             print ("[OK]")
         else:
@@ -56,9 +55,8 @@ def prepare_workers (workers, ray_path):
 def stop_clusters (workers, ray_path):
     current_path = str (Path ().absolute ())
     stop_worker_bin = current_path + "/stop_cluster_worker.sh"
-    
     for worker in workers[::-1]:
-        print ("Stoping worker ", worker, "...", end="", flush=True)
+        print ("Stoping worker ", worker + "...", end="", flush=True)
         proc = subprocess.Popen ([stop_worker_bin, worker, ray_path], \
                 stdout=subprocess.PIPE)
         (out, _) = proc.communicate ()
@@ -111,6 +109,7 @@ def run_task (model_file, priors_file, experiment_file, \
     return log_l
 
 
+
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
         + " the tasks that should be performed.")
@@ -135,12 +134,14 @@ redis_server_address = prepare_workers (workers_list, ray_abs_path)
 # Initializes Ray for this program
 ray.init (redis_address=redis_server_address)
 
+
 # Find SigNetMS and input absolute path
 current_abs_path = str (Path ().absolute ())
 signetms_abs_path = get_signetms_path (current_abs_path)
 
 # Send tasks
-sent_tasks = {}
+not_ready_tasks = []
+id_to_name = {}
 for task in tasks_json:
     model_abs_path = abs_path (task["model_file"], signetms_abs_path)
     prior_abs_path = abs_path (task["prior_file"], signetms_abs_path)
@@ -157,12 +158,19 @@ for task in tasks_json:
             int (task["phase3_it"]),
             int (process_by_task),
             signetms_abs_path)
-    task_name = task["name"]
-    sent_tasks[task_name] = task_id
+    id_to_name[str (task_id)] = task["name"]
+    not_ready_tasks.append (task_id)
+    print ("Creating task", task["name"])
 
 resulting_ml = {}
-for task in tasks_json:
-    task_name = task["name"]
-    resulting_ml[task_name] = ray.get (sent_tasks[task_name])
+while len (not_ready_tasks) > 0:
+    ready, not_ready = ray.wait (not_ready_tasks)
+    first_ready = ready[0]
+    task_name = id_to_name[str (first_ready)]
+    print ("Getting task", task_name)
+    resulting_ml[task_name] = ray.get (first_ready)
+    not_ready_tasks = not_ready
 print (resulting_ml)
+
+ray.shutdown ()
 stop_clusters (workers_list, ray_abs_path)

@@ -135,6 +135,19 @@ class SBML:
         return ""
 
 
+    def get_all_reaction_formulas (self):
+        """ Returns a list with all reaction rate formulas.
+
+        Returns
+            all_formulas: a list of string containing the reaction rate
+                of all reactions.
+        """
+        model = self.sbml_obj.model
+        reaction_list = model.getListOfReactions ()
+        get_reac_f = lambda reac: reac.getKineticLaw ().getFormula ()
+        return [get_reac_f (reac) for reac in reaction_list]
+
+
     def add_reaction (self, reaction):
         """ Adds a new reaction to the sbml model.
         
@@ -149,7 +162,7 @@ class SBML:
         model = self.sbml_obj.model
         created_reac = model.createReaction ()
         new_species = []
-        
+
         for reactant in reaction.reactants:
             reactant_ref = model.getSpeciesReference (reactant)
             if reactant_ref is None:
@@ -167,20 +180,22 @@ class SBML:
             created_reac.addProduct (product_ref)
 
         for modifier in reaction.modifiers:
-            modifier_ref = model.getSpeciesReference (modifier)
-            if modifier_ref is None:
+            created_modifier = created_reac.createModifier ()
+            if model.getSpeciesReference (modifier) is None:
                 self.__create_new_species (modifier)
                 new_species.append (modifier)
-            modifier_ref = model.getSpeciesReference (modifier)
-            created_reac.addModifier (product_ref)
+            havnt_added_mod = created_modifier.setSpecies (modifier)
+            if havnt_added_mod:
+                raise ValueError ("Could not set", modifier, \
+                        "as a modifier")
         
         created_kinetic_law = created_reac.createKineticLaw ()
-        kinetic_law.setFormula = reaction.formula
-        for param in reaction.params:
-            created_param = kinetic_law.createParamete ()
+        created_kinetic_law.setFormula (reaction.formula)
+        for param in reaction.parameters:
+            created_param = created_kinetic_law.createParameter ()
             created_param.setId (param["name"])
             created_param.setName (param["name"])
-            created_param.seValue (param["value"])
+            created_param.setValue (param["value"])
         
 
     def __create_new_species (self, species):
@@ -191,13 +206,13 @@ class SBML:
                 added.
         """
         model = self.sbml_obj.model
-        created_reactant = model.createSpecies ()
-        if created_reactant.setId (reactant):
+        created_species = model.createSpecies ()
+        if created_species.setId (species):
             raise ValueError ("Could not set the id", species, 
                     "as a new species id.")
-        created_reactant.setName (reactant)
-        created_reactant.setInitialConcentration (0)
-        created_reactant.setConstant (False)
+        created_species.setName (species)
+        created_species.setInitialConcentration (0)
+        created_species.setConstant (False)
 
 
     def __get_reactions_involving (self, species_name):

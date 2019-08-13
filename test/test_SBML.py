@@ -150,8 +150,28 @@ class TestSBMLMethods (unittest.TestCase):
         new_reaction = Reaction ("R --dS--> Rpp", ["R"], ["Rpp"], 
                 ["dS"], parameters, "kcat * dS * R / (Km + R)")
         model.add_reaction (new_reaction)
-        all_formula = [f for f in model.get_all_reaction_formulas ()]
+        all_formula = model.get_all_reaction_formulas ()
         assert (new_reaction.formula in all_formula)
+        
+        # new products/reactants
+        model = SBML ()
+        model.load_file ("input/model1_bioinformatics.xml")
+        new_reaction = Reaction ("Dummy ---> Dummy2", ["Dummy"], 
+                ["Dummy2"], [], parameters, 
+                "kcat * Dummy / (Km + Dummy)")
+        model.add_reaction (new_reaction)
+        all_formula = model.get_all_reaction_formulas ()
+        assert (new_reaction.formula in all_formula)
+
+        # new modifiers
+        model = SBML ()
+        model.load_file ("input/model1_bioinformatics.xml")
+        new_reaction = Reaction ("R --Dummy--> Rpp", ["R"], ["Rpp"], 
+                ["Dummy"], parameters, "kcat * Dummy * R / (Km + R)")
+        model.add_reaction (new_reaction)
+        all_formula = model.get_all_reaction_formulas ()
+        assert (new_reaction.formula in all_formula)
+
 
 
 if __name__ == '__main__':

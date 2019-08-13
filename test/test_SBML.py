@@ -4,6 +4,7 @@ sys.path.insert(0, '..')
 import unittest
 import re
 from model.SBML import SBML
+from model.Reaction import Reaction
 
 
 class TestSBMLMethods (unittest.TestCase):
@@ -136,6 +137,21 @@ class TestSBMLMethods (unittest.TestCase):
         assert ("k1" in names)
         assert ("k2" in names)
         assert ("k3" in names)
+
+
+    def test_add_reaction (self):
+        """ Tests if it is possible to add a reaction to an SBML model. 
+        """
+        model = SBML ()
+        model.load_file ("input/model1_bioinformatics.xml")
+        
+        parameters = [{"name": "kcat", "value": .5},
+                      {"name": "Km", "value": 5}]
+        new_reaction = Reaction ("R --dS--> Rpp", ["R"], ["Rpp"], 
+                ["dS"], parameters, "kcat * dS * R / (Km + R)")
+        model.add_reaction (new_reaction)
+        all_formula = [f for f in model.get_all_reaction_formulas ()]
+        assert (new_reaction.formula in all_formula)
 
 
 if __name__ == '__main__':

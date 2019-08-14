@@ -1,5 +1,6 @@
 import libsbml
 import re
+import warnings
 
 class SBML:
     """ This class contains a representation for SBML objects. 
@@ -196,7 +197,23 @@ class SBML:
             created_param.setId (param["name"])
             created_param.setName (param["name"])
             created_param.setValue (param["value"])
+
         
+    def remove_reaction (self, reaction_id):
+        """
+        Removes a reaction from the SBML model.
+
+        Parameters
+            reaction_id: a string with the id of the reaction that must
+                be removed. If there is no reaction with id reaction_id,
+                then the method rises a Warning and does nothing else.
+        """
+        model = self.sbml_obj.model
+        reaction = model.removeReaction (reaction_id)
+        if not reaction:
+            warnings.warn ("Could not find reaction with id" \
+                    + str (reaction_id))
+
 
     def __create_new_species (self, species):
         """ Adds a new species to the model.

@@ -174,5 +174,17 @@ class TestSBMLMethods (unittest.TestCase):
 
 
 
+    def test_remove_reaction (self):
+        """ Tests if it is possible to remove a reaction from an SBML
+        model.
+        """
+        model = SBML ()
+        model.load_file ("input/model1_bioinformatics.xml")
+        model.remove_reaction ("reaction_0")
+        removed_formula = "compartment * k1 * S"
+        all_formula = model.get_all_reaction_formulas ()
+        assert (removed_formula not in all_formula)
+
+
 if __name__ == '__main__':
     unittest.main ()

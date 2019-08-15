@@ -192,7 +192,8 @@ class TestSBMLMethods (unittest.TestCase):
         gotten_reac_ids = [r.id for r in model.get_all_reactions ()]
         reac_ids = ["reaction_0", "reaction_1", "reaction_2", \
                 "reaction_3"]
-        [assert (r_id in all_reactions_gotten) for r_id in reac_ids]
+        for reac_id in reac_ids:
+            assert reac_id in gotten_reac_ids
 
 
 if __name__ == '__main__':

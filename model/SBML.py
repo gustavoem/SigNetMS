@@ -1,6 +1,7 @@
 import libsbml
 import re
 import warnings
+from model.Reaction import Reaction
 
 class SBML:
     """ This class contains a representation for SBML objects. 
@@ -147,6 +148,21 @@ class SBML:
         reaction_list = model.getListOfReactions ()
         get_reac_f = lambda reac: reac.getKineticLaw ().getFormula ()
         return [get_reac_f (reac) for reac in reaction_list]
+
+
+    def get_all_reactions (self):
+        """ Returns a list with all reactions of the model. 
+        
+        Returns
+            all_reactions: a list of Reaction objects that represent all
+                reactions of this sbml model.
+        """
+        model = self.sbml_obj.model
+        all_reactions = []
+        for sbml_reaction in model.getListOfReactions ():
+            reaction = Reaction.create_from_SBML (sbml_reaction)
+            all_reactions.append (reaction)
+        return all_reactions
 
 
     def add_reaction (self, reaction):

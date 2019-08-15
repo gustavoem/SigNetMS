@@ -185,6 +185,15 @@ class TestSBMLMethods (unittest.TestCase):
         all_formula = model.get_all_reaction_formulas ()
         assert (removed_formula not in all_formula)
 
+    def test_get_all_reaction (self):
+        """ Tests if one can get all Reactions from an SBML model. """
+        model = SBML ()
+        model.load_file ("input/model1_bioinformatics.xml")
+        gotten_reac_ids = [r.id for r in model.get_all_reactions ()]
+        reac_ids = ["reaction_0", "reaction_1", "reaction_2", \
+                "reaction_3"]
+        [assert (r_id in all_reactions_gotten) for r_id in reac_ids]
+
 
 if __name__ == '__main__':
     unittest.main ()

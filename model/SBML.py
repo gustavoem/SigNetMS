@@ -32,7 +32,22 @@ class SBML:
 
         # Stores the model name
         self.name = ''
-                
+
+        # Stores the last loaded file
+        self.__loaded_file = None
+
+
+    def get_copy (self):
+        """ Creates a copy of this object and returns it. 
+        
+        Returns
+            sbml_copy - an SBML object that is a copy of self.
+        """
+        sbml_copy = SBML  ()
+        if self.__loaded_file:
+            sbml_copy.load_file (self.__loaded_file) 
+        return sbml_copy 
+
     
     def load_file (self, file_name):
         """ Given an xml file construct an sbml object. """
@@ -46,15 +61,21 @@ class SBML:
         converter.setDocument (sbmldoc)
         converter.convert ()
 
+        self.num_params = 0
+        self.__parameter_values = {}
         self.sbml_obj = sbmldoc
         self.name = str (sbmldoc.model.name)
         self.__global_param = self.__get_global_params ()
         self.__local_param = self.__get_local_params ()
+        self.__loaded_file = file_name
         return True
         
             
     def get_species_list (self):
         """ Returns a list with all species. """
+        if self.sbml_obj == None:
+            return []
+
         model = self.sbml_obj.model
         number_of_species = model.getNumSpecies ()
         

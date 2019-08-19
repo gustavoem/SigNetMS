@@ -173,7 +173,6 @@ class TestSBMLMethods (unittest.TestCase):
         assert (new_reaction.formula in all_formula)
 
 
-
     def test_remove_reaction (self):
         """ Tests if it is possible to remove a reaction from an SBML
         model.
@@ -185,6 +184,7 @@ class TestSBMLMethods (unittest.TestCase):
         all_formula = model.get_all_reaction_formulas ()
         assert (removed_formula not in all_formula)
 
+
     def test_get_all_reaction (self):
         """ Tests if one can get all Reactions from an SBML model. """
         model = SBML ()
@@ -195,6 +195,20 @@ class TestSBMLMethods (unittest.TestCase):
         for reac_id in reac_ids:
             assert reac_id in gotten_reac_ids
 
+    def test_get_copy (self):
+        """ Tests if one can copy the SBML object. """
+        model = SBML ()
+        copy = model.get_copy ()
+        self.assertEqual (len (copy.get_species_list ()), 0)
+
+        model.load_file ("input/model1_bioinformatics.xml")
+        copy = model.get_copy ()
+        self.assertEqual (len (copy.get_species_list ()), 5)
+        self.assertEqual (copy.get_initial_concentration ('S'), 1)
+        self.assertEqual (copy.get_initial_concentration ('dS'), 0)
+        self.assertEqual (copy.get_initial_concentration ('R'), 1)
+        self.assertEqual (copy.get_initial_concentration ('RS'), 0)
+        self.assertEqual (copy.get_initial_concentration ('Rpp'), 0)
 
 if __name__ == '__main__':
     unittest.main ()

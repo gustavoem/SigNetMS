@@ -21,7 +21,7 @@ class TestPriorsReader (unittest.TestCase):
             elif x.name == 'd1' or x.name == 'kcat':
                 self.assertEqual (distribution.get_a (), 2.0)
                 self.assertEqual (distribution.get_b (), 0.1)
-            elif x.name == "Sigma":
+            elif x.name == "Noise":
                 pass
             else:
                 self.fail ()

@@ -70,6 +70,16 @@ class SBML:
         self.__loaded_file = file_name
         return True
         
+
+    def write_sbmldoc_to_file (self, filename):
+        """ Writes the libsbml object as an SBML file. 
+        
+        Parameters
+            filename: a string with the name of the file to be written.
+        """
+        writer = libsbml.SBMLWriter ()
+        writer.writeSBML (self.sbml_obj, filename)
+
             
     def get_species_list (self):
         """ Returns a list with all species. """

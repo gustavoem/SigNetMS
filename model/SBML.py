@@ -196,6 +196,20 @@ class SBML:
         return all_reactions
 
 
+    def set_name (self, name):
+        """ Changes the name of an SBML model. 
+
+        This method changes the attribute 'name' of the object and it
+        also changes the attribute 'name' of the libsbml.Model 
+        attribute.
+        
+        Parameters
+            name: a string containing the new name.
+        """
+        self.name = name
+        self.sbml_obj.model.setName (name)
+
+
     def add_reaction (self, reaction):
         """ Adds a new reaction to the sbml model.
         

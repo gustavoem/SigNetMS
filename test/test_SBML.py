@@ -173,6 +173,24 @@ class TestSBMLMethods (unittest.TestCase):
         assert (new_reaction.formula in all_formula)
 
 
+    def test_add_reaction_with_former_unused_species (self):
+        """ Tests if it we can add a new reaction using a species that
+            was already defined in the model but was never present in 
+            any reaction. """
+        model = SBML ()
+        model.load_file ("input/model_unused_species.xml")
+        parameters = [{"name": "kcat", "value": .5},
+                      {"name": "Km", "value": 5}]
+        new_reaction = Reaction (\
+                "unused --Rpp--> S", ["unused"], ["S"], ["Rpp"], \
+                parameters, "kcat * Rpp * unused / (Km + unused)")
+        nof_species_before = len (model.get_species_list ())
+        model.add_reaction (new_reaction)
+        model.write_sbmldoc_to_file ('teste.sbml')
+        nof_species_after = len (model.get_species_list ())
+        self.assertEqual (nof_species_after, nof_species_before)
+
+
     def test_remove_reaction (self):
         """ Tests if it is possible to remove a reaction from an SBML
         model.

@@ -226,20 +226,12 @@ class SBML:
         new_species = []
 
         for reactant in reaction.reactants:
-            reactant_ref = model.getSpeciesReference (reactant)
-            if reactant_ref is None:
-                self.__create_new_species (reactant)
-                new_species.append (reactant)
-            reactant_ref = model.getSpeciesReference (reactant)
-            created_reac.addReactant (reactant_ref)
+            model_reactant = self.__get_species (reactant)
+            created_reac.addReactant (model_reactant)
 
         for product in reaction.products:
-            product_ref = model.getSpeciesReference (product)
-            if product_ref is None:
-                self.__create_new_species (product)
-                new_species.append (product)
-            product_ref = model.getSpeciesReference (product)
-            created_reac.addProduct (product_ref)
+            model_product = self.__get_species (product)
+            created_reac.addProduct (model_product)
 
         for modifier in reaction.modifiers:
             created_modifier = created_reac.createModifier ()
@@ -255,7 +247,7 @@ class SBML:
         created_kinetic_law.setFormula (reaction.formula)
         for param in reaction.parameters:
             created_param = created_kinetic_law.createParameter ()
-            created_param.setId (param["name"])
+            created_param.setIdAttribute (param["name"])
             created_param.setName (param["name"])
             created_param.setValue (param["value"])
 
@@ -276,6 +268,23 @@ class SBML:
                     + str (reaction_id))
 
 
+    def __get_species (self, species_id):
+        """ Returns species (and creates if needed) with id species_id.
+
+        Parameters
+            species_id: a string with the id of the species.
+
+        Returns
+            species: a libsbml.Species object that has id species_id.
+        """
+        model = self.sbml_obj.model
+        species = model.getSpecies (species_id)
+        if species is None:
+            self.__create_new_species (species_id)
+        species = model.getSpecies (species_id)
+        return species
+
+
     def __create_new_species (self, species):
         """ Adds a new species to the model.
             
@@ -285,12 +294,16 @@ class SBML:
         """
         model = self.sbml_obj.model
         created_species = model.createSpecies ()
-        if created_species.setId (species):
+        if created_species.setIdAttribute (species):
             raise ValueError ("Could not set the id", species, 
                     "as a new species id.")
         created_species.setName (species)
         created_species.setInitialConcentration (0)
         created_species.setConstant (False)
+        # We assume there is only one compartment
+        compartments = model.getListOfCompartments ()
+        compartment_id = compartments[-1].getIdAttribute ()
+        created_species.setCompartment (compartment_id)
 
 
     def __get_reactions_involving (self, species_name):

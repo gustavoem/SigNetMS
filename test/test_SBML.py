@@ -186,7 +186,6 @@ class TestSBMLMethods (unittest.TestCase):
                 parameters, "kcat * Rpp * unused / (Km + unused)")
         nof_species_before = len (model.get_species_list ())
         model.add_reaction (new_reaction)
-        model.write_sbmldoc_to_file ('teste.sbml')
         nof_species_after = len (model.get_species_list ())
         self.assertEqual (nof_species_after, nof_species_before)
 

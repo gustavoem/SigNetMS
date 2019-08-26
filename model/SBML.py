@@ -223,6 +223,7 @@ class SBML:
         """
         model = self.sbml_obj.model
         created_reac = model.createReaction ()
+        created_reac.setIdAttribute (reaction.id)
         new_species = []
 
         for reactant in reaction.reactants:

@@ -18,6 +18,7 @@ def parallel_map (f, X, nof_process):
     """ Runs a map of X to f in parallel, using nof_process process. """
     pool = ProcessPool (nof_process)
     results = pool.map (f, X)
+    pool.clear ()
     return results
 
     # q_in = multiprocessing.Queue (1)

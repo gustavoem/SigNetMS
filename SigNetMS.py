@@ -9,7 +9,6 @@ def perform_marginal_likelihood (sbml_file, priors_file, \
         experiment_file, burnin1_iterations, sigma_update_n, \
         burnin2_iterations, sampling_iterations, verbose=False, \
         n_process=0):
-    return 0
     print  ("Performing marginal likelihood calculations of model: " + \
             sbml_file)
     sbml = SBML ()

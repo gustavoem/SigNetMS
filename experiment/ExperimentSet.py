@@ -7,10 +7,16 @@ from utils import clean_tag
 import numpy as np
 
 class ExperimentSet:
-    """ This class stores a set of experiments. """
+    """ This class represents a set of experiments. """
 
     def __init__ (self, filename=""):
-        """ Default constructor. """
+        """ Default constructor. 
+            
+        Parameters
+            filename: a string with the path of a file that represents
+                an experiment set. If this parameter is not provided a
+                new experiment set is created.
+        """
         self.__experiment_set = []
         if filename != "":
             self.load_data_file (filename)
@@ -18,34 +24,62 @@ class ExperimentSet:
     
     
     def __getitem__ (self, key):
-        """ Defines indexed access. """
+        """ Defines indexed access. 
+        
+        Parameter
+            key: the index of the experiment.
+
+        Returns
+            the experiment of index key
+        """
         return self.__experiment_set[key]
 
 
     def __iter__ (self):
-        """ Iterator start. """
+        """ Iterator start. 
+        
+        Returns
+            an iterator of experiments in this experiment set.
+        """
         self.__iterator = iter (self.__experiment_set)
         return self.__iterator
 
 
     def __next__ (self):
-        """ Iterator step. """
+        """ Iterator step. 
+ 
+        Returns 
+            the next experiment.
+        """
         return next (self.__iterator)
 
 
     def add (self, experiment):
-        """ Adds one experiment. """
+        """ Adds one experiment. 
+        
+        Parameters
+            experiment: an Experiment object to be added to this 
+                experiment set.
+        """
         self.__experiment_set.append (experiment)
 
 
     def get_size (self):
-        """ Returns the number of experiments in this set. """
+        """ Returns the number of experiments in this set. 
+        
+        Returns
+            the number of experiments in this experiment set.
+        """
         return len (self.__experiment_set)
     
     
     def load_data_file (self, file_name):
-        """ This method reads an experiment set file and add all 
-            experiments found to this object. """
+        """ Reads and adds all experiments of an experiment set file.
+            
+            Parameters
+                file_name: an xml file that contains a set of 
+                    experiments.
+        """
         tree = etree.parse (file_name)
         root = tree.getroot ()
     
@@ -120,7 +154,12 @@ class ExperimentSet:
 
     
     def save_to_file (self, file_name):
-        """ Saves experiment set into an XML file. """
+        """ Saves experiment set into an XML file.
+        
+        Parameters
+            file_name: a string with the name of the file in which the
+                experiment set is to be saved.
+        """
         experiments = self.__experiment_set
         root = etree.Element ("ExperimentSet")
         
@@ -147,8 +186,9 @@ class ExperimentSet:
                 standalone=True, xml_declaration=True)
 
     def get_as_abcsysbio_syntax (self):
-        """ Print each of the experiments to standard output using the
-            ABC-SysBio syntax. """
+        """ Returns a string containing the experiment set in an 
+            abc-sysbio format.  
+        """
         out = ''
         i = 1
         for exp in self.__experiment_set:

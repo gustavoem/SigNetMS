@@ -1,0 +1,7 @@
+{
+  "machines": [
+    "-p 2200 vital"
+  ],
+  "ray_path": "/mnt/project1/msreis/modelSelection/users/gestrela/signetms_env/bin/ray",
+  "n_process_by_task": "2"
+}

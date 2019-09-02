@@ -17,6 +17,8 @@ def parallel_map (f, X, nof_process):
             every element in X.
     """
     pool = ProcessPool (nof_process)
+    pool.clear () # why would you clear something you just created?
+    # anser: pathos.multiprocessing caches worker pools. (yeahhh... 
+    # maybe this should be a class) see issue #49
     results = pool.map (f, X)
-    pool.clear ()
     return results

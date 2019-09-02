@@ -1,48 +1,22 @@
-# import multiprocessing
 from pathos.multiprocessing import ProcessPool
 
-# This solution is inspired on the solution of klaus se on the Stack 
-# Overflow thread:
+# Formerly, we used a solution that was inspired in this thread:
 # https://stackoverflow.com/questions/3288595/multiprocessing-how-to-use-pool-map-on-a-function-defined-in-a-class
 
-def __fun_runner (f, q_in, q_out):
-    while True:
-        i, x = q_in.get ()
-        if i is None:
-            break
-        run_result = (i, f (x))
-        q_out.put (run_result)
-
-
 def parallel_map (f, X, nof_process):
-    """ Runs a map of X to f in parallel, using nof_process process. """
+    """ Runs a map of X to f in parallel. 
+    
+    Parameters
+        f: a callable object to which X should be applied.
+        X: a list of objects to which apply f.
+        nof_process: a integer representing the number of process that 
+            should be spawned to calculate f(X)
+
+    Returns
+        results: a list containing the resulting application of f to 
+            every element in X.
+    """
     pool = ProcessPool (nof_process)
     results = pool.map (f, X)
     pool.clear ()
     return results
-
-    # q_in = multiprocessing.Queue (1)
-    # q_out = multiprocessing.Queue ()
-
-    # proc = [multiprocessing.Process (target=__fun_runner, 
-        # args=(f, q_in, q_out)) for _ in range (nof_process)]
-
-    # for p in proc:
-        # p.daemon = True
-        # p.start ()
-    
-    # sent = 0
-    # for i, x in enumerate (X):
-        # q_in.put ((i, x))
-        # sent += 1
-
-    # sends a final signal to every worker
-    # for _ in range (nof_process):
-        # q_in.put ((None, None), block=True)
-    # q_in.close ()
-
-    # res = [q_out.get () for _ in range (sent)]
-
-    # for p in proc:
-        # p.join ()
-    # return [x for i, x in sorted (res)]

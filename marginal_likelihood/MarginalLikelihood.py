@@ -13,6 +13,7 @@ from marginal_likelihood.samplers.PopulationalMCMC import \
 import multiprocessing
 
 from parallel_map import parallel_map
+import sys
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """
@@ -56,6 +57,8 @@ class MarginalLikelihood:
     def __run_phase_one_and_two (temp, experiments, model, theta_prior,
             n_acc, n_adap_cov, n_sigma_update, verbose):
         """ Map function to run phase 2 and 3 for each temperature. """
+        print ("Running phase 1 and 2")
+        print ("Path = ", sys.path)
         # Phase 1
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments, 
                 n_sigma_update, verbose=verbose)
@@ -93,6 +96,7 @@ class MarginalLikelihood:
         # initialize ODEs function and jacobian
         model.evaluate_on ([experiments[0].times[0]])
         model.get_system_jacobian ()
+        print ("Initialized ODEs")
 
 
         betas = PopulationalMCMC.sample_scheduled_betas (n_strata * 

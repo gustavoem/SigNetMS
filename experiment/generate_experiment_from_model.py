@@ -8,6 +8,10 @@ from .ExperimentSet import ExperimentSet
 import numpy as np
 
 
+# This script can create an artificial experimental data. It runs a 
+# model and creates measurements of an artificial metric, then add 
+# gaussian error.
+
 def add_noise (vals):
     for j in range (len (vals)):
         eps = np.random.normal (0, .01)

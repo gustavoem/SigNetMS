@@ -22,19 +22,21 @@ class LikelihoodFunction:
         return exp * (1 / (sigma * np.sqrt (2 * np.pi)))
 
 
+    def __point_log_likelihood (self, mu, x, sigma):
+        term1 = -0.5 * ((x - mu) / sigma) ** 2
+        term2 = np.log (1 / (sigma * np.sqrt (2 * np.pi)))
+        return term1 + term2
+
+
     def __calculate_likelihood (self, X_sys, X_obs, sigma):
         """ Calculates the log-likelihood of observing X_obs given that 
             the real value is X_sys. """
         log_l = 0
         for i in range (len (X_obs)):
-            observed_x = X_obs[i]
-            system_x = X_sys[i]
-            x_l = self.__point_likelihood (system_x, observed_x, sigma)
-            if x_l <= 0:
-                log_l = float ("-inf")
-                break
-            else:
-                log_l += np.log (x_l)
+            obs_xi = X_obs[i]
+            sys_xi = X_sys[i]
+            x_ll = self.__point_log_likelihood (sys_xi, obs_xi, sigma)
+            log_l += x_ll    
         return log_l
 
 
@@ -56,11 +58,11 @@ class LikelihoodFunction:
         measure_expression = experiments[0].measure_expression
         X_sys = self.__get_sys_measure (measure_expression, t, theta)
         sigma = theta.get_experimental_error ()
-        # print ("\nX_sys: " + str (X_sys))
+        #print ("\nX_sys: " + str (X_sys))
         log_l = 0
         for exp in experiments:
             X_obs = exp.values
-            # print ("\tX_obs: " + str (X_obs))
+            #print ("\tX_obs: " + str (X_obs))
             log_l += self.__calculate_likelihood (X_sys, X_obs, sigma)
-            # print ("\tpartial log-likelihood: " + str (log_l))
+            #print ("\tpartial log-likelihood: " + str (log_l))
         return log_l

@@ -57,8 +57,6 @@ class MarginalLikelihood:
     def __run_phase_one_and_two (temp, experiments, model, theta_prior,
             n_acc, n_adap_cov, n_sigma_update, verbose):
         """ Map function to run phase 2 and 3 for each temperature. """
-        print ("Running phase 1 and 2")
-        print ("Path = ", sys.path)
         # Phase 1
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments, 
                 n_sigma_update, verbose=verbose)

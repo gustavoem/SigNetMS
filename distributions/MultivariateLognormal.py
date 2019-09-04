@@ -74,7 +74,12 @@ class MultivariateLognormal:
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
-        if any (xi <= 0 for xi in x):        
+        # This is not very clean... we are assuming that the 
+        # distribution is not concentrated around very small numbers.
+        # What we should do instead is to continue calculations until we
+        # can determine that the probability of the point is actually 
+        # very small...
+        if any (xi <= 1e-20 for xi in x):        
             return 0
             
         mu = self.__mu

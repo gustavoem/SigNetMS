@@ -2,6 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import numpy as np
+from scipy.stats import gamma as gamma
 from utils import safe_log
 
 
@@ -55,9 +56,12 @@ class Gamma:
         a = self.__a
         b = self.__b
         if n is None:
-            return np.random.gamma (a, b)
+            return gamma.rvs (a, b, \
+                    random_state=np.random.RandomState ())
         else:
-            return [np.random.gamma (a, b) for i in range (n)]
+            return [gamma.rvs (a, b, \
+                    random_state=np.random.RandomState ()) \
+                    for i in range (n)]
 
 
     def get_a (self):

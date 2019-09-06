@@ -13,6 +13,7 @@ from marginal_likelihood.samplers.PopulationalMCMC import \
 import multiprocessing
 
 from parallel_map import parallel_map
+import numpy as np
 import sys
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
@@ -57,6 +58,7 @@ class MarginalLikelihood:
     def __run_phase_one_and_two (temp, experiments, model, theta_prior,
             n_acc, n_adap_cov, n_sigma_update, verbose):
         """ Map function to run phase 2 and 3 for each temperature. """
+        np.random.RandomState ()
         # Phase 1
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments, 
                 n_sigma_update, verbose=verbose)

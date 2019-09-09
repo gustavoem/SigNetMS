@@ -36,7 +36,7 @@ class TestMultivariateLognormal (unittest.TestCase):
         mu = [2, 1]
         s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 5000
+        N = 2000
         rvs_caller = lambda _: X.rvs ()
         rand_vals = parallel_map (rvs_caller, range (N), 5)
         mean = np.array ([.0, .0])
@@ -48,7 +48,7 @@ class TestMultivariateLognormal (unittest.TestCase):
         mu = [2, 1]
         s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 5000
+        N = 2000
 
         rvs_caller = lambda _: X.rvs ()
         rand_vals = parallel_map (rvs_caller, range (N), 5)
@@ -78,7 +78,7 @@ class TestMultivariateLognormal (unittest.TestCase):
         mu = [2, 1]
         s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 5000
+        N = 2000
         mean = np.array ([.0, .0])
         for i in range (N):
             mean += X.rvs ()
@@ -88,7 +88,7 @@ class TestMultivariateLognormal (unittest.TestCase):
         mu = [2, 1]
         s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 5000
+        N = 2000
         mean = np.array ([.0, .0])
         for i in range (N):
             mean += X.rvs ()
@@ -153,7 +153,7 @@ class TestMultivariateLognormal (unittest.TestCase):
                        [ 0, .2,  0], 
                        [ 0,  0, .2]])
         X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
-        N = 7000
+        N = 4000
         mean = np.array ([.0, .0, .0])
         for i in range (N):
             x = X.rvs ()
@@ -161,15 +161,3 @@ class TestMultivariateLognormal (unittest.TestCase):
         mean /= N
         assert all (abs (mu - mean) / mean < 2e-1)
         
-        mu = [5, 2, .1]
-        S = np.array ([[1,  0, 0], 
-                       [0, .2, 0], 
-                       [0,  0, .9]])
-        X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
-        N = 7000
-        mean = np.array ([.0, .0, .0])
-        for i in range (N):
-            x = X.rvs ()
-            mean += x
-        mean /= N
-        assert all (abs (mu - mean) / mean < 2e-1)

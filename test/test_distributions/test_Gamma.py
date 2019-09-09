@@ -12,7 +12,7 @@ class TestGamma (unittest.TestCase):
         a = 2
         b = 2
         X = Gamma (a, b)
-        assert (abs (X.mean () - a * b) < 1e-4)
+        assert (abs (X.mean () - a * b) / (a * b) < 1e-2)
 
 
     def test_get_random_value (self):
@@ -29,12 +29,12 @@ class TestGamma (unittest.TestCase):
         a = 2
         b = 3
         X = Gamma (a, b)
-        N = 10000
+        N = 1000
         mean = 0
         for i in range (N):
             mean += X.rvs ()
         mean /= N
-        assert (abs (mean - 6) < 1e-1)
+        assert (abs (mean - 6) / 6 < 1e-2)
 
 
 
@@ -46,4 +46,4 @@ class TestGamma (unittest.TestCase):
         X = Gamma (a, b)
         x = 1
         analytic = np.exp (-1)
-        assert (abs (X.pdf (x) - analytic) < 1e-4)
+        assert (abs (X.pdf (x) - analytic) / analytic < 1e-2)

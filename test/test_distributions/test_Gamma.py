@@ -3,6 +3,7 @@ sys.path.insert(0, '..')
 
 import unittest
 import numpy as np
+import statistics 
 from distributions.Gamma import Gamma
 
 class TestGamma (unittest.TestCase):
@@ -29,12 +30,10 @@ class TestGamma (unittest.TestCase):
         a = 2
         b = 3
         X = Gamma (a, b)
-        N = 1000
-        mean = 0
-        for i in range (N):
-            mean += X.rvs ()
-        mean /= N
-        assert (abs (mean - 6) / 6 < 1e-2)
+        N = 3000
+        sample = [X.rvs () for _ in range (N)]
+        mean = statistics.mean (sample)
+        assert (abs (mean - 6) / 6 < 5e-2)
 
 
 

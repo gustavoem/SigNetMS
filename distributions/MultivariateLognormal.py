@@ -143,7 +143,6 @@ class MultivariateLognormal:
         S_diagonal = S.diagonal ()
         mu2 = mu * mu
         n = len (mu)
-        n_ones = np.ones (n)
 
         normal_mu = np.log (mu2 / np.sqrt (S_diagonal + mu2))
         normal_S_diagonal = np.log ((S_diagonal + mu2) / mu2)               

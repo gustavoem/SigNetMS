@@ -30,6 +30,10 @@ class MetropolisHastings:
             is c_theta. """
         proposal_distribution = self._create_jump_dist (c_theta)
         new_theta_values = proposal_distribution.rvs ()
+        # 1e-150 is the smallest parameter value SigNetMS can work with.
+        for i in range (len (new_theta_values)):
+            if new_theta_values[i] < 1e-150:
+                new_theta_values[i] = 1e-150
         new_theta = c_theta.get_copy ()
         for i in range (len (new_theta_values)):
             p = new_theta[i] 

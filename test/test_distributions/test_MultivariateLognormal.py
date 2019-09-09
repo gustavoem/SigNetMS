@@ -4,6 +4,7 @@ sys.path.insert(0, '..')
 import unittest
 import numpy as np
 from distributions.MultivariateLognormal import MultivariateLognormal
+from parallel_map import parallel_map
 
 class TestMultivariateLognormal (unittest.TestCase):
 
@@ -28,6 +29,48 @@ class TestMultivariateLognormal (unittest.TestCase):
         X_0 = X.rvs ()
         assert all (X_0 > 0)
 
+
+    def test_convergence_with_map (self):
+        """ Tests if we can still achieve convergence when using 
+            parallel_map. """
+        mu = [2, 1]
+        s = [[.01, 0], [0, .01]]
+        X = MultivariateLognormal (mu, s)
+        N = 5000
+        rvs_caller = lambda _: X.rvs ()
+        rand_vals = parallel_map (rvs_caller, range (N), 5)
+        mean = np.array ([.0, .0])
+        for val in rand_vals:
+            mean += val
+        mean /= N
+        assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
+        
+        mu = [2, 1]
+        s = [[.01, 0], [0, .01]]
+        X = MultivariateLognormal (mu, s)
+        N = 5000
+
+        rvs_caller = lambda _: X.rvs ()
+        rand_vals = parallel_map (rvs_caller, range (N), 5)
+        mean = np.array ([.0, .0])
+        for val in rand_vals:
+            mean += val
+        mean /= N
+        assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
+        
+        # mu = [1e-12, 1]
+        # s = [[10, 0], [0, 3]]
+        # X = MultivariateLognormal.create_lognormal_with_shape (mu, s)
+        # N = 80000
+        # rvs_caller = lambda _: X.rvs ()
+        # rand_vals = parallel_map (rvs_caller, range (N), 5)
+        # mean = np.array ([.0, .0])
+        # for val in rand_vals:
+            # mean += val
+        # mean /= N
+        # print (mean)
+        # assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
+
     
     def test_convergence_to_mean (self):
         """ Tests if the randomly generated values has a sample mean
@@ -35,22 +78,32 @@ class TestMultivariateLognormal (unittest.TestCase):
         mu = [2, 1]
         s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 1000
+        N = 5000
         mean = np.array ([.0, .0])
         for i in range (N):
             mean += X.rvs ()
         mean /= N
-        assert all (abs (X.mean () - mean) < 1e-1)
+        assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
         
         mu = [2, 1]
-        s = [[.01, -.005], [-.005, .01]]
+        s = [[.01, 0], [0, .01]]
         X = MultivariateLognormal (mu, s)
-        N = 1000
+        N = 5000
         mean = np.array ([.0, .0])
         for i in range (N):
             mean += X.rvs ()
         mean /= N
-        assert all (abs (X.mean () - mean) < 1e-1)
+        assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
+
+        # mu = [1e-12, 1]
+        # s = [[10, 0], [0, 3]]
+        # X = MultivariateLognormal.create_lognormal_with_shape (mu, s)
+        # N = 80000
+        # mean = np.array ([.0, .0])
+        # for i in range (N):
+            # mean += X.rvs ()
+        # mean /= N
+        # assert all (abs (X.mean () - mean) / X.mean () < 1e-1)
 
 
     def test_get_pdf (self):
@@ -96,17 +149,27 @@ class TestMultivariateLognormal (unittest.TestCase):
         """ Tests if we can create a Multivariate Lognormal 
             distribution with a specified mean and variance. """
         mu = [1, 2, .1]
-        S = np.array ([[.1,      0, -0], 
-             [0,      .2,  1e-4], 
-             [0, 1e-4,   .2]])
+        S = np.array ([[.1,  0,  0], 
+                       [ 0, .2,  0], 
+                       [ 0,  0, .2]])
         X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
-
-        N = 5000
+        N = 7000
         mean = np.array ([.0, .0, .0])
         for i in range (N):
             x = X.rvs ()
             mean += x
         mean /= N
-        assert all (abs (mu - mean) < 1e-1)
-
-
+        assert all (abs (mu - mean) / mean < 2e-1)
+        
+        mu = [5, 2, .1]
+        S = np.array ([[1,  0, 0], 
+                       [0, .2, 0], 
+                       [0,  0, .9]])
+        X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
+        N = 7000
+        mean = np.array ([.0, .0, .0])
+        for i in range (N):
+            x = X.rvs ()
+            mean += x
+        mean /= N
+        assert all (abs (mu - mean) / mean < 2e-1)

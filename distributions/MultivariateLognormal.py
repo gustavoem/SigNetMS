@@ -2,10 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import numpy as np
-# from numpy.random import multivariate_normal as multivar_normal
-from scipy.stats import multivariate_normal as multivar_normal
 import scipy
-from utils import safe_log
 
 class MultivariateLognormal:
     """ This class implements a multivariate lognormal random variable. 
@@ -97,7 +94,6 @@ class MultivariateLognormal:
 
         log_p = self.log_pdf (x)
         if log_p > 707:
-            return 0
             return float ("inf")
         return float (np.exp (log_p))
     

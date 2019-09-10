@@ -2,7 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import numpy as np
-import scipy
+from scipy.stats import lognorm
 
 class MultivariateLognormal:
     """ This class implements a multivariate lognormal random variable. 
@@ -64,17 +64,17 @@ class MultivariateLognormal:
         S = self.__S
        
         if n is None:
-            lognormal_values = np.array ([scipy.stats.lognorm.rvs ( \
+            lognormal_values = np.array ([lognorm.rvs ( \
                     scale=np.exp (mu[i]), s=np.sqrt(S[i, i]), \
                     random_state=np.random.RandomState ()) \
                     for i in range (len (mu))])
         else:        
             lognormal_values = []
             for _ in range (n):
-                lognormal_values.append ([scipy.stats.lognorm.rvs ( \
+                lognormal_values.append (np.array ([lognorm.rvs ( \
                         scale=np.exp (mu[i]), s=np.sqrt(S[i, i]), \
                         size=n, random_state=np.random.RandomState ()) \
-                        for i in range (len (mu))])
+                        for i in range (len (mu))]))
         return lognormal_values
 
 

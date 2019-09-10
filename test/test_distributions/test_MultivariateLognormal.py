@@ -153,7 +153,7 @@ class TestMultivariateLognormal (unittest.TestCase):
                        [ 0, .2,  0], 
                        [ 0,  0, .2]])
         X = MultivariateLognormal.create_lognormal_with_shape (mu, S)
-        N = 4000
+        N = 2000
         mean = np.array ([.0, .0, .0])
         for i in range (N):
             x = X.rvs ()

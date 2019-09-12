@@ -81,8 +81,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
         if self._is_verbose:
             print ("\told log prior: " + str (old_t.get_log_p ()))
             print ("\tnew log prior: " + str (new_t.get_log_p ()))
-            print ("\tnew given old: " + str (new_gv_old))
-            print ("\told given new: " + str (old_gv_new))
+            print ("\tnew given old: " + str (log_new_gv_old))
+            print ("\told given new: " + str (log_old_gv_new))
             print ("\tprior ratio: " + str (prior_ratio))
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))

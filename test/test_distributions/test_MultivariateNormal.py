@@ -75,7 +75,6 @@ class TestMultivariateLognormal (unittest.TestCase):
         X = MultivariateNormal (mu, S)
         x = [1e100, 1e100, 1e-150]
         px = X.pdf (x)
-        print (px)
         assert (px <= 1)
         assert (px >= 0)
 

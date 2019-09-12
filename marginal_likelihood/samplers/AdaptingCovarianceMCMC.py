@@ -90,8 +90,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
                 old_t.get_log_p ())
         jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
         if self._is_verbose:
-            print ("\tnew given old: " + str (new_gv_old))
-            print ("\told given new: " + str (old_gv_new))
+            print ("\tnew given old: " + str (log_new_gv_old))
+            print ("\told given new: " + str (log_old_gv_new))
             print ("\tprior ratio: " + str (prior_ratio))
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))

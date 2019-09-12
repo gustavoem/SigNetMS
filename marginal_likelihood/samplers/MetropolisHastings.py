@@ -90,6 +90,7 @@ class MetropolisHastings:
             old_t = self._sample[-1]
             old_l = self._sample_log_likelds[-1]
             new_t = self.propose_jump (old_t)
+            import math
             new_l = self._calc_log_likelihood (new_t)
 
             if self._is_verbose:

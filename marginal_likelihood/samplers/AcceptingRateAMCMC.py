@@ -72,12 +72,12 @@ class AcceptingRateAMCMC (MetropolisHastings):
         """
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
-        new_gv_old = j_gv_old.pdf (new_t.get_values ())
-        old_gv_new = j_gv_new.pdf (old_t.get_values ())
+        log_new_gv_old = j_gv_old.log_pdf (new_t.get_values ())
+        log_old_gv_new = j_gv_new.log_pdf (old_t.get_values ())
         l_ratio = safe_pow_exp_ratio (new_l, old_l, self.__t)
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
-        jump_ratio = old_gv_new / new_gv_old
+        jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
         if self._is_verbose:
             print ("\told log prior: " + str (old_t.get_log_p ()))
             print ("\tnew log prior: " + str (new_t.get_log_p ()))
@@ -86,7 +86,30 @@ class AcceptingRateAMCMC (MetropolisHastings):
             print ("\tprior ratio: " + str (prior_ratio))
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))
-        return l_ratio * prior_ratio * jump_ratio
+
+        # import warnings
+        # warnings.filterwarnings ("error")
+        if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
+            return 1
+        elif prior_ratio + jump_ratio < 1e-150:
+            return 0
+        else:
+            try:
+                mh_ratio = l_ratio * prior_ratio * jump_ratio
+            except RuntimeWarning as e:
+                print (e)
+                print ("AcceptingRateAMCMC: Couldn't calculate" \
+                        + " metropolis-hastings ratio.")
+                print ("old_t", [p.value for p in old_t])
+                print ("old_l = ", old_l)
+                print ("old_t", [p.value for p in new_t])
+                print ("new_l = ", new_l)
+                print ("l_ratio = ", l_ratio)
+                print ("prior_ratio = ", prior_ratio)
+                print ("jump_ratio = ", jump_ratio)
+                while (True): continue
+
+            return l_ratio * prior_ratio * jump_ratio
         
 
     def _calc_log_likelihood (self, theta):

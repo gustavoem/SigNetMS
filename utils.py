@@ -75,7 +75,7 @@ def safe_pow_exp_ratio (a, b, t):
         bt = b
     else:
         bt = b * t
-
+    
     return safe_exp_ratio (at, bt)
 
 
@@ -97,7 +97,16 @@ def safe_exp_ratio (a, b):
     elif not b > float ("-inf"):
         return float ("+inf")
     
-    return safe_exp (a - b)
+    answ = safe_exp (a - b)
+    import math
+    import traceback
+    if math.isnan (answ):
+        print ("LOLOLOLOLOLOLOLOL nan")
+        print (a)
+        print (b)
+        print (traceback.print_stack ())
+        print ("--------------")
+    return answ
 
 
 def safe_exp (a):

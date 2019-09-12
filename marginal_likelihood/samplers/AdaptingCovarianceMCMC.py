@@ -78,23 +78,44 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
         try:
-            new_gv_old = j_gv_old.pdf (new_t.get_values ())
-            old_gv_new = j_gv_new.pdf (old_t.get_values ())
-        except:
+            log_new_gv_old = j_gv_old.log_pdf (new_t.get_values ())
+            log_old_gv_new = j_gv_new.log_pdf (old_t.get_values ())
+        except Exception as e:
+            print (e)
             raise ValueError ("The covariance matrix is not positive " \
                     + "definite. Try using a bigger starting sample.")
         
         l_ratio = self._calc_likeli_ratio (new_l, old_l)
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
-        jump_ratio = old_gv_new / new_gv_old
+        jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
         if self._is_verbose:
             print ("\tnew given old: " + str (new_gv_old))
             print ("\told given new: " + str (old_gv_new))
             print ("\tprior ratio: " + str (prior_ratio))
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))
-        return l_ratio * prior_ratio * jump_ratio
+        
+
+        # import warnings
+        # warnings.filterwarnings("error")
+        if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
+            return 1
+        elif prior_ratio + jump_ratio < 1e-150:
+            return 0
+        else:
+            try:
+                mh_ratio = l_ratio * prior_ratio * jump_ratio
+            except RuntimeWarning as e:
+                print (e)
+                print ("AdaptingCovarianceMCMC: Couldn't calculate" \
+                        + " metropolis-hastings ratio.")
+                print ("l_ratio = ", l_ratio)
+                print ("\told_l =", old_l)
+                print ("\tnew_l =", new_l)
+                print ("prior_ratio = ", prior_ratio)
+                print ("jump_ratio = ", jump_ratio)
+            return l_ratio * prior_ratio * jump_ratio
 
 
     def _calc_likeli_ratio (self, log_new_l, log_old_l):

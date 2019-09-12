@@ -87,29 +87,13 @@ class AcceptingRateAMCMC (MetropolisHastings):
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))
 
-        # import warnings
-        # warnings.filterwarnings ("error")
         if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
             return 1
         elif prior_ratio + jump_ratio < 1e-150:
             return 0
         else:
-            try:
-                mh_ratio = l_ratio * prior_ratio * jump_ratio
-            except RuntimeWarning as e:
-                print (e)
-                print ("AcceptingRateAMCMC: Couldn't calculate" \
-                        + " metropolis-hastings ratio.")
-                print ("old_t", [p.value for p in old_t])
-                print ("old_l = ", old_l)
-                print ("old_t", [p.value for p in new_t])
-                print ("new_l = ", new_l)
-                print ("l_ratio = ", l_ratio)
-                print ("prior_ratio = ", prior_ratio)
-                print ("jump_ratio = ", jump_ratio)
-                while (True): continue
-
-            return l_ratio * prior_ratio * jump_ratio
+            mh_ratio = l_ratio * prior_ratio * jump_ratio
+            return mh_ratio
         
 
     def _calc_log_likelihood (self, theta):

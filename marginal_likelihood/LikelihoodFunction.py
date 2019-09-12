@@ -5,6 +5,7 @@
 #Biochemical Species
 
 import numpy as np
+import math
 
 class LikelihoodFunction:
     """ This class defines a likelihood function for experimental data
@@ -57,6 +58,12 @@ class LikelihoodFunction:
         t = experiments[0].times
         measure_expression = experiments[0].measure_expression
         X_sys = self.__get_sys_measure (measure_expression, t, theta)
+
+        for sys_val in X_sys:
+            if math.isnan (sys_val) or sys_val == float ("inf") or \
+                    sys_val == float ("-inf"):
+                return float ("-inf")
+
         sigma = theta.get_experimental_error ()
         #print ("\nX_sys: " + str (X_sys))
         log_l = 0

@@ -95,27 +95,14 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
             print ("\tprior ratio: " + str (prior_ratio))
             print ("\tlikelihood ratio: " + str (l_ratio))
             print ("\tjump ratio: " + str (jump_ratio))
-        
 
-        # import warnings
-        # warnings.filterwarnings("error")
         if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
             return 1
         elif prior_ratio + jump_ratio < 1e-150:
             return 0
         else:
-            try:
-                mh_ratio = l_ratio * prior_ratio * jump_ratio
-            except RuntimeWarning as e:
-                print (e)
-                print ("AdaptingCovarianceMCMC: Couldn't calculate" \
-                        + " metropolis-hastings ratio.")
-                print ("l_ratio = ", l_ratio)
-                print ("\told_l =", old_l)
-                print ("\tnew_l =", new_l)
-                print ("prior_ratio = ", prior_ratio)
-                print ("jump_ratio = ", jump_ratio)
-            return l_ratio * prior_ratio * jump_ratio
+            mh_ratio = l_ratio * prior_ratio * jump_ratio
+            return mh_ratio
 
 
     def _calc_likeli_ratio (self, log_new_l, log_old_l):

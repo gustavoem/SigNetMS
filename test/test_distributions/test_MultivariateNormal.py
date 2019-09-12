@@ -42,7 +42,6 @@ class TestMultivariateLognormal (unittest.TestCase):
         assert all (abs (X.mean () - mean) < 1e-1)
 
 
-
     def test_get_pdf (self):
         """ Tests if we can get a point of the probability density
             function of this random variable. """
@@ -54,6 +53,31 @@ class TestMultivariateLognormal (unittest.TestCase):
         x = [1, 1, 1]
         analytic = 1 / np.sqrt ((2 * np.pi) ** 3) * np.exp (-.5 * 3)
         assert (abs (X.pdf (x) - analytic) < 1e-4)
+
+
+    def test_small_pdf_value (self):
+        """ Tests if we can get the pdf value of a point that has small
+            pdf. """
+        mu = [0, 0, 0]
+        S = [[1, 0, 0],
+             [0, 1, 0],
+             [0, 0, 1]]
+        X = MultivariateNormal (mu, S)
+        x = [1e100, 1e100, 1e-150]
+        px = X.pdf (x)
+        assert (px <= 1)
+        assert (px >= 0)
+        
+        mu = [1e-500, 1e-100, 1e-110]
+        S = [[100, 0, 0],
+             [0, 1000, 0],
+             [0, 0, 1000]]
+        X = MultivariateNormal (mu, S)
+        x = [1e100, 1e100, 1e-150]
+        px = X.pdf (x)
+        print (px)
+        assert (px <= 1)
+        assert (px >= 0)
 
 
     def test_copy (self):

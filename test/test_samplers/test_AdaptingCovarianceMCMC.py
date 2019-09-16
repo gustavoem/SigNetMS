@@ -34,7 +34,6 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         mh = AdaptingCovarianceMCMC (theta, model, experiments)
         self.assertRaises (ValueError, mh.get_sample, 1)
         mh.start_sample_from_prior ()
-        self.assertRaises (ValueError, mh.get_sample, 1)
 
 
     def test_get_sample (self):

@@ -129,7 +129,7 @@ class MultivariateLognormal:
         
         Parameters
             mu: a array with size n. Every component of mu must be 
-                greater than 1e-10.
+                greater than 1e-150.
             S: a matrix of size n x n.
 
         Notes

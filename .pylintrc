@@ -1,6 +1,7 @@
 [MASTER]
 
 extension-pkg-whitelist=numpy
+generated-members=SigNetMS.*
 
 
 # When enabled, pylint would attempt to guess common misconfiguration and emit

@@ -43,6 +43,7 @@ class MarginalLikelihood:
         self.__n_strata = n_strata
         self.__strata_size = strata_size
         self.__verbose = verbose
+        self.__sample = None
 
         if n_process == 0:
             self.__n_process = max (1, \
@@ -81,6 +82,75 @@ class MarginalLikelihood:
         fc_mcmc.define_start_sample ([theta], [log_likeli])
         return fc_mcmc
 
+
+    def __set_sample (self, betas, thetas, log_ls):
+        """ Defines the sample created in estimate_marginal_likelihood.
+        
+        Parameters
+            beta: a list of temperatures for which the sample was 
+                created.
+            thetas: the list of parameters sampled, 
+                for each temperature. This should be represented as a 
+                list of list; the index of the first list is associated
+                to a temperature of same index in beta, and the second
+                list represent the sample for that temperature.
+            log_ls: has the same indexing as thetas, but insted of 
+                storing parameters, stores the log-likelihood of that
+                parameter.
+
+        Notes
+            This method sets the private attribute __sample, which 
+            stores the created sample as a list tuples. Each tuple
+            is in the format of (temperature, sample for temperature).
+            The sample part of the tuple is also a list of tuples, 
+            containing each tuple the format (parameter values, 
+            log-likelihood).
+        """
+        self.__sample = []
+        for i in range (len (betas)):
+            temp_sample = []
+            temp = betas[i]
+            for j in range (len (thetas[i])):
+                theta = thetas[i][j]
+                log_l = log_ls[i][j]
+                temp_sample.append ((theta, log_l))
+            self.__sample.append ((temp, temp_sample))
+
+
+    def print_sample (self, output_file=None):
+        """ Prints the current self.__sample. 
+            
+            Parameters
+                output_file: a string with a filename. If this is 
+                    provided, the sample is also printed this file.
+            Note
+                This method should only be called after a succesful call
+                of estimate_marginal_likelihood.
+        """
+        if self.__sample == None:
+            raise ValueError ("Sample is undefined, before printing" \
+                    + " sample, you should first call the method" \
+                    + " estimate_marginal_likelihood.")
+
+        if output_file:
+            file_obj = open (output_file, "w")
+
+        for temp_tuple in self.__sample:
+            temp = temp_tuple[0]
+            temp_sample = temp_tuple[1]
+            print_str = "Sample for t = " + str (temp)
+            print (print_str)
+            if output_file:
+                file_obj.write (print_str + "\n")
+            for sample_tuple in temp_sample:
+                theta = sample_tuple[0]
+                log_l = sample_tuple[1]
+                print_str = "parameter = " + str (theta.get_values ()) \
+                        + " likelihood = " + str (log_l)
+                print (print_str)
+                if output_file:
+                    file_obj.write (print_str + "\n")
+
         
     def estimate_marginal_likelihood (self, experiments, model, 
             theta_prior):
@@ -91,12 +161,12 @@ class MarginalLikelihood:
         strata_size = self.__strata_size
         verbose = self.__verbose
         n_process = self.__n_process
+        self.__sample = None
 
         # initialize ODEs function and jacobian
         model.evaluate_on ([experiments[0].times[0]])
         model.get_system_jacobian ()
         print ("Initialized ODEs")
-
 
         betas = PopulationalMCMC.sample_scheduled_betas (n_strata * 
                 strata_size)
@@ -108,26 +178,20 @@ class MarginalLikelihood:
                 self.__sigma_update_n, False) 
         fc_mcmcs = parallel_map (phase_1_n_2_f, betas, n_process)
                        
-        if verbose:
-            print ("Phase 3 starts.")
+        print ("Phase 3 starts.")
         # Phase 3
         pop_mcmc = PopulationalMCMC (n_strata, strata_size, fc_mcmcs,
                 betas=betas, verbose=verbose)
         pop_mcmc.get_sample (n_pop)
         betas, thetas, log_ls = pop_mcmc.get_last_sampled (n_pop // 4)
+        self.__set_sample (betas, thetas, log_ls)
+        print ("Sampling ended.")
         
         if self.__verbose:
-            print ("Sampling ended. Here are the sampled parameters" + \
-                    " separated by temperature")
-            for i in range (len (betas)):
-                temp = betas[i]
-                print ("Sample for t = " + str (temp))
-                for j in range (len (thetas[i])):
-                    theta = thetas[i][j]
-                    likeli = log_ls[i][j]
-                    print ("parameter = " + str (theta.get_values ()) +\
-                            " likelihood = " + str (likeli))
-
+            print ("Here are the sampled parameters separated by" \
+                    " temperature.")
+            self.print_sample ()
+            
         ml = self.__calculate_marginal_likelihood (betas, thetas, 
                 log_ls)
         return ml

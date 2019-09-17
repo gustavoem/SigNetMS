@@ -5,10 +5,11 @@ from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
 import argparse
 
+
 def perform_marginal_likelihood (sbml_file, priors_file, \
         experiment_file, burnin1_iterations, sigma_update_n, \
         burnin2_iterations, sampling_iterations, verbose=False, \
-        n_process=0):
+        n_process=0, sample_output_file=None):
     print  ("Performing marginal likelihood calculations of model: " + \
             sbml_file)
     sbml = SBML ()
@@ -24,6 +25,7 @@ def perform_marginal_likelihood (sbml_file, priors_file, \
             verbose=verbose, n_process=n_process)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
+    ml.print_sample (output_file=sample_output_file)
     print ("log_l = " + str (log_l))
     return log_l
 
@@ -71,6 +73,7 @@ def main ():
             experiment_file, first_step_n, sigma_update_n, \
             second_step_n, third_step_n, verbose=verbose, \
             n_process=n_process)
+
 
 if __name__ == "__main__":
     main ()

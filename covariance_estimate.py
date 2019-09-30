@@ -33,4 +33,6 @@ def calc_covariance_diagonal (sample):
         vT = np.array (v.transpose ())
         cov_matrix += v * vT
     cov_matrix = cov_matrix / len (sample)
-    return cov_matrix.diagonal () * np.eye (n)
+    # return cov_matrix.diagonal () * np.eye (n)
+    return cov_matrix
+

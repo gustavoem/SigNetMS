@@ -124,35 +124,17 @@ class MultivariateLognormal:
 
     @staticmethod
     def create_lognormal_with_shape (mu, S):
-        """ Creates a Lognormal distribution with mean mu and 
-            covariance S (diagnoal matrix). 
+        """ Creates a Lognormal distribution with mean mu and underlying
+            normal distribution with covariance S. 
         
         Parameters
             mu: a array with size n. Every component of mu must be 
                 greater than 1e-150.
             S: a matrix of size n x n.
-
-        Notes
-            S must be a diagonal matrix and each element of its diagonal
-            need to be greater than 1e-10. If a matrix with a component
-            smaller than 1e-10 is used, then this value is automatically
-            changed to 1e-10. None of the components of mu can be 
-            smaller than 1e-150 either.
         """
         mu = np.array (mu)
         S = np.array (S)
-        S_diagonal = np.array (S.diagonal ())
-        mu2 = mu * mu
         n = len (mu)
-
-        # None of the components of S can be greater than 1e-10.
-        for i in range (n):
-            if S_diagonal[i] < 1e-10:
-                S_diagonal[i] = 1e-10
-            
-        normal_mu = np.log (mu2 / np.sqrt (S_diagonal + mu2))
-        normal_S_diagonal = np.log ((S_diagonal + mu2) / mu2)               
-        normal_S = np.eye (n)
-        for i in range(n):
-            normal_S[i][i] = normal_S_diagonal[i]
+        normal_mu = np.log (mu / np.sqrt (np.exp (S.diagonal ())))
+        normal_S = S
         return MultivariateLognormal (normal_mu, normal_S)

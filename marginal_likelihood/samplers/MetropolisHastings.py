@@ -120,8 +120,8 @@ class MetropolisHastings:
                 old_t = new_t
                 old_l = new_l
                 self._n_accepted += 1
-            self._sample.append (old_t)
-            self._sample_log_likelds.append (old_l)
+                self._sample.append (old_t)
+                self._sample_log_likelds.append (old_l)
             self._n_jumps += 1
             self._iteration_update ()
         

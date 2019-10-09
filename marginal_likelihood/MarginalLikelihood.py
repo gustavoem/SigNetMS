@@ -175,7 +175,7 @@ class MarginalLikelihood:
                 MarginalLikelihood.__run_phase_one_and_two (temp, \
                 experiments, model, theta_prior, 
                 self.__phase1_iterations, self.__phase2_iterations,
-                self.__sigma_update_n, False) 
+                self.__sigma_update_n, self.__verbose) 
         fc_mcmcs = parallel_map (phase_1_n_2_f, betas, n_process)
                        
         print ("Phase 3 starts.")

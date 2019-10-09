@@ -4,7 +4,7 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
-from distributions.MultivariateLognormal import MultivariateLognormal
+from distributions.MultivariateNormal import MultivariateNormal
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive
@@ -38,8 +38,6 @@ class AcceptingRateAMCMC (MetropolisHastings):
             prior_variance = param_dist.variance ()
             sigma2 = prior_variance
             jump_S.append (sigma2)
-        # print ("Starting jump S: ")
-        # print (jump_S)
         return jump_S
 
     
@@ -53,8 +51,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         for i in range (n):
             S[i, i] = self._jump_S[i]
         mu = t_vals
-        # jump_dist = MultivariatePositiveNormal (mu, S)
-        dist = MultivariateLognormal.create_lognormal_with_shape (mu, S)
+        dist = MultivariateNormal (mu, S)
         return dist
 
 

@@ -79,7 +79,7 @@ class MarginalLikelihood:
 
         # Phase 2
         adap_cov_mcmc = AdaptingCovarianceMCMC (theta_prior, model, 
-                experiments, verbose=verbose)
+                experiments, n_sigma_update, verbose=verbose)
         adap_cov_mcmc.set_temperature (temp)
         adap_cov_mcmc.define_start_sample (sample, likelis)
         sample, likelis = adap_cov_mcmc.get_sample (n_adap_cov)

@@ -33,11 +33,8 @@ class MetropolisHastings:
         while not all_positive:
             new_theta_values = proposal_distribution.rvs ()
             all_positive = True
-            print("Trying all positive")
             for i in range (len (new_theta_values)):
-                print(new_theta_values[i])
                 if new_theta_values[i] < 1e-150:
-                    print("Found negative")
                     all_positive = False
                     break
         new_theta = c_theta.get_copy ()

@@ -4,6 +4,7 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from distributions.MultivariateNormal import MultivariateNormal
 from covariance_estimate import calc_covariance_diagonal
+from utils import safe_log
 from utils import safe_exp_ratio
 from utils import safe_pow_exp_ratio
 
@@ -16,40 +17,75 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         need a starting sample to provide a first estimate of the 
         covariance matrix. """
 
-    def __init__ (self, theta, model, experiments, t=1, verbose=False):
-        """ Default constructor. """
+    def __init__ (self, theta, model, experiments, covariance_rescale_n,
+            t=1, verbose=False):
+        """ Default constructor. 
+        
+            Parameters
+                theta: a RandomParameterList with the parameter priors.
+                model: an SBML object with the model.
+                experiments: an ExperimentSet object with the 
+                    experimental data.
+                covariance_rescale_n: the number of iterations before
+                    a rescale on the proposal distribution covariance.
+                t: a float indicating the tempering parameter of the
+                    target distribution.
+                verbose: boolean indicating if verbosity is wanted.
+            
+            Returns
+                an AdaptingCovarianceMCMC object.
+        """
         super ().__init__ (theta, verbose=verbose)
         self.__model = model
         self.__experiments = experiments
         self._jump_S = None
+        self._jump_scale = 1
+        self._covariance_rescale_n = covariance_rescale_n
         self.__l_f = LikelihoodFunction (model)
         self._t = t
 
 
     def set_temperature (self, t):
-        """ Defines a temperature parameter. """
+        """ Defines the tempering parameter.
+        
+            Parameters
+                t: a float with the tempering parameter.
+        """
         self._t = t
 
 
     def __calc_jump_S (self):
         """ Calculates jump_S, an estimate of the covariance of 
             parameters. """
-        sample_values = [] 
+        sample_l_values = []
         for t in self._sample:
-            sample_values.append (t.get_values ())
-        self._jump_S = calc_covariance_diagonal (sample_values) 
+            log_values = [safe_log (x) for x in t.get_values ()]
+            sample_l_values.append (log_values)
+        self._jump_S = calc_covariance_diagonal (sample_l_values)
     
     
     def get_jump_covariance (self):
-        """ Returns the jump_S matrix. """
+        """ Returns a copy of jump_S matrix. """
         return np.array (self._jump_S)
 
 
     def _create_jump_dist (self, theta_t):
-        """ The jump distribution is MultivariateNormal. """
+        """ Creates the jump distribution from the current point. 
+        
+            Parameters
+                theta_t: a RandomParameterList with the current point.
+            
+            Returns
+                A MultivariateLognormal distribution which is the jump
+                distribution from the current point. This distribution
+                have the normal parametrization with 
+                mu = log(current_point_values) and covariance equal
+                to the sample covariance of the log of the accepted
+                points. 
+        """
         t_vals = theta_t.get_values ()
-        mu = np.array (t_vals)
-        dist = MultivariateNormal (mu, self._jump_S) 
+        mu = np.array (np.log(t_vals))
+        dist = MultivariateNormal (mu, self._jump_S * self._jump_scale)
         return dist
 
 
@@ -113,4 +149,9 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
     def _iteration_update (self):
         """ At the end of each sampling iteration, we should update the
             Covariance Matrix. """
+        acceptance_rate = self.get_acceptance_ratio ()
         self.__calc_jump_S ()
+        if acceptance_rate > .4 and self._jump_scale < 2:
+            self._jump_scale *= 1.1
+        if acceptance_rate < .25 and self._jump_scale > 1e-2:
+            self._jump_scale *= .9

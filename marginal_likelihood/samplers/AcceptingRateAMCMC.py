@@ -5,6 +5,7 @@ from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
 from distributions.MultivariateLognormal import MultivariateLognormal
+import statistics
 
 class AcceptingRateAMCMC (MetropolisHastings):
     """ This class is able to return a sample of theta using an adaptive
@@ -26,6 +27,21 @@ class AcceptingRateAMCMC (MetropolisHastings):
         self._jump_S = self.__init_jump_S ()
         self.__l_f = LikelihoodFunction (model)
         self.__t = t
+    
+
+    def __get_log_prior_variance (self, param):
+        """ Calculates the variance of a log-scaled sample of param.
+        
+            Parameters
+                param: a RandomParameter
+            
+            Returns
+                var: the variance of a log-scaled sample of param.
+        """
+        N = 100
+        param_distribution = param.get_distribution ()
+        sample = [np.log (param_distribution.rvs ()) for i in range (N)]
+        return statistics.variance (sample)
 
 
     def __init_jump_S (self):
@@ -37,9 +53,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         theta = self._theta
         jump_S = []
         for p in theta:
-            param_dist = p.get_distribution ()
-            prior_variance = param_dist.variance ()
-            sigma2 = prior_variance
+            sigma2 = self.__get_log_prior_variance (p)
             jump_S.append (sigma2)
         return jump_S
 

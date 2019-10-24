@@ -84,7 +84,7 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
                 points. 
         """
         t_vals = theta_t.get_values ()
-        mu = np.array (np.log(t_vals))
+        mu = np.array (np.log (t_vals))
         dist = MultivariateNormal (mu, self._jump_S * self._jump_scale)
         return dist
 

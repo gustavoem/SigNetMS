@@ -67,7 +67,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         S = np.eye (n)
         for i in range (n):
             S[i, i] = self._jump_S[i]
-        mu = t_vals
+        mu = np.array (np.log (t_vals))
         dist = MultivariateLognormal (mu, S)
         return dist
 

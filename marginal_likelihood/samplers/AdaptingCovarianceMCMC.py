@@ -2,7 +2,7 @@ import numpy as np
 from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
-from distributions.MultivariateNormal import MultivariateNormal
+from distributions.MultivariateLognormal import MultivariateLognormal
 from covariance_estimate import calc_covariance_diagonal
 from utils import safe_log
 from utils import safe_exp_ratio
@@ -85,7 +85,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         """
         t_vals = theta_t.get_values ()
         mu = np.array (np.log (t_vals))
-        dist = MultivariateNormal (mu, self._jump_S * self._jump_scale)
+        dist = MultivariateLognormal (mu, 
+                self._jump_S * self._jump_scale)
         return dist
 
 

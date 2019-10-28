@@ -87,7 +87,7 @@ class MarginalLikelihood:
         # Construct phase 3 local temperature sampler
         S = adap_cov_mcmc.get_jump_covariance ()
         fc_mcmc = FixedCovarianceMCMC (theta_prior, model, 
-                experiments, S, t=temp, verbose=verbose)
+                experiments, n_sigma_update, S, t=temp, verbose=verbose)
         theta = sample[-1]
         log_likeli = likelis[-1]
         fc_mcmc.define_start_sample ([theta], [log_likeli])

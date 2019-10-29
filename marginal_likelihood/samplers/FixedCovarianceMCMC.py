@@ -9,11 +9,11 @@ class FixedCovarianceMCMC (AdaptingCovarianceMCMC):
         Multivariate Lognormal and it's shape is defined on the 
         constructor through a covariance matrix."""
 
-    def __init__ (self, theta, model, experiments, covariance_rescale_n,
-            covar, t=1, verbose=False):
+    def __init__ (self, theta, model, experiments, covar, t=1, 
+            verbose=False):
         """ Default constructor. """
-        super ().__init__ (theta, model, experiments, 
-                covariance_rescale_n, t=t, verbose=verbose)
+        super ().__init__ (theta, model, experiments, 1e10, t=t, 
+                verbose=verbose)
         self._jump_S = covar 
 
 

@@ -19,8 +19,8 @@ class TestCovarianceMatrix (unittest.TestCase):
         self.assertEqual (cov[0, 2], 0)
         self.assertEqual (cov[1, 0], 0)
         self.assertEqual (cov[1, 1], 1 / 4)
-        self.assertEqual (cov[1, 2], 0)
+        self.assertEqual (cov[1, 2], -.25)
         self.assertEqual (cov[2, 0], 0)
-        self.assertEqual (cov[2, 1], 0)
+        self.assertEqual (cov[2, 1], -.25)
         self.assertEqual (cov[2, 2], 1 / 4)
 

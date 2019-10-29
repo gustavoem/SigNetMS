@@ -31,7 +31,7 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         experiments = self.__experiments
         theta = self.__theta_priors
 
-        mh = AdaptingCovarianceMCMC (theta, model, experiments)
+        mh = AdaptingCovarianceMCMC (theta, model, experiments, 20)
         self.assertRaises (ValueError, mh.get_sample, 1)
         mh.start_sample_from_prior ()
 
@@ -41,7 +41,7 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
         experiments = self.__experiments
         theta = self.__theta_priors
         start_sample, start_likels = self.create_starting_sample ()
-        mh = AdaptingCovarianceMCMC (theta, model, experiments)
+        mh = AdaptingCovarianceMCMC (theta, model, experiments, 20)
         mh.start_sample_from_prior ()
         mh.define_start_sample (start_sample, start_likels)
         sample = mh.get_sample (20)[0]
@@ -69,7 +69,7 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
                 jump_dist = MultivariateLognormal (mu, jump_S)
                 return jump_dist
 
-        mh = FastLikelihoodMock (theta, model, experiments, t=0)
+        mh = FastLikelihoodMock (theta, model, experiments, 20, t=0)
         mh.start_sample_from_prior ()
         mh.get_sample (N)
         sample, likelihoods = mh.get_last_sampled (N)

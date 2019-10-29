@@ -75,8 +75,8 @@ class MarginalLikelihood:
 
         # Construct phase 3 local temperature sampler
         S = adap_cov_mcmc.get_jump_covariance ()
-        fc_mcmc = FixedCovarianceMCMC (theta_prior, model, 
-                experiments, n_sigma_update, S, t=temp, verbose=verbose)
+        fc_mcmc = FixedCovarianceMCMC (theta_prior, model, experiments, 
+                S, t=temp, verbose=verbose)
         theta = sample[-1]
         log_likeli = likelis[-1]
         fc_mcmc.define_start_sample ([theta], [log_likeli])
@@ -196,22 +196,7 @@ class MarginalLikelihood:
                 log_ls)
         return ml
 
-
-    def __create_fcmcmc_samplers (self, adap_cov_mcmc, m, experiments,
-            model, theta_prior):
-        """ Creates a list of FixedCovarianceMCMC objects that has the
-            same jump covariance matrix as AdaptiveCovarianceMatrix. """
-        S = adap_cov_mcmc.get_jump_covariance ()
-        start_t, start_l = adap_cov_mcmc.get_last_sampled (1)
-        fc_mcmcs = []
-        for _ in range (m):
-            sampler = FixedCovarianceMCMC (theta_prior, model, 
-                    experiments, S)
-            sampler.define_start_sample (start_t, start_l)
-            fc_mcmcs.append (sampler)
-        return fc_mcmcs
-
-
+    
     def __calculate_marginal_likelihood (self, betas, thetas, \
             likelihoods):
         """ Given a list with samples, calculates the marginal 

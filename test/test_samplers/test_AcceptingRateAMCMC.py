@@ -86,10 +86,10 @@ class TestAcceptingRateAMCMC (unittest.TestCase):
         theta = self.__theta_priors
 
         acc_rate_amh = AcceptingRateAMCMC (theta, model, experiments, 
-                20, verbose=False)
+                200, verbose=False)
         acc_rate_amh.start_sample_from_prior ()
         sample = acc_rate_amh.get_sample (60)[0]
-        assert len (sample) > 5
+        assert len (sample) > 1
 
 
     def test_jumps_centered_on_current_theta (self):

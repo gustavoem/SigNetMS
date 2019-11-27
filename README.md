@@ -9,7 +9,7 @@ The score is given is an estimate of the probability of the observed data being 
 
 The main result used to estimate this probability is the follwing thermodynamic integral: 
 
-<img src="https://latex.codecogs.com/gif.latex?\log(D|M)=\int_{0}^{1}E_{\theta|D,t}\[p(D|M,\theta)\]dt"/>
+<img src="https://latex.codecogs.com/gif.latex?\log p(D|M)=\int_{0}^{1}E_{\theta|D,t}\[p(D|M,\theta)\]dt"/>
 
 where <img src="https://latex.codecogs.com/gif.latex?D"/> is the data, <img src="https://latex.codecogs.com/gif.latex?M"/> is the model, <img src="https://latex.codecogs.com/gif.latex?\theta"/> are model parameters, and <img src="https://latex.codecogs.com/gif.latex?t"/> is a parameter that defines a power-posterior distribution (an intermediate distribution between prior and posterior distribution). To estimate this integral, we need samples from <img src="https://latex.codecogs.com/gif.latex?\theta|D,t"/> (power-posterior t of theta) and to do so, we use different variations of the Metropolis-Hastings algorithm.
 

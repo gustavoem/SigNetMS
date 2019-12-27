@@ -1,32 +1,34 @@
 class Reaction:
-    """ This class represents reactions that can be addded to SBML models.
+    """ This class represents reactions that can be addded to SBML
+        models.
 
-    Attributes:
-        id (string): The identification of the reaction.
-        reactants (list): A list of strings containing all the
+        Attributes:
+            id (string): The identification of the reaction.
+            reactants (list): A list of strings containing all the
                 reactants.
-        products (list): A list of strings containing all the 
-            products.
-        modifiers (list): A list of strings containing all the 
-            modifiers.
-        parameters (list): A list of dictionaries containing the 
-            keys: "name" and "value".
-        formula (string): The formula of the rate of the reaction.
+            products (list): A list of strings containing all the 
+                products.
+            modifiers (list): A list of strings containing all the 
+                modifiers.
+            parameters (list): A list of dictionaries containing the 
+                keys: "name" and "value".
+            formula (string): The formula of the rate of the reaction.
     """
 
     def __init__ (self, reac_id, reactants, products, modifiers, \
             parameters, formula):
-        """The constructor of Reaction.
+        """ The constructor of Reaction.
 
-        Parameters
-            id: a string with the identification of the reaction.
-            reactants: a list of strings containing all the
+            Parameters
+                id: a string with the identification of the reaction.
+                reactants: a list of strings containing all the
                     reactants.
-            products: a list of strings containing all the products.
-            modifiers: a list of strings containing all the modifiers.
-            parameters: a list of dictionaries containing the keys: 
-                "name" and "value".
-            formula: The formula of the rate of the reaction.
+                products: a list of strings containing all the products.
+                modifiers: a list of strings containing all the
+                    modifiers.
+                parameters: a list of dictionaries containing the keys: 
+                    "name" and "value".
+                formula: The formula of the rate of the reaction.
         """
         self.id = reac_id
         self.reactants = reactants

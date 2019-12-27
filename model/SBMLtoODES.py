@@ -1,7 +1,15 @@
 from model.ODES import ODES
 
 def sbml_to_odes (sbml):
-    """ This function transforms an SBML model into an ODES model. """
+    """ Creates an ODE model given an SBML object.
+    
+        Parameters:
+            sbml: a model.SBML object.
+
+        Returns an ODES object that is a system of differential
+        equations that rules the concentration changes of the chemical
+        species specified on the sbml model.
+    """
     odes = ODES ()
     variables = sbml.get_species_list ()
     for var in variables:

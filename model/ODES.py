@@ -13,7 +13,30 @@ import numpy as np
 
 class ODES:
     """ This class contains a representation for systems of ordinary
-        differential equations. """
+        differential equations. 
+        
+        Attributes
+            index_map (dict): a dictionary that maps variables names to
+                its index (used in rate_eq and initial_state).
+            rate_eq (list of strings): a list of strings containing the
+                differential equations associated to variables.
+            initial_state (list of floats): the initial values for each 
+                variable.
+            param_table (dict): a map for model parameters and its
+                values.
+            name (string): models name.
+            sys_function: a sympy function object that represents the
+                system function, that is, the right hand side of the
+                system of differential equations.
+            sys_jacobian: a sympy function object that represents the 
+                jacobian of the system function.
+            sys_eq: a sympy object that has the equality defined by the
+                system of differential equations. 
+            sys_vars: a sympy object that is a list of variables, used
+                in sys_eq.
+            sys_params: a sympy object that is a list of parameters,
+                used  in sys_eq.
+    """
 
     def __init__ (self):
         """ Default constructor. """
@@ -49,7 +72,11 @@ class ODES:
 
 
     def __create_var (self, var):
-        """ Creates a new variable and adds it to the system. """
+        """ Creates a new variable and adds it to the system. 
+            
+            Parameters
+                var: a string with the variable name.
+        """
         idx = len (self.index_map)
         self.index_map[var] = idx
 
@@ -62,7 +89,7 @@ class ODES:
 
 
     def __erase_sympy_objects (self):
-        """ Sets to none the sympy objects that model the system. """
+        """ Sets to None all sympy objects that model the system. """
         self.sys_function = None
         self.sys_jacobian = None
         self.sys_eq = None
@@ -72,6 +99,11 @@ class ODES:
 
     def add_equation (self, var, formula):
         """ Adds an equation representing the change rate of a variable.
+
+            Parameters
+                var: a string with the variable name.
+                formula: the formula that describes the rate change of
+                    var.
         """
         if var in self.index_map:
             self.rate_eq[self.index_map[var]] = formula
@@ -84,7 +116,12 @@ class ODES:
 
 
     def define_initial_value (self, var, value):
-        """ Defines the initial value of a variable. """
+        """ Defines the initial value of a variable. 
+            
+            Parameters
+                var: the name of the variable.
+                value: the initial value to be set.
+        """
         idx = None
         if var not in self.index_map:
             idx = self.__create_var (var)
@@ -94,7 +131,12 @@ class ODES:
 
 
     def define_parameter (self, param, value):
-        """ Defines the value of some parameter. """
+        """ Defines the value of some parameter. 
+
+            Parameters
+                param: the name of the parameter.
+                value: the parameter value.
+        """
         if param not in self.param_table:
             self.__erase_sympy_objects ()
 
@@ -102,16 +144,39 @@ class ODES:
         
 
     def get_all_parameters (self):
-        """ Returns all parameters of the system. """
+        """ Gets all system parameters. 
+        
+            Returns a dictionary with system parameters, mapping names
+            to values.
+        """
         return self.param_table
 
 
     def __integrate_with_odeint (self, sys_f, initial_state, 
             time_points):
-        """ Integrates using scipy odeint """
+        """ Integrates using scipy odeint. 
+            
+            Parameters
+                sys_f: this is a function that needs to receive (t, y) 
+                    arguments, where t is a time value and y is an array
+                    with a value for each variable. This function needs
+                    to return a new array with the same cardinality as
+                    y, containing the derivative of each variable given
+                    t and y.
+                initial_state: is also an array, defining the starting
+                    value for each variable.
+                time_points: a list of time points for integration.
+
+            Note
+                This method might take longer on its first call, because
+                that would imply on writing and compiling the system
+                function and jacobian. However, if the system is not
+                changed, there will be no need to rewrite C files and
+                compile them, making the call much faster.
+        """
         # The order of iterations of a dict in python will not change
         # if nothing has been added (if that is true, the system is 
-        # rewritten).
+        # rewritten). This is importatnt for args definition.
         args = [self.param_table[param] for param in self.param_table]
         jacobian = self.get_system_jacobian ()
         y, _ = odeint (sys_f, initial_state, time_points, args=(args,),
@@ -123,7 +188,20 @@ class ODES:
     def __integrate_with_stiff_alg (self, sys_f, initial_state, 
             time_points):
         """ Integrates using scipy.ode.integrate with an algorithm for
-            stiff problems. """
+            stiff problems. 
+            
+            Parameters
+                sys_f: this is a function that needs to receive (t, y) 
+                    arguments, where t is a time value and y is an array
+                    with a value for each variable. This function needs
+                    to return a new array with the same cardinality as
+                    y, containing the derivative of each variable given
+                    t and y.
+                initial_state: is also an array, defining the starting
+                    value for each variable.
+                time_points: a list of time points for integration.
+            
+        """
         dt = .1
         ode = spi.ode (sys_f)
         ode.set_integrator ('vode', nsteps=5000, method='bdf', 
@@ -142,10 +220,18 @@ class ODES:
 
     def evaluate_on (self, time_points, initial_state_map=None):
         """ Returns the state of the systems variables at the specified
-            time points. initial_state_map is an optional parameter 
-            that shoud contain a map variable -> value that is used
-            to modify the initial state of a few (or even all) variables
-            of the system. """
+            time points. 
+            
+            Parameters
+                time_points: the list of time points for which the
+                    system should be evaluated.
+                initial_state_map: a dictionary that contains variables
+                    as keys and initial values as values.
+            
+            Returns values_map, a dictionary with variables as keys and
+            a list as value. The list contains the values of a variable
+            over the determined time points.
+        """
         time_points = np.array (time_points)
         zeroed_times = False
         if time_points[0] != 0:
@@ -175,8 +261,16 @@ class ODES:
 
     def evaluate_exp_on (self, exp, time_points, 
             initial_state_map=None):
-        """ Integrates the system and returns an array containing the
-            values of exp on each time-step evaluated of the system."""
+        """ Evaluates some expression of variables of the system on
+            given time points.
+
+            Parameters
+                exp: a string representing the expression.
+                time_points: a list time points for which the expression
+                    should be evaluated.
+                initial_state_map: a dictionary with variables as keys
+                    and initial concentrations as values.
+        """
         system_states = self.evaluate_on (time_points, \
                 initial_state_map)
         aeval = Interpreter ()
@@ -199,8 +293,9 @@ class ODES:
 
 
     def __get_sym_vars_equations (self):
-        """ Returns a tuple with sympy symbols of vars, parameters and 
-            its correspondant reaction rate equations. """
+        """ Gets a list of system variables, parameters and reaction 
+            rate equations.
+        """
         local_dict = {}
         var_symbols = []
         for var in self.index_map:
@@ -226,7 +321,8 @@ class ODES:
 
     def __define_sys_eq (self):
         """ Creates a sympy object that represents the system of 
-            ordinary differential equations. """
+            ordinary differential equations. 
+        """
         n = len (self.rate_eq)
         m = len (self.param_table)
         var_names, params, equations = self.__get_sym_vars_equations ()
@@ -245,7 +341,12 @@ class ODES:
 
     def __get_system_function (self):
         """ Creates a function that describes the dynamics of the 
-            system. """
+            system. 
+
+            This method uses Sympy to automatically create C code that
+            represents the system; this C code is also automatically
+            compiled and wrapped as a python function.
+        """
         if self.sys_function != None:
             return self.sys_function
         
@@ -265,14 +366,19 @@ class ODES:
             with sympy to represent the system function and also its 
             Jacobian. 
             
-            The lambda function is expected to receive as input a numpy 
-            array of shape (n, 1) (states) and another with shape (m, 1) 
-            (parameters); it should also return a numpy array, 
-            corresponding to the evaluated derivatives (or second 
-            derivatives in the case of the Jacobian), of shape (n, 1). 
+
+            Parameters
+                lamb: a function that is expected to receive as input a 
+                numpy array of shape (n, 1) (states) and another with 
+                shape (m, 1) (parameters); it should also return a numpy 
+                array, corresponding to the evaluated derivatives (or 
+                second derivatives in the case of the Jacobian), of 
+                shape (n, 1). 
             
-            The wrapper function is expected to receive two arguments
-            """
+            The wrapper function is expected to receive two arguments,
+            time and variable states, as determined by the numerical 
+            solver we used.
+        """
         n = len (self.rate_eq)
         m = len (self.param_table)
 

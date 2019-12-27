@@ -5,6 +5,25 @@ from model.Reaction import Reaction
 
 class SBML:
     """ This class contains a representation for SBML objects. 
+        
+        This class simplifies the libsbml document to our use.
+
+        Attributes
+            sbml_obj (lisbml.SBMLDocument): a lisbml object that
+                contains the information read from an sbml file.
+            __parameter_values (dict): a dictionary with parameter names
+                and values. The names of the parameters are simplified 
+                and are different from the ones seem on the original 
+                sbml document.
+            __global_param (list): a list of names of global parameters 
+                defined on the  sbml document.
+            __local_param (dict): a dictionary in which keys are
+                reaction names. The values for an entry is the
+                corresponding list of reaction rate constants names.
+            num_params (int): stores the number of parameters
+            __loaded_file (string): the file path of the current loaded
+                sbml document, or None if there is no sbml document
+                loaded.
     """
 
     def __init__ (self):
@@ -50,7 +69,14 @@ class SBML:
 
     
     def load_file (self, file_name):
-        """ Given an xml file construct an sbml object. """
+        """ Loads an xml file that contains an SBML model definition.
+        
+            Parameters:
+                file_name: a string with the file path.
+
+            Returns
+                True if parsing was successful, and False otherwise.
+        """
         reader = libsbml.SBMLReader ()
         sbmldoc = reader.readSBML (file_name)
         if SBML.__check_sbml_parsing_err (sbmldoc):
@@ -82,7 +108,11 @@ class SBML:
 
             
     def get_species_list (self):
-        """ Returns a list with all species. """
+        """ Gets the list of species of the current model.
+        
+        Returns
+            species: a list of strings containing species ids.
+        """
         if self.sbml_obj == None:
             return []
 
@@ -97,7 +127,14 @@ class SBML:
 
 
     def get_species_kinetic_law (self, species_name):
-        """ Returns the kinetic laws of a species. """
+        """ Gets the kinetic law of a species from the current model. 
+            
+            Parameters
+                species_name: a string with the species id.
+
+            Returns a string wit a formula that represents the kinetic
+            law that rules for the specified species.
+        """
         formula = ""
         reactions = self.__get_reactions_involving (species_name)
         for reac in reactions:
@@ -119,7 +156,13 @@ class SBML:
             
     
     def get_initial_concentration (self, species_name):
-        """ Returns the initial concentrations of each chemical species. 
+        """ Gets the initial concentration for a chemical species.
+    
+            Parameters
+                species_name: the id of the species.
+
+            Returns a number that represents the initial concentration
+            of the corresponding chemical species.
         """
         model = self.sbml_obj.model
         species = model.getSpecies (species_name)
@@ -132,23 +175,50 @@ class SBML:
 
 
     def get_param_value (self, param):
-        """ Returns the value of a parameter. """
+        """ Gets the value for some model parameter.
+        
+            Parameters
+                param: a string with the name of the parameter. Note
+                that this name is most likely not the same name as used
+                on the original .sbml file.
+
+            Returns a number with the value of the corresponding
+            parameters.
+        """
         return self.__parameter_values[param]
 
 
     def get_all_param (self):
-        """ Return a hash with all (internal) parameters and values. """
+        """ Gets all parameters.
+        
+            Returns a dictionary with parameter names and values. Note
+            that parameter names are likely not the same as used on the
+            original .sbml file.
+        """
         return self.__parameter_values
 
 
     def get_name (self):
-        """ Returns model name. """
+        """ Gets model name. 
+            
+            Returns a string with the model name.
+        """
         return self.sbml_obj.model.getName ()
 
 
     def get_original_param_name (self, param):
-        """ Given a parameter name (from the inside scope), returns the
-            original name of this parameter inside the SBML file. """
+        """ Gets the original name of a model parameter.
+
+            Parameters
+                param: a string with a parameter name. This name is the
+                same as used in self.__parameter_values, and it was
+                chosen by this object using the method 
+                __new_parameter ().
+        
+            Returns the original name of the specified parameter, that
+            is, the name used in the sbml file to represent such 
+            parameter. 
+        """
         if param in self.__global_param:
             return param
 
@@ -169,11 +239,11 @@ class SBML:
 
 
     def get_all_reaction_formulas (self):
-        """ Returns a list with all reaction rate formulas.
+        """ Gets a list with all reaction rate formulas.
 
-        Returns
-            all_formulas: a list of string containing the reaction rate
-                of all reactions.
+            Returns
+                all_formulas: a list of string containing the reaction
+                    rate of all reactions.
         """
         model = self.sbml_obj.model
         reaction_list = model.getListOfReactions ()
@@ -182,11 +252,11 @@ class SBML:
 
 
     def get_all_reactions (self):
-        """ Returns a list with all reactions of the model. 
+        """ Gets a list with all reactions of the model. 
         
-        Returns
-            all_reactions: a list of Reaction objects that represent all
-                reactions of this sbml model.
+            Returns
+                all_reactions: a list of Reaction objects that represent 
+                    all reactions of this sbml model.
         """
         model = self.sbml_obj.model
         all_reactions = []
@@ -199,12 +269,12 @@ class SBML:
     def set_name (self, name):
         """ Changes the name of an SBML model. 
 
-        This method changes the attribute 'name' of the object and it
-        also changes the attribute 'name' of the libsbml.Model 
-        attribute.
+            This method changes the attribute 'name' of the object and
+            it also changes the attribute 'name' of the libsbml.Model 
+            attribute.
         
-        Parameters
-            name: a string containing the new name.
+            Parameters
+                name: a string containing the new name.
         """
         self.name = name
         self.sbml_obj.model.setName (name)
@@ -213,13 +283,12 @@ class SBML:
     def add_reaction (self, reaction):
         """ Adds a new reaction to the sbml model.
         
-        Parameters
-            reaction: a Reaction object with the reaction to be added.
+            Parameters
+                reaction: a Reaction object with the reaction to be 
+                    added.
 
-        Returns
-            new_species: a list of string containing names of 
-                species that were added to the model when adding the
-                reaction.
+            Returns a list of string containing names of species that 
+            were added to the model when adding the reaction.
         """
         model = self.sbml_obj.model
         created_reac = model.createReaction ()
@@ -254,13 +323,13 @@ class SBML:
 
         
     def remove_reaction (self, reaction_id):
-        """
-        Removes a reaction from the SBML model.
+        """ Removes a reaction from the SBML model.
 
-        Parameters
-            reaction_id: a string with the id of the reaction that must
-                be removed. If there is no reaction with id reaction_id,
-                then the method rises a Warning and does nothing else.
+            Parameters
+                reaction_id: a string with the id of the reaction that
+                    must be removed. If there is no reaction with id 
+                    reaction_id, then the method rises a Warning and 
+                    does nothing else.
         """
         model = self.sbml_obj.model
         reaction = model.removeReaction (reaction_id)
@@ -272,11 +341,11 @@ class SBML:
     def __get_species (self, species_id):
         """ Returns species (and creates if needed) with id species_id.
 
-        Parameters
-            species_id: a string with the id of the species.
+            Parameters
+                species_id: a string with the id of the species.
 
-        Returns
-            species: a libsbml.Species object that has id species_id.
+            Returns species, a libsbml.Species object that has id 
+            species_id.
         """
         model = self.sbml_obj.model
         species = model.getSpecies (species_id)
@@ -289,9 +358,9 @@ class SBML:
     def __create_new_species (self, species):
         """ Adds a new species to the model.
             
-        Parameters
-            species: a string with the name and id of the species to be 
-                added.
+            Parameters
+                species: a string with the name and id of the species to 
+                    be added.
         """
         model = self.sbml_obj.model
         created_species = model.createSpecies ()
@@ -308,8 +377,17 @@ class SBML:
 
 
     def __get_reactions_involving (self, species_name):
-        """ Returns a list with all the reactions that contains a 
-            species either as reactant or product. """
+        """ Gets all reactions involving some chemical species, as a
+            product or reactant.
+        
+            Parameters
+                species_name: a string with the id of the chemical
+                species of interest.
+
+            Returns a list with libsbml.Reaction objects, each of these
+            objects representing a reaction that has the species of
+            interest as a reactant or product.
+        """
         model = self.sbml_obj.model
         all_reactions = model.getListOfReactions ()
         participating_reactions = []
@@ -324,13 +402,23 @@ class SBML:
 
     
     def __new_parameter (self):
+        """ Creates a new parameter
+
+            Returns a string with the name of the new parameter.
+        """
         self.num_params += 1
         return "p" + str (self.num_params)
 
 
     def __reaction_rate_formula (self, reaction):
-        """ Given a reaction, returns the string with the formula of its 
-        reaction rate. """
+        """ Gets the rate formula of a reaction.
+        
+            Parameters
+                reaction: a lisbml.Reaction object representing a
+                reaction.
+
+            Returns a string with a formula of the reaction rate.
+        """
         kinetic = reaction.getKineticLaw ()
         formula = kinetic.getFormula ()
         params = kinetic.getListOfParameters ()
@@ -346,6 +434,10 @@ class SBML:
 
 
     def __get_global_params (self):
+        """ Finds the global parameters of a model.
+            
+            This method is used when an sbml model is loaded.
+        """
         model = self.sbml_obj.model
         params = model.getListOfParameters ()
         global_params = []
@@ -360,6 +452,10 @@ class SBML:
 
 
     def __get_local_params (self):
+        """ Finds the local parameters of a model.
+
+            This method is used when an sbml model is loaded.
+        """
         model = self.sbml_obj.model
         all_reactions = model.getListOfReactions ()
         local_params = {}

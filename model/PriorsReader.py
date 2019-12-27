@@ -23,6 +23,16 @@ def __create_distribution (dist_type, args):
 
 
 def read_priors_file (filename):
+    """ Reads a priors definition file.
+
+        Parameters
+            filename: the path of the priors file.
+
+        Returns 
+            a RandomParameterList object, containing all defined
+            parameters and its prior distributions and also some
+            experimental error.
+    """
     tree = etree.parse (filename)
     root = tree.getroot ()
 
@@ -55,7 +65,19 @@ def read_priors_file (filename):
 
 
 def define_sbml_params_priors (sbml, filename):
-    """ Reads the priors of all sbml parameters defined in filename. """
+    """ Defined the prior distribution for all reaction parameters of an
+        SBML model.
+        
+        Parameters
+            sbml: an SBML object, with the model of interest.
+            filename: a file path that contains the definition of all
+                model parameters priors.
+
+        Returns
+            a RandomParameterList object that has the prior definition
+            of all parameters of the SBML object, in the same order as
+            they are seen on SBML.get_all_param ().
+    """
     default_priors = read_priors_file (filename)
     priors = RandomParameterList ()
     original_names = []

@@ -3,7 +3,7 @@ from model.SBMLtoODES import sbml_to_odes
 from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
 from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
-import random
+import numpy.random as random
 import argparse
 
 

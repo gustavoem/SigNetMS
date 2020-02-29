@@ -56,12 +56,9 @@ class Gamma:
         a = self.__a
         b = self.__b
         if n is None:
-            return gamma.rvs (a, scale=b, \
-                    random_state=np.random.RandomState ())
+            return gamma.rvs (a, scale=b)
         else:
-            return [gamma.rvs (a, scale=b, \
-                    random_state=np.random.RandomState ()) \
-                    for i in range (n)]
+            return [gamma.rvs (a, scale=b) for i in range (n)]
 
 
     def get_a (self):

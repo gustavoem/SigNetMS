@@ -9,6 +9,7 @@ from sympy.utilities.autowrap import autowrap
 from asteval import Interpreter
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.random as random
 
 
 class ODES:
@@ -349,7 +350,7 @@ class ODES:
         """
         if self.sys_function != None:
             return self.sys_function
-        
+
         self.__define_sys_eq ()
         sys_vars = self.sys_vars
         sys_params = self.sys_params

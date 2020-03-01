@@ -87,7 +87,7 @@ class MultivariateLognormal:
         # very small...
         # Now that I decided to tackle this problem I realized that 
         # there are some distributions which can have enourmeous pdf for
-        # small values of x (when mean of lognormal is negative). 
+        # small values of x (when mean of underlying is negative). 
         if any (xi <= 0 for xi in x):        
             return 0
 

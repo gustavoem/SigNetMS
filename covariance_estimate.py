@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def calc_covariance_diagonal (sample):
+def calc_covariance (sample):
     """ Compute diagonal of covariance of a sample.
 
         Given a list of samples (lists of values) of variables, compute
@@ -34,4 +34,3 @@ def calc_covariance_diagonal (sample):
         cov_matrix += v * vT
     cov_matrix = cov_matrix / len (sample)
     return cov_matrix
-    #return cov_matrix.diagonal () * np.eye (n)

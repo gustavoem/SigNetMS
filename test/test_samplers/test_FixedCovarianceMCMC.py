@@ -11,7 +11,7 @@ from distributions.Gamma import Gamma
 from distributions.MultivariateLognormal import MultivariateLognormal
 from model.RandomParameterList import RandomParameterList
 from model.RandomParameter import RandomParameter
-from covariance_estimate import calc_covariance_diagonal
+from covariance_estimate import calc_covariance
 from marginal_likelihood.samplers.FixedCovarianceMCMC import \
         FixedCovarianceMCMC
 
@@ -62,5 +62,5 @@ class TestFixedCovarianceMCMC (unittest.TestCase):
         for i in range (50):
             values = my_sample_dist.rvs ()
             my_artificial_sample.append (values)
-        covar = calc_covariance_diagonal (my_artificial_sample)
+        covar = calc_covariance (my_artificial_sample)
         return covar

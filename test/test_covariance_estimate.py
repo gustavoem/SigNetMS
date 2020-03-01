@@ -2,7 +2,7 @@ import sys
 sys.path.insert (0, '..')
 
 import unittest
-from covariance_estimate import calc_covariance_diagonal
+from covariance_estimate import calc_covariance
 
 class TestCovarianceMatrix (unittest.TestCase):
 
@@ -13,7 +13,7 @@ class TestCovarianceMatrix (unittest.TestCase):
                   [0, 1, 0],
                   [1, 1, 0],
                   [0, 0, 1]]
-        cov = calc_covariance_diagonal (sample)
+        cov = calc_covariance (sample)
         self.assertEqual (cov[0, 0], 1 / 4)
         self.assertEqual (cov[0, 1], 0)
         self.assertEqual (cov[0, 2], 0)

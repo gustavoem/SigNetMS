@@ -13,6 +13,7 @@ from marginal_likelihood.samplers.PopulationalMCMC import \
 import multiprocessing
 
 from parallel_map import parallel_map
+import seed_manager
 import numpy as np
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
@@ -58,7 +59,17 @@ class MarginalLikelihood:
     def __run_phase_one_and_two (temp, experiments, model, theta_prior,
             n_acc, n_adap_cov, n_sigma_update, verbose):
         """ Map function to run phase 2 and 3 for each temperature. """
-        np.random.RandomState ()
+        # We then take the last used seed (be careful, setting the last
+        # used seed as the current seed won't make us "continue" the
+        # random number generator, we are just using it so the seed
+        # argument used in SigNetMS can actually control this part of
+        # the program.
+        current_seed = seed_manager.get_seed ()
+        # Every thread must have a different seed...
+        thread_seed = current_seed + int(temp * 1e5)
+        print (thread_seed)
+        np.random.seed (thread_seed)
+
         # Phase 1
         acc_mcmc = AcceptingRateAMCMC (theta_prior, model, experiments, 
                 n_sigma_update, verbose=verbose)

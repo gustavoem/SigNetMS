@@ -3,7 +3,7 @@ from model.SBMLtoODES import sbml_to_odes
 from marginal_likelihood.MarginalLikelihood import MarginalLikelihood
 from model.PriorsReader import define_sbml_params_priors
 from experiment.ExperimentSet import ExperimentSet
-import numpy.random as random
+import seed_manager
 import argparse
 
 
@@ -18,8 +18,7 @@ def perform_marginal_likelihood (sbml_file, priors_file, \
     odes = sbml_to_odes (sbml)
     experiments = ExperimentSet (experiment_file)
     theta_priors = define_sbml_params_priors (sbml, priors_file)
-
-    random.seed (seed)
+    seed_manager.set_seed (seed)
 
     ml = MarginalLikelihood (burnin1_iterations, 
             sigma_update_n, 

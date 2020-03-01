@@ -2,7 +2,8 @@ import sys
 sys.path.insert (0, '..')
 
 import numpy as np
-from scipy.stats import lognorm
+from scipy.stats import multivariate_normal as mnormal
+from utils import safe_exp
 
 class MultivariateLognormal:
     """ This class implements a multivariate lognormal random variable. 
@@ -64,17 +65,16 @@ class MultivariateLognormal:
         S = self.__S
 
         if n is None:
-            lognormal_values = np.array ([lognorm.rvs ( \
-                    scale=np.exp (mu[i]), s=np.sqrt(S[i, i])) \
-                    for i in range (len (mu))])
-        else:        
-            lognormal_values = []
+            normal_values = mnormal.rvs (mu, S)
+            lognormal_values = [safe_exp (v) for v in normal_values]
+            return np.array (lognormal_values)
+        else:
+            all_lognormal_values = []
             for _ in range (n):
-                lognormal_values.append (np.array ([lognorm.rvs ( \
-                        scale=np.exp (mu[i]), s=np.sqrt(S[i, i]), \
-                        size=n) \
-                        for i in range (len (mu))]))
-        return lognormal_values
+                normal_values = mnormal.rvs (mu, S)
+                lognormal_values = [safe_exp (v) for v in normal_values]
+                all_lognormal_values.append (lognormal_values)
+            return np.array (all_lognormal_values)
 
 
     def pdf (self, x):
@@ -137,6 +137,8 @@ class MultivariateLognormal:
             smaller than 1e-10 is used, then this value is automatically
             changed to 1e-10. None of the components of mu can be 
             smaller than 1e-150 either.
+
+        PS: don't use this... its numerically unstable.
         """
         mu = np.array (mu)
         S = np.array (S)

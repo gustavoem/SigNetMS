@@ -4,6 +4,7 @@ from marginal_likelihood.samplers.MetropolisHastings import \
 from marginal_likelihood.LikelihoodFunction import LikelihoodFunction
 from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
+from utils import get_current_datetime
 from distributions.MultivariateLognormal import MultivariateLognormal
 import statistics
 
@@ -26,8 +27,15 @@ class AcceptingRateAMCMC (MetropolisHastings):
         self.__sigma_update_n = sigma_update_n
         self._jump_S = self.__init_jump_S ()
         self.__l_f = LikelihoodFunction (model)
-        self.__t = t
+        self._t = t
     
+
+    def _open_trace_file (self):
+        """ Open a file to write trace. """
+        file_name = "trace/" + get_current_datetime () + "_" \
+                + str (self._t) + "_" +  "1st_phase"
+        self._trace_file = open (file_name, 'w')
+
 
     def __get_log_prior_variance (self, param):
         """ Calculates the variance of a log-scaled sample of param.
@@ -74,7 +82,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
 
     def set_temperature (self, t):
         """ Defines a temperature parameter for this sampler. """
-        self.__t = t
+        self._t = t
 
 
     def _calc_mh_ratio (self, new_t, new_l, old_t, old_l):
@@ -88,7 +96,7 @@ class AcceptingRateAMCMC (MetropolisHastings):
         j_gv_new = self._create_jump_dist (new_t)
         log_new_gv_old = j_gv_old.log_pdf (new_t.get_values ())
         log_old_gv_new = j_gv_new.log_pdf (old_t.get_values ())
-        l_ratio = safe_pow_exp_ratio (new_l, old_l, self.__t)
+        l_ratio = safe_pow_exp_ratio (new_l, old_l, self._t)
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
         jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)

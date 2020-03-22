@@ -15,6 +15,7 @@ class MetropolisHastings:
         self._n_accepted = 0
         self._n_jumps = 0
         self._is_verbose = verbose
+        self._trace_file = None
         
     
     def _create_jump_dist (self, theta_t):
@@ -23,6 +24,19 @@ class MetropolisHastings:
             random jump theta* that will be proposed given that the 
             current parameter is theta_t. """
         raise NotImplementedError
+
+
+    def _open_trace_file (self):
+        """ Open the trace file.
+            Trace files must have the name:
+                date_(temperature)_(sampling_phase_name).txt
+        """
+        raise NotImplementedError
+    
+
+    def _close_trace_file (self):
+        """ Closes the trace file. """
+        self._trace_file.close()
 
 
     def propose_jump (self, c_theta):
@@ -82,6 +96,9 @@ class MetropolisHastings:
                     + "Try using the start_sample_from_prior () " \
                     + "method.")
 
+        self._open_trace_file ()
+        trace_file = self._trace_file
+
         for _ in range (N):
             old_t = self._sample[-1]
             old_l = self._sample_log_likelds[-1]
@@ -102,16 +119,35 @@ class MetropolisHastings:
                 print ("old_l: " + str (old_l))
                 print ("new_l: " + str (new_l))
 
+                trace_file.write ("\nCurrent theta: [")
+                for p in old_t:
+                    comma = ", " if p != old_t[-1] else ""
+                    trace_file.write (str (p.value) + comma)
+                trace_file.write ("]")
+                trace_file.write ("\nProposed theta: [")
+                for p in new_t:
+                    comma = ", " if p != new_t[-1] else ""
+                    trace_file.write (str (p.value) + comma)
+                trace_file.write ("]")
+                trace_file.write ("\nCurrent log_l = " + str(old_l))
+                trace_file.write ("\nProposed log_l = " + str(new_l))
+
 
             r = self._calc_mh_ratio (new_t, new_l, old_t, old_l)
             if self._is_verbose:
                 print ("r = " + str (r), end="\n\n")
+                trace_file.write ("\nMH ratio = " + str(r))
             if np.random.uniform () <= r:
                 old_t = new_t
                 old_l = new_l
                 self._n_accepted += 1
                 self._sample.append (old_t)
                 self._sample_log_likelds.append (old_l)
+                if self._is_verbose:
+                    trace_file.write ("\nAccepted\n")
+            else:
+                if self._is_verbose:
+                    trace_file.write ("\nRejected\n")
             self._n_jumps += 1
             self._iteration_update ()
         

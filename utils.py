@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import errno
+import datetime
 
 def safe_log (x):
     """ Calculates the log of x safely.
@@ -178,3 +179,9 @@ def plot_theta_var_sample (sample, var_idx, fig_name, plot_label,
     plt.legend ()
     fig.savefig (fig_name)
     plt.clf ()
+
+
+def get_current_datetime():
+    now = datetime.datetime.now ()
+    str_datetime = now.strftime ("%Y-%m-%d")
+    return str_datetime

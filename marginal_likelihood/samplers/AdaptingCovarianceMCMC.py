@@ -7,6 +7,7 @@ from covariance_estimate import calc_covariance
 from utils import safe_log
 from utils import safe_exp_ratio
 from utils import safe_pow_exp_ratio
+from utils import get_current_datetime
 
 class AdaptingCovarianceMCMC (MetropolisHastings):
     """ Objects of this class are able to return a sample of theta using 
@@ -52,6 +53,13 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
                 t: a float with the tempering parameter.
         """
         self._t = t
+
+
+    def _open_trace_file (self):
+        """ Open a file to write trace. """
+        file_name = "trace/" + get_current_datetime () + "_" \
+                + str (self._t) + "_" + "2nd_phase"
+        self._trace_file = open (file_name, 'w')
 
 
     def __calc_jump_S (self):

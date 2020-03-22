@@ -2,6 +2,7 @@ from marginal_likelihood.samplers.MetropolisHastings import \
         MetropolisHastings
 from marginal_likelihood.samplers.AdaptingCovarianceMCMC import \
         AdaptingCovarianceMCMC
+from utils import get_current_datetime
 
 class FixedCovarianceMCMC (AdaptingCovarianceMCMC):
     """ Objects of this class are able to return a sample of theta using
@@ -15,6 +16,13 @@ class FixedCovarianceMCMC (AdaptingCovarianceMCMC):
         super ().__init__ (theta, model, experiments, 1e10, t=t, 
                 verbose=verbose)
         self._jump_S = covar 
+
+
+    def _open_trace_file (self):
+        """ Open a file to write trace. """
+        file_name = "trace/" + get_current_datetime () + "_" \
+                + str (self._t) + "_" + "3rd_phase"
+        self._trace_file = open (file_name, 'w')
 
 
     def get_sample (self, N):

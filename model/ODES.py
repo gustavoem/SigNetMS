@@ -9,8 +9,6 @@ from sympy.utilities.autowrap import autowrap
 from asteval import Interpreter
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.random as random
-
 
 class ODES:
     """ This class contains a representation for systems of ordinary

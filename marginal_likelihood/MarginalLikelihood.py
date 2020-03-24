@@ -67,7 +67,6 @@ class MarginalLikelihood:
         current_seed = seed_manager.get_seed ()
         # Every thread must have a different seed...
         thread_seed = current_seed + int(temp * 1e5)
-        print (thread_seed)
         np.random.seed (thread_seed)
 
         # Phase 1

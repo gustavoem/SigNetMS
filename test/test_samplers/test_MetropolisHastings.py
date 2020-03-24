@@ -24,7 +24,7 @@ class MHJumpMock (MetropolisHastings):
 class MHLikelihoodMock (MetropolisHastings):
     def _calc_log_likelihood (self, t):
         return 1
-    
+
 
 class MHFullMock (MetropolisHastings):
     def _calc_log_likelihood (self, t):
@@ -40,6 +40,7 @@ class MHFullMock (MetropolisHastings):
         theta_values = np.array (theta_t.get_values ())
         mu = np.log (theta_values) - variances / 2
         return MultivariateLognormal (mu, s2)
+
 
 class TestMetropolisHastings (unittest.TestCase):
 
@@ -185,6 +186,7 @@ class TestMetropolisHastings (unittest.TestCase):
                 l_ratio = np.exp (new_l - old_l)
                 r = (l_ratio) * (p_old_gv_new / p_new_gv_old)
                 return r
+
 
         mocked_mh = MHMultivariateLognormalTargetMock (theta)
         mocked_mh.start_sample_from_prior ()

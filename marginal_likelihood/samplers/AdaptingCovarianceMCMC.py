@@ -115,6 +115,10 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
             where t is the current parameter, t* is the proposed 
             parameter, and y is the observations from the experiment. 
         """
+        if self._is_verbose:
+            self._trace_file.write ("jump_S = ")
+            self._trace_file.write (str (self._jump_S))
+
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
         try:

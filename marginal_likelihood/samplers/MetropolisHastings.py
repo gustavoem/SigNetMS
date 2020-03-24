@@ -31,12 +31,13 @@ class MetropolisHastings:
             Trace files must have the name:
                 date_(temperature)_(sampling_phase_name).txt
         """
-        raise NotImplementedError
+        pass
     
 
     def _close_trace_file (self):
         """ Closes the trace file. """
-        self._trace_file.close()
+        if self._trace_file is not None:
+            self._trace_file.close()
 
 
     def propose_jump (self, c_theta):
@@ -150,7 +151,8 @@ class MetropolisHastings:
                     trace_file.write ("\nRejected\n")
             self._n_jumps += 1
             self._iteration_update ()
-        
+
+        self._close_trace_file ()
         return self.get_last_sampled (N)
     
 

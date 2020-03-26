@@ -55,6 +55,8 @@ def main ():
             help="Verbose run.")
     parser.add_argument ('--n_process', type=int, nargs='?', default=0, \
             help="Number of parallel process used on sampling step.")
+    parser.add_argument ('--seed', type=int, nargs='?', default=0, \
+            help="Random number generation seed.")
     args = parser.parse_args ()
     
 
@@ -70,11 +72,12 @@ def main ():
     third_step_n = int (args.third_sampling_iterations)
     verbose = args.verbose
     n_process = args.n_process
+    seed = args.seed
 
     perform_marginal_likelihood (sbml_file, priors_file, \
             experiment_file, first_step_n, sigma_update_n, \
             second_step_n, third_step_n, verbose=verbose, \
-            n_process=n_process)
+            n_process=n_process, seed=seed)
 
 
 if __name__ == "__main__":

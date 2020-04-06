@@ -4,20 +4,16 @@
 import numpy as np
 
 def calc_covariance (sample):
-    """ Compute diagonal of covariance of a sample.
+    """ Compute an estimate of the covariance matrix of a normal
+        distribution.
 
-        Given a list of samples (lists of values) of variables, compute
-        an estimation of the covariance matrix and return a matrix that 
-        only has its diagonal.
-        
         Parameters
-            sample: a list of list. The inner list is a sample point of
-            a multivariate random variable.
+            sample: a list of list. Each element of the outmost list is
+            a sample point of a multivariate normal random variable.
         
         Returns
-            cov_matrix: a diagonal matrix M such that (M)i,i is the 
-            variance of the i-th component of the random variable. This
-            matrix is a numpy array object.
+            cov_matrix: an estimate of the covariance of the sample
+            distribution.
         """
     n = len (sample[0])
     theta_sum = np.zeros (n)
@@ -32,5 +28,5 @@ def calc_covariance (sample):
         v = v.reshape ([n, 1])
         vT = np.array (v.transpose ())
         cov_matrix += v * vT
-    cov_matrix = cov_matrix / len (sample)
+    cov_matrix = cov_matrix / (len (sample) - 1)
     return cov_matrix

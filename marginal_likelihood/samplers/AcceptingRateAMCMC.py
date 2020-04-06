@@ -6,6 +6,7 @@ from utils import safe_pow_exp_ratio
 from utils import safe_exp_ratio
 from utils import get_current_datetime
 from distributions.MultivariateLognormal import MultivariateLognormal
+from pathlib import Path
 import statistics
 
 class AcceptingRateAMCMC (MetropolisHastings):
@@ -32,7 +33,10 @@ class AcceptingRateAMCMC (MetropolisHastings):
 
     def _open_trace_file (self):
         """ Open a file to write trace. """
-        file_name = "trace/" + get_current_datetime () + "_" \
+        trace_dir = "trace/" + self.__model.name
+        Path(trace_dir).mkdir(parents=True, exist_ok=True)
+
+        file_name = trace_dir + "/" + get_current_datetime () + "_" \
                 + str (self._t) + "_" +  "1st_phase"
         self._trace_file = open (file_name, 'w')
 
@@ -103,14 +107,14 @@ class AcceptingRateAMCMC (MetropolisHastings):
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
         jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
-        if self._is_verbose:
-            print ("\told log prior: " + str (old_t.get_log_p ()))
-            print ("\tnew log prior: " + str (new_t.get_log_p ()))
-            print ("\tnew given old: " + str (log_new_gv_old))
-            print ("\told given new: " + str (log_old_gv_new))
-            print ("\tprior ratio: " + str (prior_ratio))
-            print ("\tlikelihood ratio: " + str (l_ratio))
-            print ("\tjump ratio: " + str (jump_ratio))
+        # if self._is_verbose:
+            # print ("\told log prior: " + str (old_t.get_log_p ()))
+            # print ("\tnew log prior: " + str (new_t.get_log_p ()))
+            # print ("\tnew given old: " + str (log_new_gv_old))
+            # print ("\told given new: " + str (log_old_gv_new))
+            # print ("\tprior ratio: " + str (prior_ratio))
+            # print ("\tlikelihood ratio: " + str (l_ratio))
+            # print ("\tjump ratio: " + str (jump_ratio))
 
         if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
             return 1

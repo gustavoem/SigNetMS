@@ -139,6 +139,7 @@ class MultivariateLognormal:
             smaller than 1e-150 either.
 
         PS: don't use this... its numerically unstable.
+        https://github.com/scipy/scipy/issues/10801
         """
         mu = np.array (mu)
         S = np.array (S)

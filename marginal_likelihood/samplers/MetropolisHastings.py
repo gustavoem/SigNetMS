@@ -29,7 +29,7 @@ class MetropolisHastings:
     def _open_trace_file (self):
         """ Open the trace file.
             Trace files must have the name:
-                date_(temperature)_(sampling_phase_name).txt
+                model_name_date_temperature_sampling_phase_name.txt
         """
         pass
     
@@ -107,18 +107,18 @@ class MetropolisHastings:
             new_l = self._calc_log_likelihood (new_t)
             
             if self._is_verbose:
-                print ("old_t:", end=' ')
-                print ("[", end='')
-                for p in old_t:
-                    print (p.value, end=' ')
-                print ("]")
-                print ("new_t", end=' ')
-                print ("[", end='')
-                for p in new_t:
-                    print (p.value, end=' ')
-                print ("]")
-                print ("old_l: " + str (old_l))
-                print ("new_l: " + str (new_l))
+                # print ("old_t:", end=' ')
+                # print ("[", end='')
+                # for p in old_t:
+                    # print (p.value, end=' ')
+                # print ("]")
+                # print ("new_t", end=' ')
+                # print ("[", end='')
+                # for p in new_t:
+                    # print (p.value, end=' ')
+                # print ("]")
+                # print ("old_l: " + str (old_l))
+                # print ("new_l: " + str (new_l))
 
                 trace_file.write ("\nCurrent theta: [")
                 for p in old_t:
@@ -136,7 +136,7 @@ class MetropolisHastings:
 
             r = self._calc_mh_ratio (new_t, new_l, old_t, old_l)
             if self._is_verbose:
-                print ("r = " + str (r), end="\n\n")
+                # print ("r = " + str (r), end="\n\n")
                 trace_file.write ("\nMH ratio = " + str(r))
             if np.random.uniform () <= r:
                 old_t = new_t

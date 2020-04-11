@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<priors>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_SR1"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_SR1"/>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_R5"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R5"/>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_R6"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R6"/>
+  <prior distribution="Gamma" a="2" b="1" name="V_R7"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R7"/>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_R9"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R9"/>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_R10"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R10"/>
+  <prior distribution="Gamma" a="2" b="1" name="V_R12"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R12"/>
+  <prior distribution="Gamma" a="2" b="1" name="kcat_R16"/>
+  <prior distribution="Gamma" a="2" b="4" name="Km_R16"/>
+  <experimental_error distribution="Gamma" a="2" b="0.1" name="Noise"/>
+</priors>

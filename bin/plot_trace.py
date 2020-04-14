@@ -72,7 +72,7 @@ for line in f:
             ax.plot(experiment_times, obs, label=label)
             i += 1
 
-        print(experiment_times, simulation)
+        print(theta, simulation)
         ax.plot (experiment_times, simulation, label='Simulated observation')
 
         plt.ylabel ('$[' + experiment_measure + ']$')

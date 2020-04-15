@@ -166,6 +166,9 @@ class ODES:
                     value for each variable.
                 time_points: a list of time points for integration.
 
+            Return
+                y: the values integrated
+
             Note
                 This method might take longer on its first call, because
                 that would imply on writing and compiling the system
@@ -179,8 +182,8 @@ class ODES:
         args = [self.param_table[param] for param in self.param_table]
         jacobian = self.get_system_jacobian ()
         y, _ = odeint (sys_f, initial_state, time_points, args=(args,),
-                Dfun=jacobian, mxstep=5000, full_output=True, 
-                tfirst=True, atol=1e-6, rtol=1e-8)
+                Dfun=jacobian, full_output=True, 
+                tfirst=True, atol=1e-2, rtol=1e-4)
         return y
 
 
@@ -280,7 +283,6 @@ class ODES:
             value = aeval (exp)
             values.append (value)
         return values
-
 
 
     def overtime_plot (self, var_list, t, initial_state_map=None, 

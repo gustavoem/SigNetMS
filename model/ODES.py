@@ -183,7 +183,7 @@ class ODES:
         jacobian = self.get_system_jacobian ()
         y, _ = odeint (sys_f, initial_state, time_points, args=(args,),
                 Dfun=jacobian, full_output=True, 
-                tfirst=True, atol=1e-2, rtol=1e-4)
+                tfirst=True, atol=1e-1, rtol=1e-2)
         return y
 
 

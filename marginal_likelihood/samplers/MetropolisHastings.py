@@ -26,6 +26,18 @@ class MetropolisHastings:
         raise NotImplementedError
 
 
+    def _jump_probability_ratio (self, old_given_new, new_given_old):
+        """ Calculates the ratio old_given_new / new_given_old.
+
+            To avoid getting stuck in regions of the parameter space,
+            we are considering the jump ratio as zero when either
+            old_given_new or new_given_old are small
+        """
+        if old_given_new < 1e-16 or new_given_old < 1e-16:
+            return 0
+        return old_given_new / new_given_old
+
+
     def _open_trace_file (self):
         """ Open the trace file.
             Trace files must have the name:

@@ -101,12 +101,13 @@ class AcceptingRateAMCMC (MetropolisHastings):
             self._trace_file.write (str (self._jump_S))
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
-        log_new_gv_old = j_gv_old.log_pdf (new_t.get_values ())
-        log_old_gv_new = j_gv_new.log_pdf (old_t.get_values ())
+        new_gv_old = j_gv_old.pdf (new_t.get_values ())
+        old_gv_new = j_gv_new.pdf (old_t.get_values ())
         l_ratio = safe_pow_exp_ratio (new_l, old_l, self._t)
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
-        jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
+        jump_ratio = self._jump_probability_ratio (old_gv_new,
+                new_gv_old)
         # if self._is_verbose:
             # print ("\told log prior: " + str (old_t.get_log_p ()))
             # print ("\tnew log prior: " + str (new_t.get_log_p ()))

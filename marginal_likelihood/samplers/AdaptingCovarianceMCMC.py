@@ -126,8 +126,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         j_gv_old = self._create_jump_dist (old_t)
         j_gv_new = self._create_jump_dist (new_t)
         try:
-            log_new_gv_old = j_gv_old.log_pdf (new_t.get_values ())
-            log_old_gv_new = j_gv_new.log_pdf (old_t.get_values ())
+            new_gv_old = j_gv_old.pdf (new_t.get_values ())
+            old_gv_new = j_gv_new.pdf (old_t.get_values ())
         except Exception as e:
             print (e)
             raise ValueError ("The covariance matrix is not positive " \
@@ -136,7 +136,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
         l_ratio = self._calc_likeli_ratio (new_l, old_l)
         prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
                 old_t.get_log_p ())
-        jump_ratio = safe_exp_ratio (log_old_gv_new, log_new_gv_old)
+        jump_ratio = self._jump_probability_ratio (old_gv_new,
+                new_gv_old)
         # if self._is_verbose:
             # print ("\tnew given old: " + str (log_new_gv_old))
             # print ("\told given new: " + str (log_old_gv_new))

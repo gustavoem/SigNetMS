@@ -1,6 +1,18 @@
 import numpy
 
-__program_seed__ = None
+@singleton
+class SeedManager:
+    def __init__ (self):
+        self.__seed = None
+
+    def set_seed (self, seed):
+        if self.__seed == None:
+            numpy.random.seed (seed)
+            self.__seed = seed
+
+    def get_seed (self):
+        return self.__seed
+
 
 def set_seed (seed):
     """ Sets numpy.random seed.
@@ -8,12 +20,9 @@ def set_seed (seed):
         Parameters
             seed: a number
     """
-    global __program_seed__
-    if __program_seed__ == None:
-        numpy.random.seed (seed)
-        __program_seed__ = seed
+    sm = SeedManager.instance ()
+    sm.set_seed (seed)
 
 def get_seed ():
     """ Returns the set seed. """
-    global __program_seed__
-    return __program_seed__
+    return SeedManager.instance ().get_seed ()

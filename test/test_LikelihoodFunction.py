@@ -65,7 +65,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         
         likelihood_f = LikelihoodFunction (self.odes) 
         l = likelihood_f.get_log_likelihood (experiments, self.theta)
-        assert (abs (analytic - l) < 1e-8)
+        assert (abs (analytic - l) < 1e-2)
 
     
     def test_get_likelihood_experiment_set (self):
@@ -83,7 +83,7 @@ class TestLikelihoodFunction (unittest.TestCase):
         
         likelihood_f = LikelihoodFunction (self.odes)
         l = likelihood_f.get_log_likelihood (experiments, self.theta)
-        assert (abs (analytic - l) < 1e-8)
+        assert (abs (analytic - l) < 1e-2)
 
 
 

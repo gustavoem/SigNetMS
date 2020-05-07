@@ -34,7 +34,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (t[i])
-            assert (abs (y["x1"][i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) / analytic < 1e-1)
 
         odes = ODES ()
         # dx1 (t)/dt = x1 (t)/2 + x2(t)/2
@@ -47,8 +47,8 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (t[i])
-            assert (abs (y["x1"][i] - analytic) < 1)
-            assert (abs (y["x2"][i] - analytic) < 1)
+            assert (abs (y["x1"][i] - analytic) / analytic < 1e-1)
+            assert (abs (y["x2"][i] - analytic) / analytic < 1e-1)
 
 
     def test_equation_parameters (self):
@@ -63,7 +63,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (2 * t[i])
-            assert (abs (y["x1"][i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) / analytic < 1e-1)
 
 
     def test_get_parameters (self):
@@ -109,14 +109,14 @@ class TestODESMethods (unittest.TestCase):
             variables. """
         odes = ODES ()
         # dx (t)/dt = pow (x (t), 2)
-        # Solution is exp 1/ (1 - t)
+        # Solution is 1/ (1 - t)
         odes.add_equation ("x", "pow (x, 2)")
         odes.define_initial_value ("x", 1.0)
         t = np.linspace (0, .9, 10)
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = 1 / (1 - t[i])
-            assert (abs (y["x"][i] - analytic) < 1e-2)
+            assert (abs (y["x"][i] - analytic) / analytic < 5e-1)
         
         odes = ODES ()
         # dx (t)/dt = x (t) ** 2
@@ -126,7 +126,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = 1 / (1 - t[i])
-            assert (abs (y["x"][i] - analytic) < 1e-2)
+            assert (abs (y["x"][i] - analytic) / analytic < 5e-1)
 
     def test_solve_with_arbitrary_initial_state (self):
         """ Tests if one can solve an ODES with an arbitrary initial 
@@ -141,7 +141,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t, initial_state)
         for i in range (len (t)):
             analytic = 10 * math.exp (t[i])
-            assert (abs (y["x1"][i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) / analytic < 1e-1)
 
     def test_when_solution_times_doesnt_start_on_zero (self):
         """ Tests what happens when the times asked for an evaluation
@@ -155,7 +155,7 @@ class TestODESMethods (unittest.TestCase):
         y = odes.evaluate_on (t)
         for i in range (len (t)):
             analytic = math.exp (t[i])
-            assert (abs (y["x1"][i] - analytic) < 1e-2)
+            assert (abs (y["x1"][i] - analytic) / analytic < 1e-1)
     
     def test_differentiation (self):
         odes = ODES ()

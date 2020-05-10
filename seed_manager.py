@@ -1,6 +1,6 @@
 import numpy
 
-@singleton
+@singleton # pylint: disable=undefined-variable
 class SeedManager:
     def __init__ (self):
         self.__seed = None

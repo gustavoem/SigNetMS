@@ -1,18 +1,7 @@
 import numpy
 
-@singleton # pylint: disable=undefined-variable
-class SeedManager:
-    def __init__ (self):
-        self.__seed = None
-
-    def set_seed (self, seed):
-        if self.__seed == None:
-            numpy.random.seed (seed)
-            self.__seed = seed
-
-    def get_seed (self):
-        return self.__seed
-
+# pylint: disable=undefined-variable
+__program_seed__ = None
 
 def set_seed (seed):
     """ Sets numpy.random seed.
@@ -20,9 +9,14 @@ def set_seed (seed):
         Parameters
             seed: a number
     """
-    sm = SeedManager.instance ()
-    sm.set_seed (seed)
+    # pylint: disable=global-statement
+    global __program_seed__
+    if __program_seed__ == None:
+        numpy.random.seed (seed)
+        __program_seed__ = seed
 
 def get_seed ():
     """ Returns the set seed. """
-    return SeedManager.instance ().get_seed ()
+    # pylint: disable=global-statement
+    global __program_seed__
+    return __program_seed__

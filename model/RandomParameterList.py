@@ -1,5 +1,20 @@
 class RandomParameterList:
-    """ This class stores a list of random parameters. """
+    """ This class stores a list of random parameters. This set of
+        random parameters can be considered as candidates of model
+        parameters that were used for a biological experiment.
+        Condiering that, one of the attributes of objects of this class,
+        __experimental_error, represents the standard deviation of
+        experimental error when assuming the correct model parameters
+        are the ones present on this object.
+
+        Attributes
+            __param_list (list): a list of RandomParameter objects
+            __experimental_error (RandomParameter): a random parameter
+                that represents the standart deviation of experimental
+                error associated to this set of parameters.
+            __iterator: a simple iterator to iterate in model
+                parameters.
+    """
 
     def __init__ (self):
         """ Default constructor. """
@@ -40,14 +55,22 @@ class RandomParameterList:
 
 
     def set_experimental_error (self, p):
-        """ Sets the random parameter that represents the experimental
-            error. """
+        """ Sets the experimental error.
+
+            Parameters:
+                p: a RandomParameter object that represents the
+                    experimental error random variable.
+        """
         self.__param_list.append (p)
         self.__experimental_error = p
     
 
     def append (self, c):
-        """ Adds a parameter to the end of the list. """
+        """ Adds a parameter to the end of the list.
+
+            Parameters
+                c: a RandomParameter to be added to this list
+        """
         if self.__experimental_error == None:
             insert_index = len (self.__param_list)
         else:
@@ -61,7 +84,9 @@ class RandomParameterList:
 
 
     def get_values (self):
-        """ Returns the values of the parameters on the list. """
+        """ Returns the values of the parameters on the list.
+            Note: does not include experimental error.
+        """
         values = []
         for p in self.__param_list:
             values.append (p.value)

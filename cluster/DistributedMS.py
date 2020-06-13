@@ -83,7 +83,7 @@ def get_signetms_path (current_path):
 @ray.remote
 def run_task (model_file, priors_file, experiment_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
-        iterations_phase3, nof_process, signetms_path):
+        iterations_phase3, nof_process, signetms_path, seed=42):
     # importing local modules...
     sys.path.insert (0, signetms_path)
     from model.SBML import SBML
@@ -92,8 +92,10 @@ def run_task (model_file, priors_file, experiment_file, \
     from marginal_likelihood.MarginalLikelihood \
             import MarginalLikelihood
     from model.PriorsReader import define_sbml_params_priors
+    import seed_manager
 
     # Now the actual code...
+    seed_manager.set_seed(seed)
     sbml = SBML ()
     sbml.load_file (model_file)
     odes = sbml_to_odes (sbml)
@@ -116,9 +118,13 @@ parser.add_argument ("tasks_file", help="A JSON file that defines" \
 parser.add_argument ("cluster_definition_file", help="A JSON file" \
         + " that defines the cluster that should be used to perform" \
         + " tasks")
+parser.add_argument ("--seed", type=int, nargs="?", default=0, \
+        help="Random number generation seed")
 args = parser.parse_args ()
 tasks_filename = args.tasks_file
 cluster_filename = args.cluster_definition_file
+seed = args.seed
+
 tasks_file = open (tasks_filename, 'r')
 cluster_file = open (cluster_filename, 'r')
 
@@ -157,7 +163,8 @@ for task in tasks_json:
             int (task["phase2_it"]),
             int (task["phase3_it"]),
             int (process_by_task),
-            signetms_abs_path)
+            signetms_abs_path,
+            seed=seed)
     id_to_name[str (task_id)] = task["name"]
     not_ready_tasks.append (task_id)
     print ("Creating task", task["name"])

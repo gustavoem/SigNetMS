@@ -123,7 +123,7 @@ parser.add_argument ("--seed", type=int, nargs="?", default=0, \
 args = parser.parse_args ()
 tasks_filename = args.tasks_file
 cluster_filename = args.cluster_definition_file
-seed = args.seed
+arg_seed = args.seed
 
 tasks_file = open (tasks_filename, 'r')
 cluster_file = open (cluster_filename, 'r')
@@ -164,7 +164,7 @@ for task in tasks_json:
             int (task["phase3_it"]),
             int (process_by_task),
             signetms_abs_path,
-            seed=seed)
+            seed=arg_seed)
     id_to_name[str (task_id)] = task["name"]
     not_ready_tasks.append (task_id)
     print ("Creating task", task["name"])

@@ -84,6 +84,8 @@ def get_signetms_path (current_path):
 def run_task (model_file, priors_file, experiment_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
         iterations_phase3, nof_process, signetms_path, seed=42):
+    import time
+    start_time = time.time()
     # importing local modules...
     sys.path.insert (0, signetms_path)
     from model.SBML import SBML
@@ -108,8 +110,8 @@ def run_task (model_file, priors_file, experiment_file, \
                              verbose=False, n_process=nof_process)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
-    return log_l
-
+    elapsed_time = time.time () - start_time
+    return log_l, elapsed_time
 
 
 parser = argparse.ArgumentParser ()
@@ -169,15 +171,21 @@ for task in tasks_json:
     not_ready_tasks.append (task_id)
     print ("Creating task", task["name"])
 
-resulting_ml = {}
+results = {}
 while len (not_ready_tasks) > 0:
     ready, not_ready = ray.wait (not_ready_tasks)
     first_ready = ready[0]
     task_name = id_to_name[str (first_ready)]
     print ("Getting task", task_name)
-    resulting_ml[task_name] = ray.get (first_ready)
+    results[task_name] = ray.get (first_ready)
     not_ready_tasks = not_ready
-print (resulting_ml)
+
+print (results)
+output_file = open("cluster_results.txt", "w")
+for model in results:
+    output_file.write(model + ": ")
+    output_file.write(str(results[model]) + '\n')
+output_file.close()
 
 ray.shutdown ()
 stop_clusters (workers_list, ray_abs_path)

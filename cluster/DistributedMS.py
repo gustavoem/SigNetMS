@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, '..')
 
+import time
 import argparse
 import json
 import subprocess 
@@ -113,7 +114,7 @@ def run_task (model_file, priors_file, experiment_file, \
     elapsed_time = time.time () - start_time
     return log_l, elapsed_time
 
-
+start = time.time ()
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
         + " the tasks that should be performed.")
@@ -180,11 +181,14 @@ while len (not_ready_tasks) > 0:
     results[task_name] = ray.get (first_ready)
     not_ready_tasks = not_ready
 
+total_time = time.time () - start
+
 print (results)
 output_file = open("cluster_results.txt", "w")
 for model in results:
     output_file.write(model + ": ")
     output_file.write(str(results[model]) + '\n')
+output_file.write("total_time: ", total_time)
 output_file.close()
 
 ray.shutdown ()

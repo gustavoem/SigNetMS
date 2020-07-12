@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, '..')
 
+import time
 import argparse
 import json
 import subprocess 
@@ -83,7 +84,9 @@ def get_signetms_path (current_path):
 @ray.remote
 def run_task (model_file, priors_file, experiment_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
-        iterations_phase3, nof_process, signetms_path):
+        iterations_phase3, nof_process, signetms_path, seed=42):
+    import time
+    start_time = time.time()
     # importing local modules...
     sys.path.insert (0, signetms_path)
     from model.SBML import SBML
@@ -92,8 +95,10 @@ def run_task (model_file, priors_file, experiment_file, \
     from marginal_likelihood.MarginalLikelihood \
             import MarginalLikelihood
     from model.PriorsReader import define_sbml_params_priors
+    import seed_manager
 
     # Now the actual code...
+    seed_manager.set_seed(seed)
     sbml = SBML ()
     sbml.load_file (model_file)
     odes = sbml_to_odes (sbml)
@@ -106,19 +111,23 @@ def run_task (model_file, priors_file, experiment_file, \
                              verbose=False, n_process=nof_process)
     log_l = ml.estimate_marginal_likelihood (experiments, odes, 
             theta_priors)
-    return log_l
+    elapsed_time = time.time () - start_time
+    return log_l, elapsed_time
 
-
-
+start = time.time ()
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
         + " the tasks that should be performed.")
 parser.add_argument ("cluster_definition_file", help="A JSON file" \
         + " that defines the cluster that should be used to perform" \
         + " tasks")
+parser.add_argument ("--seed", type=int, nargs="?", default=0, \
+        help="Random number generation seed")
 args = parser.parse_args ()
 tasks_filename = args.tasks_file
 cluster_filename = args.cluster_definition_file
+arg_seed = args.seed
+
 tasks_file = open (tasks_filename, 'r')
 cluster_file = open (cluster_filename, 'r')
 
@@ -157,20 +166,30 @@ for task in tasks_json:
             int (task["phase2_it"]),
             int (task["phase3_it"]),
             int (process_by_task),
-            signetms_abs_path)
+            signetms_abs_path,
+            seed=arg_seed)
     id_to_name[str (task_id)] = task["name"]
     not_ready_tasks.append (task_id)
     print ("Creating task", task["name"])
 
-resulting_ml = {}
+results = {}
 while len (not_ready_tasks) > 0:
     ready, not_ready = ray.wait (not_ready_tasks)
     first_ready = ready[0]
     task_name = id_to_name[str (first_ready)]
     print ("Getting task", task_name)
-    resulting_ml[task_name] = ray.get (first_ready)
+    results[task_name] = ray.get (first_ready)
     not_ready_tasks = not_ready
-print (resulting_ml)
+
+total_time = time.time () - start
+
+print (results)
+output_file = open("cluster_results.txt", "w")
+for model in results:
+    output_file.write(model + ": ")
+    output_file.write(str(results[model]) + '\n')
+output_file.write("total_time: ", total_time)
+output_file.close()
 
 ray.shutdown ()
 stop_clusters (workers_list, ray_abs_path)

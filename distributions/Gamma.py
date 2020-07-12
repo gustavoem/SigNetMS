@@ -71,6 +71,13 @@ class Gamma:
         return self.__b
 
 
+    def get_params (self):
+        params = {}
+        params["a"] = self.__a
+        params["b"] = self.__b
+        return params
+
+
     def pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """

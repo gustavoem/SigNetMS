@@ -12,10 +12,8 @@ def write_priors_file (filename, priors):
         distribution = param.get_distribution ()
         param_dist_name = distribution.__class__.__name__
         param_elm.set ("distribution", param_dist_name)
-        distribution_params = distribution.get_params ()
-        for distribution_param in distribution_params:
-            param_elm.set (distribution_param, \
-                    str (distribution_params[distribution_params]))
+        param_elm.set ("a", str (distribution.get_a ()))
+        param_elm.set ("b", str (distribution.get_b ()))
         param_elm.set ("name", param.name)
     
     exp_error = priors.get_experimental_error_distribution ()

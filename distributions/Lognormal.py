@@ -14,17 +14,14 @@ class Lognormal:
         self.__mu = mu
         self.__s = sigma
 
-    def get_params (self):
-        params = {}
-        params["mu"] = self.__mu
-        params["s"] = self.__sigma
-        return params
     
     def copy (self):
         """ Returns a copy of this object. """
         cpy = Lognormal (self.__mu, self.__s)
         return cpy
         
+
+
     def mean (self):
         """ Returns the mean of this random variable. """
         mu = self.__mu

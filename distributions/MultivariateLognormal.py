@@ -100,9 +100,6 @@ class MultivariateLognormal:
     def log_pdf (self, x):
         """ Returns the value of the probability density function of 
             this random variable on point x. """
-        # TODO: what is this doing here? that loooks like a bug!
-        # anyways, if some x < 0 got here, than we probably have another
-        # bug prior this one. 
         if any (xi <= 0 for xi in x):        
             return 0
 

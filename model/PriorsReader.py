@@ -2,30 +2,20 @@ from model.RandomParameter import RandomParameter
 from model.RandomParameterList import RandomParameterList
 from distributions.Gamma import Gamma
 from distributions.Lognormal import Lognormal
-from distributions.Constant import Constant
 from utils import clean_tag
 from lxml import etree
 import warnings
 
-def __create_distribution (dist_type, attributes):
+def __create_distribution (dist_type, args):
     """ Creates a distribution dist_type with arguments args. 
         You can choose any of those options for dist_type and args,
         respectively: 
         - gamma, [k, theta]
-        - lognormal, [mu, sigma] 
-        - constant, [constant]
-    """
+        - lognormal, [mu, sigma] """
     if dist_type.lower () == 'gamma':
-        a = float (attributes["a"])
-        b = float (attributes["b"])
-        dist = Gamma (a, b)
+        dist = Gamma (args[0], args[1])
     elif dist_type.lower () == 'lognormal':
-        mu = float (attributes["mu"])
-        s = float (attributes["s"])
-        dist = Lognormal (mu, s)
-    elif dist_type.lower () == 'constant':
-        constant = float (attributes["constant"])
-        dist = Constant (constant)
+        dist = Lognormal (args[0], args[1])
     else:
         raise ValueError ("The specified prior distribution, " + 
                 dist_type + ", is not available.")
@@ -56,8 +46,10 @@ def read_priors_file (filename):
         attribs = children.attrib
         if clean_tag (children) == "prior":
             name = attribs["name"]
+            a = float (attribs["a"])
+            b = float (attribs["b"])
             dist_type = attribs["distribution"]
-            dist = __create_distribution (dist_type, attribs)
+            dist = __create_distribution (dist_type, [a, b])
             priors.append (RandomParameter (name, dist))
         elif clean_tag (children) == "experimental_error":
             name = attribs["name"]

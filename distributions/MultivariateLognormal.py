@@ -65,7 +65,7 @@ class MultivariateLognormal:
         S = self.__S
 
         if n is None:
-            normal_values = mnormal.rvs (mu, S)
+            normal_values = np.array (mnormal.rvs (mu, S), ndmin=1)
             lognormal_values = [safe_exp (v) for v in normal_values]
             return np.array (lognormal_values)
         else:

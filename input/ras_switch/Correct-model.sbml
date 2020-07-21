@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!--
+  Correct-model.sbml: A Ras small GTPase molecular switch dynamic model.
+
+  Copyright (C) 2020  Marcelo S. Reis and Gustavo Estrela.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model>
+    <listOfCompartments>
+      <compartment id="cell" name="cell" size="1"/>
+    </listOfCompartments>
+    <!--
+      Model species:
+    -->
+    <listOfSpecies>
+      <species id="SOS"             initialAmount="200" compartment="cell"></species>
+      <species id="SOS_allo_RasGDP" initialAmount=  "0" compartment="cell"></species>
+      <species id="SOS_allo_RasGTP" initialAmount=  "0" compartment="cell"></species>
+      <species id="RasGDP"          initialAmount="900" compartment="cell"></species>
+      <species id="RasGTP"          initialAmount="100" compartment="cell"></species>
+      <species id="GEF"             initialAmount="200" compartment="cell"></species>
+      <species id="GAP"             initialAmount="125" compartment="cell"></species>
+      <species id="iGAP"            initialAmount="275" compartment="cell"></species>
+    </listOfSpecies>
+    <!--
+      Model parameters:
+    -->
+    <listOfParameters>
+      <parameter id="k1"    value="1.8e-4"/>
+      <parameter id="d1"    value="3.0"/>
+      <parameter id="k2"    value="1.7e-4"/>
+      <parameter id="d2"    value="0.04"/>
+      <parameter id="k3cat" value="3.8"/>
+      <parameter id="K3m"   value="1.64e3"/>
+      <parameter id="k4cat" value="0.003"/>
+      <parameter id="K4m"   value="9.12e3"/>
+      <parameter id="k5cat" value="0.1"/>
+      <parameter id="K5m"   value="1.07e2"/>
+      <parameter id="k6cat" value="0.01"/>
+      <parameter id="K6m"   value="1836"/>
+    </listOfParameters>
+    <!--
+      Model equations are described for each equation term:
+    -->
+    <listOfReactions>
+      <reaction id="SOS_allo_RasGDP_complexation">
+        <listOfReactants>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="SOS"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="SOS_allo_RasGDP"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> SOS </ci>
+              <ci> RasGDP </ci>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="SOS_allo_RasGDP_decomplexation">
+        <listOfReactants>
+            <speciesReference species="SOS_allo_RasGDP"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="SOS"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> d1 </ci>
+              <ci> SOS_allo_RasGDP </ci>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="SOS_allo_RasGTP_complexation">
+        <listOfReactants>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="SOS"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="SOS_allo_RasGTP"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> SOS </ci>
+              <ci> RasGTP </ci>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="SOS_allo_RasGTP_decomplexation">
+        <listOfReactants>
+            <speciesReference species="SOS_allo_RasGTP"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="SOS"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> d2 </ci>
+              <ci> SOS_allo_RasGTP </ci>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Ras_inactivation_by_GAP">
+        <listOfReactants>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="GAP"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="GAP"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k5cat </ci>
+                <ci> GAP </ci>
+                <ci> RasGTP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K5m </ci>
+                <ci> RasGTP </ci>
+              </apply>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Ras_activation_by_SOS_allo_RasGTP">
+        <listOfReactants>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="SOS_allo_RasGTP"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="SOS_allo_RasGTP"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k3cat </ci>
+                <ci> SOS_allo_RasGTP </ci>
+                <ci> RasGDP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K3m </ci>
+                <ci> RasGDP </ci>
+              </apply>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Ras_activation_by_SOS_allo_RasGDP">
+        <listOfReactants>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="SOS_allo_RasGDP"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="SOS_allo_RasGDP"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k4cat </ci>
+                <ci> SOS_allo_RasGDP </ci>
+                <ci> RasGDP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K4m </ci>
+                <ci> RasGDP </ci>
+              </apply>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Ras_activation_by_GEF">
+        <listOfReactants>
+            <speciesReference species="RasGDP"></speciesReference>
+            <speciesReference species="GEF"></speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="RasGTP"></speciesReference>
+            <speciesReference species="GEF"></speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k6cat </ci>
+                <ci> GEF </ci>
+                <ci> RasGDP </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K6m </ci>
+                <ci> RasGDP </ci>
+              </apply>
+            </apply>
+         </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

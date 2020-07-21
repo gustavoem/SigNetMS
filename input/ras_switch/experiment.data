@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ExperimentSet>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="797.1412299740215" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="813.6035508222125" index="1"/>
+    </row>
+    <row>
+      <element value="90" index="0"/>
+      <element value="813.5939588072065" index="1"/>
+    </row>
+    <row>
+      <element value="120" index="0"/>
+      <element value="813.6096427727834" index="1"/>
+    </row>
+    <row>
+      <element value="150" index="0"/>
+      <element value="813.6141173981007" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="813.6159178092034" index="1"/>
+    </row>
+    <row>
+      <element value="210" index="0"/>
+      <element value="813.6079649587211" index="1"/>
+    </row>
+    <row>
+      <element value="240" index="0"/>
+      <element value="813.6125664082232" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="RasGTP" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="797.129056560276" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="813.6131131215215" index="1"/>
+    </row>
+    <row>
+      <element value="90" index="0"/>
+      <element value="813.6241542913891" index="1"/>
+    </row>
+    <row>
+      <element value="120" index="0"/>
+      <element value="813.6109539351388" index="1"/>
+    </row>
+    <row>
+      <element value="150" index="0"/>
+      <element value="813.6233603485829" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="813.6055758791712" index="1"/>
+    </row>
+    <row>
+      <element value="210" index="0"/>
+      <element value="813.6120499499872" index="1"/>
+    </row>
+    <row>
+      <element value="240" index="0"/>
+      <element value="813.6201086463687" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="RasGTP" col="1"/>
+    </interpretation>
+  </Experiment>
+  <Experiment>
+    <row>
+      <element value="30" index="0"/>
+      <element value="797.1228352302487" index="1"/>
+    </row>
+    <row>
+      <element value="60" index="0"/>
+      <element value="813.6264236223701" index="1"/>
+    </row>
+    <row>
+      <element value="90" index="0"/>
+      <element value="813.6187194882858" index="1"/>
+    </row>
+    <row>
+      <element value="120" index="0"/>
+      <element value="813.6219718364518" index="1"/>
+    </row>
+    <row>
+      <element value="150" index="0"/>
+      <element value="813.6078027225045" index="1"/>
+    </row>
+    <row>
+      <element value="180" index="0"/>
+      <element value="813.6110705078848" index="1"/>
+    </row>
+    <row>
+      <element value="210" index="0"/>
+      <element value="813.6088994333538" index="1"/>
+    </row>
+    <row>
+      <element value="240" index="0"/>
+      <element value="813.6172467680697" index="1"/>
+    </row>
+    <condition/>
+    <interpretation>
+      <time col="0"/>
+      <readout expression="RasGTP" col="1"/>
+    </interpretation>
+  </Experiment>
+</ExperimentSet>

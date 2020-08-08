@@ -2,6 +2,7 @@ from model.RandomParameter import RandomParameter
 from model.RandomParameterList import RandomParameterList
 from distributions.Gamma import Gamma
 from distributions.Lognormal import Lognormal
+from distributions.Uniform import Uniform
 from utils import clean_tag
 from lxml import etree
 import warnings
@@ -16,6 +17,8 @@ def __create_distribution (dist_type, args):
         dist = Gamma (args[0], args[1])
     elif dist_type.lower () == 'lognormal':
         dist = Lognormal (args[0], args[1])
+    elif dist_type.lower () == 'uniform':
+        dist = Uniform  (args[0], args[1])
     else:
         raise ValueError ("The specified prior distribution, " + 
                 dist_type + ", is not available.")

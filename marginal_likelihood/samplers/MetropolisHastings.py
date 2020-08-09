@@ -26,6 +26,14 @@ class MetropolisHastings:
         raise NotImplementedError
 
 
+    def _safe_probability_ratio (self, p1, p2):
+        """ Calculates p1 / p2, but if p1 or p2 is too small, returns
+            zero. """
+        if p1 < 1e-16 or p2 < 1e-16:
+            return 0
+        return p1 / p2
+
+
     def _jump_probability_ratio (self, old_given_new, new_given_old):
         """ Calculates the ratio old_given_new / new_given_old.
 

@@ -134,8 +134,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
                     + "definite. Try using a bigger starting sample.")
         
         l_ratio = self._calc_likeli_ratio (new_l, old_l)
-        prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
-                old_t.get_log_p ())
+        prior_ratio = self._safe_probability_ratio (new_t.get_p (),
+                old_t.get_p ())
         jump_ratio = self._jump_probability_ratio (old_gv_new,
                 new_gv_old)
         # if self._is_verbose:

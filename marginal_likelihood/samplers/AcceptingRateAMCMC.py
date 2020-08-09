@@ -104,8 +104,8 @@ class AcceptingRateAMCMC (MetropolisHastings):
         new_gv_old = j_gv_old.pdf (new_t.get_values ())
         old_gv_new = j_gv_new.pdf (old_t.get_values ())
         l_ratio = safe_pow_exp_ratio (new_l, old_l, self._t)
-        prior_ratio = safe_exp_ratio (new_t.get_log_p (), 
-                old_t.get_log_p ())
+        prior_ratio = self._safe_probability_ratio (new_t.get_p (),
+                old_t.get_p ())
         jump_ratio = self._jump_probability_ratio (old_gv_new,
                 new_gv_old)
         # if self._is_verbose:

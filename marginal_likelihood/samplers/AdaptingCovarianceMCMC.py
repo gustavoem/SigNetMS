@@ -145,7 +145,8 @@ class AdaptingCovarianceMCMC (MetropolisHastings):
             # print ("\tlikelihood ratio: " + str (l_ratio))
             # print ("\tjump ratio: " + str (jump_ratio))
 
-        if not l_ratio < float ("inf") and prior_ratio + jump_ratio > 0:
+        if not l_ratio < float ("inf") and prior_ratio > 0 and \
+                jump_ratio > 0:
             return 1
         elif prior_ratio + jump_ratio < 1e-150:
             return 0

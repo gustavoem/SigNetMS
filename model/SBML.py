@@ -21,9 +21,6 @@ class SBML:
                 reaction names. The values for an entry is the
                 corresponding list of reaction rate constants names.
             num_params (int): stores the number of parameters
-            __loaded_file (string): the file path of the current loaded
-                sbml document, or None if there is no sbml document
-                loaded.
     """
 
     def __init__ (self):
@@ -52,9 +49,6 @@ class SBML:
         # Stores the model name
         self.name = ''
 
-        # Stores the last loaded file
-        self.__loaded_file = None
-
 
     def get_copy (self):
         """ Creates a copy of this object and returns it. 
@@ -63,8 +57,13 @@ class SBML:
             sbml_copy - an SBML object that is a copy of self.
         """
         sbml_copy = SBML  ()
-        if self.__loaded_file:
-            sbml_copy.load_file (self.__loaded_file) 
+        sbml_copy.sbml_obj = self.sbml_obj.clone ()
+        sbml_copy.__parameter_values = dict (self.__parameter_values)
+        sbml_copy.__global_param = list (self.__global_param)
+        sbml_copy.__local_param = dict (self.__local_param)
+        sbml_copy.num_params = self.num_params
+        sbml_copy.name = self.name
+
         return sbml_copy 
 
     
@@ -93,7 +92,6 @@ class SBML:
         self.name = str (sbmldoc.model.name)
         self.__global_param = self.__get_global_params ()
         self.__local_param = self.__get_local_params ()
-        self.__loaded_file = file_name
         return True
         
 

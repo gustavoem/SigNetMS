@@ -220,6 +220,34 @@ class ODES:
         return np.array (y)
 
 
+    def __integrate_with_lsoda (self, sys_f, initial_state, 
+            time_points):
+        """ Integrates using scipy.ode.integrate with an algorithm for
+            stiff problems. 
+            
+            Parameters
+                sys_f: this is a function that needs to receive (t, y) 
+                    arguments, where t is a time value and y is an array
+                    with a value for each variable. This function needs
+                    to return a new array with the same cardinality as
+                    y, containing the derivative of each variable given
+                    t and y.
+                initial_state: is also an array, defining the starting
+                    value for each variable.
+                time_points: a list of time points for integration.
+            
+        """
+        import inspect
+        args = [self.param_table[param] for param in self.param_table]
+        jacobian = self.get_system_jacobian ()
+        sol = spi.solve_ivp (sys_f, (time_points[0], time_points[-1]),
+                initial_state, method='LSODA', t_eval=time_points,
+                args=args, jac=jacobian, atol=1e-1, rtol=1e-2)
+        return np.transpose(sol.y)
+
+
+
+
     def evaluate_on (self, time_points, initial_state_map=None):
         """ Returns the state of the systems variables at the specified
             time points. 
@@ -247,8 +275,10 @@ class ODES:
                 initial_state[idx] = initial_state_map[var]
 
         sys_function = self.__get_system_function ()
-        y = self.__integrate_with_odeint (sys_function, 
-                initial_state, time_points)
+        # y = self.__integrate_with_odeint (sys_function,
+                # initial_state, time_points)
+        y = self.__integrate_with_lsoda (sys_function, initial_state,
+                time_points)
         
         values_map = {}
         for var in self.index_map:
@@ -383,7 +413,7 @@ class ODES:
         n = len (self.rate_eq)
         m = len (self.param_table)
 
-        def wrapped_fun (t, state, args):
+        def wrapped_fun (t, state, *args):
             #pylint: disable=unused-argument
             npstate = np.array (state, dtype='d')
             npparams = np.array (args, dtype='d')

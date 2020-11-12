@@ -47,8 +47,11 @@ class LikelihoodFunction:
         if (theta is not None):
             for param in theta.get_model_parameters ():
                 self.__ode.define_parameter (param.name, param.value)
-    
-        return self.__ode.evaluate_exp_on (measure_expression, t)
+        
+        integration, success = self.__ode.evaluate_exp_on (
+            measure_expression, t, with_success_flag=True
+        )
+        return integration if success else None
 
 
     def get_log_likelihood (self, experiments, theta):
@@ -58,6 +61,8 @@ class LikelihoodFunction:
         t = experiments[0].times
         measure_expression = experiments[0].measure_expression
         X_sys = self.__get_sys_measure (measure_expression, t, theta)
+        if X_sys is None:
+            return float("-inf")
 
         for sys_val in X_sys:
             if math.isnan (sys_val) or sys_val == float ("inf") or \

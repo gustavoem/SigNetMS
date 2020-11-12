@@ -175,7 +175,9 @@ class MarginalLikelihood:
         self.__sample = None
 
         # initialize ODEs function and jacobian
-        model.evaluate_on ([experiments[0].times[0]])
+        # this is poggy, please fix this later
+        model.evaluate_on ([experiments[0].times[0],
+            experiments[0].times[0] + 1])
         model.get_system_jacobian ()
         print ("Initialized ODEs")
 

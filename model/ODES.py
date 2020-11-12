@@ -237,18 +237,30 @@ class ODES:
                 time_points: a list of time points for integration.
             
         """
-        import inspect
         args = [self.param_table[param] for param in self.param_table]
         jacobian = self.get_system_jacobian ()
-        sol = spi.solve_ivp (sys_f, (time_points[0], time_points[-1]),
+        
+        # solve_ivp can't deal with one time point (╯°□°)╯︵ ┻━┻
+        trick_solve_ivp_mode = len(time_points) == 1
+        start_point = time_points[0]
+        end_point = time_points[-1]
+        if trick_solve_ivp_mode:
+            end_point += 1
+
+        sol = spi.solve_ivp (sys_f, (start_point, end_point),
                 initial_state, method='LSODA', t_eval=time_points,
                 args=args, jac=jacobian, atol=1e-1, rtol=1e-2)
-        return np.transpose(sol.y)
+        return np.transpose(sol.y), sol.success
 
 
 
 
-    def evaluate_on (self, time_points, initial_state_map=None):
+    def evaluate_on (
+            self,
+            time_points,
+            initial_state_map=None,
+            with_success_flag=False,
+    ):
         """ Returns the state of the systems variables at the specified
             time points. 
             
@@ -277,8 +289,9 @@ class ODES:
         sys_function = self.__get_system_function ()
         # y = self.__integrate_with_odeint (sys_function,
                 # initial_state, time_points)
-        y = self.__integrate_with_lsoda (sys_function, initial_state,
-                time_points)
+        y, success = self.__integrate_with_lsoda (
+            sys_function, initial_state, time_points
+        )
         
         values_map = {}
         for var in self.index_map:
@@ -288,11 +301,14 @@ class ODES:
                 values_map[var] = list (y[1:, idx])
             else:
                 values_map[var] = list (y[:, idx])
-        return values_map
+        if with_success_flag:
+            return values_map, success
+        else:
+            return values_map
 
 
     def evaluate_exp_on (self, exp, time_points, 
-            initial_state_map=None):
+            initial_state_map=None, with_success_flag=False):
         """ Evaluates some expression of variables of the system on
             given time points.
 
@@ -303,8 +319,17 @@ class ODES:
                 initial_state_map: a dictionary with variables as keys
                     and initial concentrations as values.
         """
-        system_states = self.evaluate_on (time_points, \
-                initial_state_map)
+        system_states = []
+        success = False
+        if with_success_flag:
+            system_states, success = self.evaluate_on (
+                time_points, initial_state_map, with_success_flag=True
+            )
+        else:
+            system_states = self.evaluate_on (
+                time_points, initial_state_map
+            )
+
         aeval = Interpreter ()
         values = []
         for i in range (len (time_points)):
@@ -312,7 +337,11 @@ class ODES:
                 aeval.symtable[var] = system_states[var][i]
             value = aeval (exp)
             values.append (value)
-        return values
+        
+        if with_success_flag: 
+            return values, success
+        else:
+            return values
 
 
     def overtime_plot (self, var_list, t, initial_state_map=None, 

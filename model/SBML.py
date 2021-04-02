@@ -57,7 +57,7 @@ class SBML:
             sbml_copy - an SBML object that is a copy of self.
         """
         sbml_copy = SBML  ()
-        sbml_copy.sbml_obj = self.sbml_obj.clone ()
+        sbml_copy.sbml_obj = self.sbml_obj and self.sbml_obj.clone ()
         sbml_copy.__parameter_values = dict (self.__parameter_values)
         sbml_copy.__global_param = list (self.__global_param)
         sbml_copy.__local_param = dict (self.__local_param)

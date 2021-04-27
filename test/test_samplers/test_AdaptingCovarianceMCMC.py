@@ -70,7 +70,8 @@ class TestAdaptingCovarianceMCMC (unittest.TestCase):
                 return jump_dist
 
         mh = FastLikelihoodMock (theta, model, experiments, 20, t=0)
-        mh.start_sample_from_prior ()
+        for _ in range (10):
+            mh.start_sample_from_prior ()
         mh.get_sample (N)
         sample, likelihoods = mh.get_last_sampled (N)
         

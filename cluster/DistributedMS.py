@@ -1,7 +1,10 @@
 import sys
 sys.path.insert(0, '..')
 
-import time
+# There is another time import inside ray function, but that should not
+# conflict with this import. We are renaming this import because we
+# do not want to upset pylint
+import time as time_global
 import argparse
 import json
 import subprocess 
@@ -85,6 +88,7 @@ def get_signetms_path (current_path):
 def run_task (model_file, priors_file, experiment_file, \
         iterations_phase1, sigma_update_n, iterations_phase2, \
         iterations_phase3, nof_process, signetms_path, seed=42):
+    # pylint: disable=reimported
     import time
     start_time = time.time()
     # importing local modules...
@@ -114,7 +118,7 @@ def run_task (model_file, priors_file, experiment_file, \
     elapsed_time = time.time () - start_time
     return log_l, elapsed_time
 
-start = time.time ()
+start = time_global.time ()
 parser = argparse.ArgumentParser ()
 parser.add_argument ("tasks_file", help="A JSON file that defines" \
         + " the tasks that should be performed.")
@@ -181,7 +185,7 @@ while len (not_ready_tasks) > 0:
     results[task_name] = ray.get (first_ready)
     not_ready_tasks = not_ready
 
-total_time = time.time () - start
+total_time = time_global.time () - start
 
 print (results)
 output_file = open("cluster_results.txt", "w")

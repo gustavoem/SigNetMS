@@ -15,6 +15,7 @@ import multiprocessing
 from parallel_map import parallel_map
 import seed_manager
 import numpy as np
+
 class MarginalLikelihood:
     """ This class is able to perform an adaptive MCMC sampling to 
         estimate the likelihood of a model given experimental data. """

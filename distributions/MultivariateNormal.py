@@ -1,6 +1,3 @@
-import sys
-sys.path.insert (0, '..')
-
 import numpy as np
 from numpy.random import multivariate_normal as np_multivar_normal
 from utils import safe_log

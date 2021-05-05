@@ -59,3 +59,4 @@ class RandomParameter:
             value. 
         """
         return self.__distribution.log_pdf (self.value)
+

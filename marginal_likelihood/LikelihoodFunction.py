@@ -1,8 +1,8 @@
-#The likelihood function
-#follows the same definition as seen in Tian-Rui Xu, et. al, 
-#Supplementary Materials for Inferring Signaling Pathway 
-#Topologies from Multiple Perturbation Measurements of Specific 
-#Biochemical Species
+# The likelihood function
+# follows the same definition as seen in Tian-Rui Xu, et. al, 
+# Supplementary Materials for Inferring Signaling Pathway 
+# Topologies from Multiple Perturbation Measurements of Specific 
+# Biochemical Species
 
 import numpy as np
 import math

@@ -1,6 +1,3 @@
-import sys
-sys.path.insert (0, '..')
-
 import numpy as np
 from scipy.stats import multivariate_normal as mnormal
 from utils import safe_exp

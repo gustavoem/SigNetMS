@@ -1,6 +1,3 @@
-import sys
-sys.path.insert (0, '..')
-
 from lxml import etree
 from experiment.Experiment import Experiment
 from utils import clean_tag

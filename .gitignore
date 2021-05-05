@@ -4,4 +4,4 @@ __pycache__/
 *.swp
 *.swo
 autowrap*
-*/trace/*
+*trace*

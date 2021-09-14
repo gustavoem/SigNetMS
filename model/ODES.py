@@ -253,8 +253,6 @@ class ODES:
         return np.transpose(sol.y), sol.success
 
 
-
-
     def evaluate_on (
             self,
             time_points,
@@ -274,6 +272,9 @@ class ODES:
             a list as value. The list contains the values of a variable
             over the determined time points.
         """
+        import warnings
+        warnings.filterwarnings("error")
+
         time_points = np.array (time_points)
         zeroed_times = False
         if time_points[0] != 0:
@@ -293,18 +294,22 @@ class ODES:
             sys_function, initial_state, time_points
         )
         
-        values_map = {}
-        for var in self.index_map:
-            idx = self.index_map[var]
-            if zeroed_times:
-                # ignore first entry (initial state)
-                values_map[var] = list (y[1:, idx])
+        try:
+            values_map = {}
+            for var in self.index_map:
+                idx = self.index_map[var]
+                if zeroed_times:
+                    # ignore first entry (initial state)
+                    values_map[var] = list (y[1:, idx])
+                else:
+                    values_map[var] = list (y[:, idx])
+            if with_success_flag:
+                return values_map, success
             else:
-                values_map[var] = list (y[:, idx])
-        if with_success_flag:
-            return values_map, success
-        else:
-            return values_map
+                return values_map
+        except Exception as e:
+            print(e)
+            raise e
 
 
     def evaluate_exp_on (self, exp, time_points, 

@@ -4,7 +4,7 @@ kiwisolver==1.0.1
 lxml==4.6.3
 matplotlib==2.2.3
 mpmath==1.0.0
-numpy==1.15.3
+numpy==1.22.0
 pandas==0.22.0
 pyparsing==2.2.2
 python-dateutil==2.7.5
